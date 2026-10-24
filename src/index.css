@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+/* Tokens del manual de marca de Mía (paleta, tipografía y movimiento) */
+@theme {
+  /* Paleta — proporción de uso: blanco cálido 60 %, burdeos 30 %, negro 7 %, dorado 3 % */
+  --color-burdeos: #4f0b12; /* Burgundy oscuro: color principal del logotipo */
+  --color-burdeos-medio: #73161f;
+  --color-burdeos-profundo: #3f070f;
+  --color-crema: #f7f5f1; /* Blanco cálido */
+  --color-dorado: #b8956a; /* Solo filetes y detalles; nunca texto sobre crema */
+  --color-dorado-suave: #c9a86b;
+  --color-negro: #141414;
+
+  /* Tipografía — Cormorant Garamond 600 en títulos, Inter 400 en texto */
+  --font-serif: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Curva de movimiento: entradas suaves, sin rebotes */
+  --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Pantallas bajas (portátiles de 720–800 px de alto) */
+@custom-variant bajo (@media (max-height: 820px));
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-crema font-sans text-negro antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif font-semibold text-balance;
+  }
+
+  ::selection {
+    @apply bg-burdeos text-crema;
+  }
+}
