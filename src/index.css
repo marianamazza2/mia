@@ -31,6 +31,18 @@
     @apply bg-crema font-sans text-negro antialiased;
   }
 
+  /* Grano de papel muy leve sobre toda la página: da textura a los planos de color */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
   h1,
   h2,
   h3,
@@ -41,4 +53,16 @@
   ::selection {
     @apply bg-burdeos text-crema;
   }
+}
+
+/* Patrón de repetición de la «a» (manual: forros, packaging y fondos).
+   Toma el color del texto, así sirve en burdeos, crema o dorado. */
+@utility patron-a {
+  background-color: currentColor;
+  mask-image: url('./assets/brand/a_mia_burdeos.svg'), url('./assets/brand/a_mia_burdeos.svg');
+  mask-size: var(--paso, 72px) var(--paso, 72px);
+  mask-position:
+    0 0,
+    calc(var(--paso, 72px) / 2) calc(var(--paso, 72px) / 2);
+  mask-repeat: repeat;
 }

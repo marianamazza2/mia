@@ -36,8 +36,8 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  // Sobre la foto del hero (o con el menú abierto) el header va en negativo
-  const onDark = !scrolled || open
+  // La portada es clara: el header solo va en negativo con el menú móvil abierto
+  const onDark = open
 
   return (
     <>
@@ -74,7 +74,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <Button href="#contacto" size="sm" variant={onDark ? 'light' : 'primary'} className="hidden lg:inline-flex">
+          <Button href="#contacto" size="sm" variant={onDark ? 'light' : 'outline'} className="hidden lg:inline-flex">
             Hablemos
           </Button>
 
