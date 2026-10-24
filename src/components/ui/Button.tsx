@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/cn'
 
-// Esquinas vivas, como la papelería del manual
+// Píldora de 40 px: el único elemento redondeado, contrasta con las fotos de esquinas vivas
 const variants = {
   primary: 'bg-burdeos text-crema hover:bg-burdeos-medio',
   outline: 'border border-burdeos/30 text-burdeos hover:border-burdeos hover:bg-burdeos hover:text-crema',
@@ -9,8 +9,8 @@ const variants = {
 }
 
 const sizes = {
-  sm: 'h-10 px-5 text-[0.6875rem]',
-  md: 'h-14 px-7 text-xs sm:px-9',
+  sm: 'h-11 px-6 text-[0.6875rem]',
+  md: 'h-14 px-8 text-xs sm:px-10',
 }
 
 type ButtonProps = ComponentProps<'a'> & {
@@ -30,7 +30,7 @@ export function Button({
   return (
     <a
       className={cn(
-        'group inline-flex items-center justify-center gap-4 font-medium tracking-[0.14em] whitespace-nowrap uppercase sm:tracking-[0.2em]',
+        'group inline-flex items-center justify-center gap-4 rounded-[40px] font-medium tracking-[0.14em] whitespace-nowrap uppercase sm:tracking-[0.2em]',
         'transition-colors duration-500 ease-suave',
         'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos',
         variants[variant],

@@ -12,7 +12,7 @@ export function Eyebrow({ children, tone = 'dark', className }: EyebrowProps) {
   return (
     <p
       className={cn(
-        'flex items-center gap-4 text-[0.6875rem] font-medium tracking-[0.22em] uppercase sm:tracking-[0.3em]',
+        'etiqueta flex items-center gap-4',
         tone === 'dark' ? 'text-burdeos' : 'text-dorado-suave',
         className,
       )}

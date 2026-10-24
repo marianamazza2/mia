@@ -5,6 +5,7 @@ import logo from '@/assets/brand/logo_mia_principal.svg'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { cn } from '@/lib/cn'
+import { useIntroLista } from '@/lib/intro'
 import { easeSuave } from '@/lib/motion'
 
 const links = [
@@ -20,6 +21,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
+  const introLista = useIntroLista()
 
   // Se oculta al bajar y reaparece al subir
   useMotionValueEvent(scrollY, 'change', (y) => {
@@ -47,7 +49,7 @@ export function Header() {
           scrolled && !open ? 'border-dorado/25 bg-crema/85 backdrop-blur-md' : 'border-transparent',
         )}
         initial={{ y: '-100%' }}
-        animate={{ y: hidden && !open ? '-100%' : '0%' }}
+        animate={{ y: !introLista || (hidden && !open) ? '-100%' : '0%' }}
         transition={{ duration: 0.7, ease: easeSuave }}
       >
         <Container className="flex h-20 items-center justify-between lg:h-24">

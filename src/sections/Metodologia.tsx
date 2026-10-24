@@ -57,11 +57,11 @@ function Encabezado() {
     <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-7">
         <Eyebrow tone="light">Metodología</Eyebrow>
-        <h2 className="mt-8 text-[2.75rem] leading-[1.05] sm:text-6xl lg:mt-6 lg:bajo:text-5xl">
+        <h2 className="mt-8 text-titulo lg:mt-6 lg:bajo:text-5xl">
           Cómo <em className="font-medium text-dorado-suave">trabajamos.</em>
         </h2>
       </div>
-      <p className="text-[1.0625rem] leading-[1.8] text-crema/70 lg:col-span-4 lg:col-start-9">
+      <p className="text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9">
         Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
       </p>
     </div>
@@ -228,7 +228,7 @@ function LineaVertical() {
   const { scrollYProgress } = useScroll({ target: listaRef, offset: ['start 0.65', 'end 0.65'] })
 
   return (
-    <Container className="py-28 sm:py-36">
+    <Container className="py-seccion">
       <Reveal>
         <Encabezado />
       </Reveal>

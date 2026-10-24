@@ -53,20 +53,20 @@ export function Servicios() {
 
   return (
     <section id="servicios" className="relative">
-      <Container className="pt-28 pb-20 sm:pt-36 lg:pt-48 lg:pb-28">
+      <Container className="pt-seccion pb-bloque">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Reveal y={12}>
               <Eyebrow>Servicios</Eyebrow>
             </Reveal>
             <Reveal delay={0.1}>
-              <h2 className="mt-10 text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[5.5rem]">
+              <h2 className="mt-8 text-titulo lg:mt-10">
                 Tres formas de <em className="font-medium text-burdeos">acompañar.</em>
               </h2>
             </Reveal>
           </div>
           <Reveal delay={0.2} className="self-end lg:col-span-4 lg:col-start-9">
-            <p className="text-[1.0625rem] leading-[1.8] text-negro/70">
+            <p className="text-cuerpo text-negro/70">
               Cada proceso parte de lo mismo: comprender qué está pasando antes de decidir qué cambiar.
             </p>
           </Reveal>
@@ -123,7 +123,7 @@ function Panel({ servicio }: { servicio: Servicio }) {
         <span
           aria-hidden
           className={cn(
-            'font-serif text-[7rem] leading-[0.8] font-medium italic lg:text-[10rem] lg:bajo:text-[7rem]',
+            'font-serif text-numeral font-medium italic lg:bajo:text-[7rem]',
             oscuro
               ? 'text-transparent [-webkit-text-stroke:1px_rgb(201_168_107/0.7)]'
               : 'text-transparent [-webkit-text-stroke:1px_rgb(79_11_18/0.45)]',
@@ -132,25 +132,25 @@ function Panel({ servicio }: { servicio: Servicio }) {
           {servicio.numero}
         </span>
 
-        <h3 className="mt-8 max-w-lg text-[2.25rem] leading-[1.05] sm:text-5xl lg:bajo:mt-5 lg:bajo:text-[2.75rem]">
+        <h3 className="mt-8 max-w-lg text-subtitulo lg:bajo:mt-5 lg:bajo:text-[2.75rem]">
           {servicio.titulo}
         </h3>
-        <p className={cn('mt-6 max-w-lg text-[1.0625rem] leading-[1.8]', oscuro ? 'text-crema/75' : 'text-negro/70')}>
+        <p className={cn('mt-6 max-w-lg text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>
           {servicio.descripcion}
         </p>
 
         <div className="mt-10 flex max-w-lg gap-5 lg:bajo:mt-7">
           <span aria-hidden className="mt-2.5 h-px w-10 shrink-0 bg-dorado" />
-          <p className={cn('text-[0.9375rem] leading-relaxed', oscuro ? 'text-crema/75' : 'text-negro/70')}>
+          <p className={cn('text-detalle', oscuro ? 'text-crema/75' : 'text-negro/70')}>
             <span
               className={cn(
-                'block text-[0.6875rem] font-medium tracking-[0.25em] uppercase',
+                'etiqueta block',
                 oscuro ? 'text-dorado-suave' : 'text-burdeos',
               )}
             >
               Para quién
             </span>
-            <span className="mt-2 block font-serif text-xl italic">{servicio.paraQuien}</span>
+            <span className="mt-2 block font-serif text-destacado italic">{servicio.paraQuien}</span>
           </p>
         </div>
 

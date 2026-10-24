@@ -1,6 +1,7 @@
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { CintaA } from '@/components/marca/CintaA'
+import { Intro } from '@/components/marca/Intro'
 import { SelectorOpciones } from '@/components/marca/SelectorOpciones'
 import { mostrarOpciones, usePatron } from '@/lib/opciones'
 import { Contacto } from '@/sections/Contacto'
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <>
+      <Intro />
       <Header />
       <main>
         <Hero />

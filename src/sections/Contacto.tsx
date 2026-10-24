@@ -47,22 +47,22 @@ export function Contacto() {
           />
         )}
 
-        <div className="relative px-6 py-28 sm:px-8 sm:py-36 lg:py-40 lg:pr-14 lg:pl-[max(3rem,calc((100vw-80rem)/2+3rem))]">
+        <div className="relative px-6 py-seccion sm:px-8 lg:pr-14 lg:pl-[max(3rem,calc((100vw-80rem)/2+3rem))]">
           <Reveal y={12}>
             <Eyebrow tone="light">Contacto</Eyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="mt-10 text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[4.5rem]">
+            <h2 className="mt-8 text-titulo lg:mt-10">
               Empecemos por una <em className="font-medium text-dorado-suave">conversación.</em>
             </h2>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-8 max-w-sm text-[1.0625rem] leading-[1.8] text-crema/75">
+            <p className="mt-8 max-w-sm text-cuerpo text-crema/75">
               Cuéntanos en qué momento está tu empresa. Te responderemos personalmente lo antes posible.
             </p>
           </Reveal>
 
-          <ul className="mt-14 border-t border-crema/15">
+          <ul className="mt-12 border-t border-crema/15">
             {canales.map((canal, i) => (
               <motion.li
                 key={canal.etiqueta}
@@ -79,10 +79,10 @@ export function Contacto() {
                 >
                   <span className="text-dorado-suave">{canal.icono}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[0.625rem] font-medium tracking-[0.3em] text-crema/55 uppercase">
+                    <span className="etiqueta block text-crema/55">
                       {canal.etiqueta}
                     </span>
-                    <span className="mt-1 block truncate font-serif text-xl font-medium text-crema transition-colors duration-500 group-hover:text-dorado-suave sm:text-2xl">
+                    <span className="mt-1 block truncate font-serif text-destacado font-medium text-crema transition-colors duration-500 group-hover:text-dorado-suave">
                       {canal.valor}
                     </span>
                   </span>
@@ -94,7 +94,7 @@ export function Contacto() {
         </div>
       </div>
 
-      <div className="flex items-center px-6 py-24 sm:px-8 sm:py-32 lg:col-span-7 lg:py-40 lg:pr-[max(3rem,calc((100vw-80rem)/2+3rem))] lg:pl-20">
+      <div className="flex items-center px-6 py-seccion sm:px-8 lg:col-span-7 lg:pr-[max(3rem,calc((100vw-80rem)/2+3rem))] lg:pl-20">
         <Reveal delay={0.15} className="w-full">
           <Formulario />
         </Reveal>
@@ -171,7 +171,7 @@ function Formulario() {
             transition={{ duration: 0.5, ease: easeSuave }}
           >
             <fieldset>
-              <legend className="text-[0.6875rem] font-medium tracking-[0.25em] text-burdeos uppercase">
+              <legend className="etiqueta text-burdeos">
                 ¿En qué podemos acompañarte?
               </legend>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -185,7 +185,7 @@ function Formulario() {
                       onChange={() => setMotivo(opcion)}
                       className="peer sr-only"
                     />
-                    <span className="block border border-burdeos/20 px-4 py-2.5 text-[0.8125rem] text-negro/70 transition-all duration-300 ease-suave peer-checked:border-burdeos peer-checked:bg-burdeos peer-checked:text-crema peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-burdeos hover:border-burdeos/50">
+                    <span className="block rounded-[40px] border border-burdeos/20 px-5 py-2.5 text-[0.8125rem] text-negro/70 transition-all duration-300 ease-suave peer-checked:border-burdeos peer-checked:bg-burdeos peer-checked:text-crema peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-burdeos hover:border-burdeos/50">
                       {opcion}
                     </span>
                   </label>
@@ -225,7 +225,7 @@ function Formulario() {
               <button
                 type="submit"
                 disabled={estado === 'enviando'}
-                className="group inline-flex h-14 items-center justify-center gap-4 bg-burdeos px-9 text-xs font-medium tracking-[0.2em] whitespace-nowrap text-crema uppercase transition-colors duration-500 ease-suave hover:bg-burdeos-medio focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos disabled:opacity-60"
+                className="group inline-flex h-14 items-center justify-center gap-4 rounded-[40px] bg-burdeos px-10 text-xs font-medium tracking-[0.2em] whitespace-nowrap text-crema uppercase transition-colors duration-500 ease-suave hover:bg-burdeos-medio focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos disabled:opacity-60"
               >
                 {estado === 'enviando' ? 'Enviando…' : 'Enviar mensaje'}
                 <Flecha className="transition-transform duration-500 ease-suave group-hover:translate-x-1" />
@@ -326,10 +326,10 @@ function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => 
           transition={{ duration: 0.6, ease: easeSuave, delay: 0.9 }}
         />
       </svg>
-      <p className="mt-8 font-serif text-4xl font-medium text-burdeos">
+      <p className="mt-8 font-serif text-subtitulo font-medium text-burdeos">
         {porCorreo ? 'Ya casi está.' : 'Gracias por escribirnos.'}
       </p>
-      <p className="mt-4 max-w-sm text-[1.0625rem] leading-relaxed text-negro/70">
+      <p className="mt-4 max-w-sm text-cuerpo text-negro/70">
         {porCorreo
           ? 'Se abrió tu correo con el mensaje listo. Solo falta que lo envíes.'
           : 'Recibimos tu mensaje. Te responderemos personalmente lo antes posible.'}

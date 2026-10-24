@@ -49,13 +49,13 @@ function Pregunta() {
         <Llave progreso={trazo} className="w-full" />
       </motion.div>
 
-      <Container className="relative py-32 sm:py-40 lg:py-56">
+      <Container className="relative py-seccion">
         <Reveal y={12}>
           <Eyebrow tone="light">Sobre Mía</Eyebrow>
         </Reveal>
 
         <ScrollRevealText
-          className="mt-12 max-w-5xl text-[2.4rem] leading-[1.08] font-medium sm:text-6xl lg:text-[4.75rem]"
+          className="mt-8 max-w-5xl text-titulo font-medium lg:mt-10"
           segments={[
             { text: '¿Qué hacemos con aquello que' },
             { text: 'no se ve,', em: true },
@@ -63,15 +63,15 @@ function Pregunta() {
           ]}
         />
 
-        <div className="mt-20 grid lg:mt-28 lg:grid-cols-12">
-          <Reveal className="space-y-5 text-[1.0625rem] leading-[1.8] text-crema/75 lg:col-span-5 lg:col-start-7">
+        <div className="mt-bloque grid lg:grid-cols-12">
+          <Reveal className="space-y-5 text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
             <p>
               Esa pregunta atraviesa todo el trabajo de Mía. Porque lo que organiza el funcionamiento de una
               empresa no siempre está en sus procesos ni en su estrategia, sino en un lugar menos visible: la
               relación entre quien la dirige, las decisiones que toma y el modo en que esas decisiones ordenan
               el negocio.
             </p>
-            <p className="font-serif text-2xl text-crema italic">Mía trabaja sobre esa relación.</p>
+            <p className="font-serif text-destacado text-crema italic">Mía trabaja sobre esa relación.</p>
           </Reveal>
         </div>
       </Container>
@@ -86,7 +86,7 @@ function Mirada() {
   const fotoY = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
 
   return (
-    <div ref={ref} className="relative py-28 sm:py-36 lg:py-0">
+    <div ref={ref} className="relative py-seccion lg:py-0">
       <div className="grid lg:min-h-[110svh] lg:grid-cols-12">
         <div className="relative px-6 sm:px-8 lg:col-span-6 lg:px-0">
           {/* El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible */}
@@ -114,20 +114,20 @@ function Mirada() {
           </motion.div>
         </div>
 
-        <div className="mt-20 flex items-center px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-0 lg:py-40 lg:pr-12">
+        <div className="mt-bloque flex items-center px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-0 lg:py-seccion lg:pr-12">
           <div>
             <Reveal y={12}>
               <Eyebrow>La mirada de Mía</Eyebrow>
             </Reveal>
 
             <Reveal delay={0.1}>
-              <h3 className="mt-10 text-[2.5rem] leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
+              <h3 className="mt-8 text-subtitulo lg:mt-10">
                 Lleva esa mirada al lugar donde las decisiones suceden:{' '}
                 <em className="font-medium text-burdeos">la empresa.</em>
               </h3>
             </Reveal>
 
-            <Reveal delay={0.2} className="mt-12 space-y-5 text-[1.0625rem] leading-[1.8] text-negro/70">
+            <Reveal delay={0.2} className="mt-8 space-y-5 text-cuerpo text-negro/70 lg:mt-10">
               <p>
                 Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
                 reorganización o expansión. Mujeres que han construido un negocio, pero que empiezan a percibir
@@ -160,12 +160,12 @@ function Sensible() {
       </motion.div>
       <div className="absolute inset-0 -z-10 bg-crema/55" />
 
-      <Container className="py-32 text-center">
+      <Container className="py-seccion text-center">
         <Reveal y={12}>
-          <p className="text-[0.6875rem] font-medium tracking-[0.35em] text-burdeos uppercase">Una idea resume su forma de trabajar</p>
+          <p className="etiqueta text-burdeos">Una idea resume su forma de trabajar</p>
         </Reveal>
         <Reveal delay={0.1}>
-          <blockquote className="mx-auto mt-10 max-w-5xl font-serif text-[3.25rem] leading-[0.95] font-medium text-negro sm:text-7xl lg:text-[7.5rem]">
+          <blockquote className="mx-auto mt-8 max-w-5xl font-serif text-display font-medium text-negro lg:mt-10">
             Operacionalizar <em className="block text-burdeos">lo sensible.</em>
           </blockquote>
         </Reveal>
@@ -178,7 +178,7 @@ function Sensible() {
           transition={{ duration: 1.4, ease: easeSuave, delay: 0.4 }}
         />
         <Reveal delay={0.3}>
-          <p className="mx-auto mt-8 max-w-md text-[1.0625rem] leading-relaxed text-negro/75">
+          <p className="mx-auto mt-8 max-w-md text-cuerpo text-negro/75">
             Comprender qué está en juego para producir movimiento.
           </p>
         </Reveal>
@@ -192,12 +192,12 @@ function Equilibrio() {
   const patron = usePatron()
 
   return (
-    <div id="equilibrio" className="relative overflow-hidden py-32 sm:py-40 lg:py-52">
+    <div id="equilibrio" className="relative overflow-hidden py-seccion">
       {patron === 'marca-de-agua' && <PatronA paso={84} difuminado className="text-burdeos opacity-[0.07]" />}
 
       <Container className="relative">
         <Reveal>
-          <p className="max-w-5xl font-serif text-[2.4rem] leading-[1.15] font-medium sm:text-6xl lg:text-[4.5rem]">
+          <p className="max-w-5xl font-serif text-titulo leading-[1.15] font-medium">
             No es{' '}
             {descartes.map((descarte, i) => (
               <span key={descarte}>
@@ -214,12 +214,12 @@ function Equilibrio() {
           </p>
         </Reveal>
         <Reveal delay={0.2}>
-          <p className="mt-10 max-w-xl text-[1.0625rem] leading-[1.8] text-negro/70 lg:ml-[calc(100%/12*6)]">
+          <p className="mt-8 max-w-xl text-cuerpo text-negro/70 lg:mt-10 lg:ml-[calc(100%/12*6)]">
             Es una forma distinta de mirar las organizaciones, construida sobre un equilibrio poco común.
           </p>
         </Reveal>
 
-        <ul className="mt-20 grid border-t border-dorado/40 sm:grid-cols-3 lg:mt-28">
+        <ul className="mt-bloque grid border-t border-dorado/40 sm:grid-cols-3">
           {equilibrios.map(({ valor, matiz }, i) => (
             <motion.li
               key={valor}
@@ -230,8 +230,8 @@ function Equilibrio() {
               transition={{ duration: 1.1, ease: easeSuave, delay: i * 0.15 }}
             >
               <span className="font-serif text-lg text-burdeos-medio italic">{['I', 'II', 'III'][i]}.</span>
-              <p className="mt-6 font-serif text-4xl font-semibold text-burdeos lg:text-5xl">{valor}</p>
-              <p className="mt-3 font-serif text-xl text-negro/60 italic lg:text-2xl">{matiz}</p>
+              <p className="mt-6 font-serif text-subtitulo font-semibold text-burdeos">{valor}</p>
+              <p className="mt-3 font-serif text-destacado text-negro/60 italic">{matiz}</p>
             </motion.li>
           ))}
         </ul>
