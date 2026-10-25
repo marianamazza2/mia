@@ -11,11 +11,12 @@ import { usePatron } from '@/lib/opciones'
 import { Destacado } from '@/components/marca/Destacado'
 
 const canales = [
-  { etiqueta: 'Email', valor: contacto.email, href: `mailto:${contacto.email}`, icono: <IconoEmail /> },
-  { etiqueta: 'Teléfono', valor: contacto.telefonoVisible, href: `tel:${contacto.telefono}`, icono: <IconoTelefono /> },
+  { etiqueta: 'Email', valor: contacto.email, accion: 'Escribir', href: `mailto:${contacto.email}`, icono: <IconoEmail /> },
+  { etiqueta: 'Teléfono', valor: contacto.telefonoVisible, accion: 'Llamar', href: `tel:${contacto.telefono}`, icono: <IconoTelefono /> },
   {
     etiqueta: 'WhatsApp',
     valor: 'Escribir un mensaje',
+    accion: 'Enviar mensaje',
     href: contacto.whatsapp,
     externo: true,
     icono: <IconoWhatsApp />,
@@ -23,6 +24,7 @@ const canales = [
   {
     etiqueta: 'Dónde estamos',
     valor: 'Av. Diagonal 534, Barcelona',
+    accion: 'Cómo llegar',
     href: contacto.mapa,
     externo: true,
     icono: <IconoUbicacion />,
@@ -68,7 +70,27 @@ export function Contacto() {
             </p>
           </Reveal>
 
-          <ul className="mt-8 border-t border-crema/15">
+          {/* Mobile y tablet: accesos rápidos en mosaico, pensados para tocar con el pulgar */}
+          <ul className="mt-8 grid grid-cols-2 gap-3 lg:hidden">
+            {canales.map((canal) => (
+              <li key={canal.etiqueta}>
+                <a
+                  href={canal.href}
+                  {...(canal.externo && { target: '_blank', rel: 'noopener noreferrer' })}
+                  className="flex h-full flex-col gap-4 rounded-[10px] border border-crema/15 bg-crema/[0.04] p-4 transition-colors duration-300 active:bg-crema/10"
+                >
+                  <span className="text-dorado-suave">{canal.icono}</span>
+                  <span>
+                    <span className="etiqueta block text-crema/55">{canal.etiqueta}</span>
+                    <span className="mt-1 block font-serif text-lg leading-tight text-crema">{canal.accion}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          {/* Desktop: lista con el dato completo */}
+          <ul className="mt-8 hidden border-t border-crema/15 lg:block">
             {canales.map((canal, i) => (
               <motion.li
                 key={canal.etiqueta}

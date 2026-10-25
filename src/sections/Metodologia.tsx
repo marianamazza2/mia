@@ -6,7 +6,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'motion/react'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, type Ref } from 'react'
 import aCrema from '@/assets/brand/a_mia_crema.svg'
 import { Reveal } from '@/components/motion/Reveal'
 import { Container } from '@/components/ui/Container'
@@ -223,10 +223,20 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
   )
 }
 
-// Móvil y tablet: línea vertical que se va llenando a medida que se baja
+// Móvil y tablet: la línea vertical como acordeón. Se ven los cinco pasos y se abre el que se toca;
+// la línea dorada se llena hasta el paso abierto
 function LineaVertical() {
-  const listaRef = useRef<HTMLOListElement>(null)
-  const { scrollYProgress } = useScroll({ target: listaRef, offset: ['start 0.65', 'end 0.65'] })
+  const [abierto, setAbierto] = useState(0)
+  // Alto de una fila cerrada: los nodos quedan a esa distancia entre sí, abra el paso que se abra
+  const filaRef = useRef<HTMLHeadingElement>(null)
+  const [fila, setFila] = useState(0)
+
+  useLayoutEffect(() => {
+    const medir = () => setFila(filaRef.current?.offsetHeight ?? 0)
+    medir()
+    window.addEventListener('resize', medir)
+    return () => window.removeEventListener('resize', medir)
+  }, [])
 
   return (
     <Container className="py-seccion">
@@ -234,44 +244,96 @@ function LineaVertical() {
         <Encabezado />
       </Reveal>
 
-      <ol ref={listaRef} className="relative mt-16 sm:mt-20">
-        <span aria-hidden className="absolute top-2 bottom-2 left-[9px] w-px bg-crema/15" />
+      <ol className="relative mt-12">
+        <span aria-hidden className="absolute top-7 left-[9px] w-px bg-crema/15" style={{ height: (pasos.length - 1) * fila }} />
         <motion.span
           aria-hidden
-          className="absolute top-2 bottom-2 left-[9px] w-px origin-top bg-dorado-suave"
-          style={{ scaleY: scrollYProgress }}
+          className="absolute top-7 left-[9px] w-px bg-dorado-suave"
+          initial={false}
+          animate={{ height: abierto * fila }}
+          transition={{ duration: 0.8, ease: easeSuave }}
         />
         {pasos.map((paso, i) => (
-          <motion.li
+          <PasoAcordeon
             key={paso.titulo}
-            className="group relative pb-14 pl-14 last:pb-0"
-            initial="apagado"
-            whileInView="encendido"
-            viewport={{ once: true, margin: '0px 0px -35% 0px' }}
-          >
-            <span
-              aria-hidden
-              className="absolute top-2 left-0 grid size-5 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
-            >
-              <motion.span
-                className="size-2.5 rounded-full bg-dorado-suave"
-                variants={{ apagado: { scale: 0, opacity: 0 }, encendido: { scale: 1, opacity: 1 } }}
-                transition={{ duration: 0.6, ease: easeSuave }}
-              />
-            </span>
-            <motion.div
-              variants={{ apagado: { opacity: 0.3, x: 12 }, encendido: { opacity: 1, x: 0 } }}
-              transition={{ duration: 0.9, ease: easeSuave }}
-            >
-              <span aria-hidden className="font-serif text-5xl leading-none font-medium text-dorado-suave tabular-nums lining-nums">
-                {numero(i)}
-              </span>
-              <h3 className="mt-3 text-[1.75rem] leading-tight">{paso.titulo}</h3>
-              <p className="mt-3 max-w-md text-[0.9375rem] leading-relaxed text-crema/70">{paso.texto}</p>
-            </motion.div>
-          </motion.li>
+            paso={paso}
+            index={i}
+            abierto={abierto === i}
+            pasado={i <= abierto}
+            onAbrir={() => setAbierto(i)}
+            filaRef={i === 0 ? filaRef : undefined}
+          />
         ))}
       </ol>
     </Container>
+  )
+}
+
+type PasoAcordeonProps = {
+  paso: (typeof pasos)[number]
+  index: number
+  abierto: boolean
+  pasado: boolean
+  onAbrir: () => void
+  filaRef?: Ref<HTMLHeadingElement>
+}
+
+function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAcordeonProps) {
+  const id = `paso-${index}`
+
+  return (
+    <li className="relative pl-12">
+      {/* Nodo sobre la línea: se enciende en los pasos ya recorridos */}
+      <span
+        aria-hidden
+        className="absolute top-[1.125rem] left-0 grid size-5 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
+      >
+        <span
+          className={cn(
+            'size-2.5 rounded-full bg-dorado-suave transition-transform duration-500 ease-suave',
+            pasado ? 'scale-100' : 'scale-0',
+          )}
+        />
+      </span>
+
+      <h3 ref={filaRef}>
+        <button
+          type="button"
+          aria-expanded={abierto}
+          aria-controls={id}
+          onClick={onAbrir}
+          className="flex w-full items-baseline gap-4 py-3 text-left"
+        >
+          <span
+            className={cn(
+              'font-serif text-2xl font-medium tabular-nums lining-nums transition-colors duration-500',
+              abierto ? 'text-dorado-suave' : 'text-crema/35',
+            )}
+          >
+            {numero(index)}
+          </span>
+          <span
+            className={cn(
+              'flex-1 font-serif text-[1.5rem] leading-tight transition-colors duration-500',
+              abierto ? 'text-crema' : 'text-crema/60',
+            )}
+          >
+            {paso.titulo}
+          </span>
+        </button>
+      </h3>
+
+      <div
+        id={id}
+        className={cn(
+          'grid transition-[grid-template-rows,opacity] duration-700 ease-suave',
+          abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+      >
+        <p className="overflow-hidden pl-[3.25rem] text-detalle text-crema/70">
+          <span className="block pb-5">{paso.texto}</span>
+        </p>
+      </div>
+    </li>
   )
 }

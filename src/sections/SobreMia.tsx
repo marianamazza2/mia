@@ -9,6 +9,7 @@ import { Reveal } from '@/components/motion/Reveal'
 import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { LeerMas } from '@/components/ui/LeerMas'
 import { Picture } from '@/components/ui/Picture'
 import { easeSuave } from '@/lib/motion'
 import { Destacado } from '@/components/marca/Destacado'
@@ -81,7 +82,7 @@ function Mirada() {
         <div className="relative px-6 sm:px-8 lg:col-span-6 lg:px-0">
           {/* El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible */}
           <motion.div
-            className="relative aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto"
+            className="relative aspect-[5/4] sm:aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto"
             initial="oculta"
             whileInView="visible"
             viewport={{ once: true, margin: '0px 0px -20% 0px' }}
@@ -123,11 +124,14 @@ function Mirada() {
                 reorganización o expansión. Mujeres que han construido un negocio, pero que empiezan a percibir
                 que la forma en que hoy lo conducen ya no alcanza para lo que la empresa necesita.
               </p>
-              <p>
-                Mía comenzó siendo una manera de mirar, mucho antes de ser una consultora. Desde la psicología y
-                el psicoanálisis, observó que muchas veces una persona sabe qué debería hacer y tiene las
-                herramientas, y aun así algo insiste, se repite y traba el movimiento.
-              </p>
+              {/* En mobile, la historia queda plegada tras «Leer más» */}
+              <LeerMas>
+                <p>
+                  Mía comenzó siendo una manera de mirar, mucho antes de ser una consultora. Desde la psicología y
+                  el psicoanálisis, observó que muchas veces una persona sabe qué debería hacer y tiene las
+                  herramientas, y aun así algo insiste, se repite y traba el movimiento.
+                </p>
+              </LeerMas>
             </Reveal>
           </div>
         </div>

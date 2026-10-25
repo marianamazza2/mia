@@ -1,5 +1,5 @@
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
-import { useRef } from 'react'
+import { useId, useRef, useState } from 'react'
 import direccionAvif from '@/assets/images/bn-servicio-direccion.avif'
 import direccionJpg from '@/assets/images/bn-servicio-direccion.jpg'
 import lecturaAvif from '@/assets/images/bn-servicio-lectura.avif'
@@ -52,7 +52,6 @@ type Servicio = (typeof servicios)[number]
 export function Servicios() {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const reduceMotion = useReducedMotion()
-  const apilar = isDesktop && !reduceMotion
 
   // La marca de agua se va encendiendo mientras el encabezado sube, y se desliza apenas más lento que el texto
   const encabezadoRef = useRef<HTMLDivElement>(null)
@@ -88,7 +87,8 @@ export function Servicios() {
         </Container>
       </div>
 
-      {apilar ? <Apilados /> : <Lista />}
+      {/* Desktop: paneles que se apilan (o en lista, con «reducir movimiento»); mobile y tablet: carrusel */}
+      {isDesktop ? reduceMotion ? <Lista /> : <Apilados /> : <Carrusel />}
     </section>
   )
 }
@@ -178,7 +178,7 @@ function Panel({ servicio }: { servicio: Servicio }) {
   )
 }
 
-// Móvil y tablet: los tres paneles uno debajo del otro
+// Desktop con «reducir movimiento»: los tres paneles uno debajo del otro
 function Lista() {
   return (
     <div>
@@ -190,5 +190,167 @@ function Lista() {
         </Reveal>
       ))}
     </div>
+  )
+}
+
+// Mobile y tablet: carrusel que se desliza con el dedo; se ve un poco la tarjeta siguiente
+function Carrusel() {
+  const pistaRef = useRef<HTMLDivElement>(null)
+  const [actual, setActual] = useState(0)
+
+  const alDeslizar = () => {
+    const pista = pistaRef.current
+    if (!pista) return
+    const paso = (pista.children[1] as HTMLElement).offsetLeft - (pista.children[0] as HTMLElement).offsetLeft
+    setActual(Math.min(Math.round(pista.scrollLeft / paso), servicios.length - 1))
+  }
+
+  const ir = (i: number) => {
+    const pista = pistaRef.current
+    const tarjeta = pista?.children[i] as HTMLElement | undefined
+    if (!pista || !tarjeta) return
+    pista.scrollTo({ left: tarjeta.offsetLeft - pista.offsetLeft - parseFloat(getComputedStyle(pista).scrollPaddingLeft || '0'), behavior: 'smooth' })
+  }
+
+  return (
+    <div className="pb-seccion">
+      <div
+        ref={pistaRef}
+        onScroll={alDeslizar}
+        role="region"
+        aria-label="Servicios"
+        className="flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:scroll-px-8 sm:px-8 [&::-webkit-scrollbar]:hidden"
+      >
+        {servicios.map((servicio, i) => (
+          <TarjetaServicio key={servicio.titulo} servicio={servicio} posicion={i} />
+        ))}
+      </div>
+
+      {/* Contador con filete de progreso y flechas */}
+      <Container className="mt-8 flex items-center justify-between">
+        <div className="flex items-center gap-4 font-serif text-lg lining-nums tabular-nums">
+          <span className="text-burdeos">{String(actual + 1).padStart(2, '0')}</span>
+          <span className="relative h-px w-16 bg-burdeos/15">
+            <span
+              className="absolute inset-y-0 left-0 bg-dorado transition-[width] duration-500 ease-suave"
+              style={{ width: `${((actual + 1) / servicios.length) * 100}%` }}
+            />
+          </span>
+          <span className="text-negro/40">{String(servicios.length).padStart(2, '0')}</span>
+        </div>
+        <div className="flex gap-3">
+          <FlechaCarrusel direccion="anterior" disabled={actual === 0} onClick={() => ir(actual - 1)} />
+          <FlechaCarrusel direccion="siguiente" disabled={actual === servicios.length - 1} onClick={() => ir(actual + 1)} />
+        </div>
+      </Container>
+    </div>
+  )
+}
+
+function TarjetaServicio({ servicio, posicion }: { servicio: Servicio; posicion: number }) {
+  const oscuro = servicio.tono === 'burdeos'
+
+  return (
+    <article
+      aria-label={`${posicion + 1} de ${servicios.length}`}
+      className={cn(
+        'flex w-[86%] shrink-0 snap-start flex-col overflow-hidden rounded-[10px] sm:w-[62%] md:w-[46%]',
+        oscuro ? 'bg-burdeos text-crema' : 'border border-dorado/30 bg-white/45 text-negro',
+      )}
+    >
+      <Picture {...servicio.imagen} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <span
+          aria-hidden
+          className={cn(
+            'font-serif text-4xl leading-none font-medium lining-nums tabular-nums',
+            oscuro ? 'text-crema/20' : 'text-burdeos/20',
+          )}
+        >
+          {servicio.numero}
+        </span>
+        <h3 className="mt-3 text-subtitulo">{servicio.titulo}</h3>
+        <p className={cn('mt-4 text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>{servicio.descripcion}</p>
+
+        <ParaQuien texto={servicio.paraQuien} oscuro={oscuro} />
+
+        <Button href="#contacto" variant={oscuro ? 'light' : 'primary'} withArrow className="mt-auto w-full gap-3 px-4 tracking-[0.1em] sm:px-5 sm:tracking-[0.14em]">
+          Consultar este servicio
+        </Button>
+      </div>
+    </article>
+  )
+}
+
+// «Para quién» plegado: se abre al tocarlo, para que las tarjetas no se alarguen
+function ParaQuien({ texto, oscuro }: { texto: string; oscuro: boolean }) {
+  const [abierto, setAbierto] = useState(false)
+  const id = useId()
+
+  return (
+    <div className={cn('mt-6 mb-8 border-y', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
+      <button
+        type="button"
+        aria-expanded={abierto}
+        aria-controls={id}
+        onClick={() => setAbierto((v) => !v)}
+        className={cn('etiqueta flex w-full items-center justify-between py-4', oscuro ? 'text-dorado-suave' : 'text-burdeos')}
+      >
+        Para quién
+        <svg
+          aria-hidden
+          viewBox="0 0 16 16"
+          className={cn('size-3 transition-transform duration-500 ease-suave', abierto && 'rotate-45')}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+        >
+          <path d="M8 1v14M1 8h14" />
+        </svg>
+      </button>
+      <div
+        id={id}
+        className={cn(
+          'grid transition-[grid-template-rows,opacity] duration-500 ease-suave',
+          abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+      >
+        <p className={cn('overflow-hidden text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>
+          <span className="block pb-4">{texto}</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function FlechaCarrusel({
+  direccion,
+  disabled,
+  onClick,
+}: {
+  direccion: 'anterior' | 'siguiente'
+  disabled: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={direccion === 'anterior' ? 'Servicio anterior' : 'Servicio siguiente'}
+      disabled={disabled}
+      onClick={onClick}
+      className="grid size-11 place-items-center rounded-full border border-burdeos/25 text-burdeos transition-colors duration-300 hover:bg-burdeos hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-burdeos"
+    >
+      <svg
+        aria-hidden
+        viewBox="0 0 24 16"
+        className={cn('h-3 w-4', direccion === 'anterior' && 'rotate-180')}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.25"
+      >
+        <path d="M0 8h22M16 2l6 6-6 6" />
+      </svg>
+    </button>
   )
 }

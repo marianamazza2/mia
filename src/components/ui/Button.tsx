@@ -50,7 +50,7 @@ function Arrow() {
     <svg
       aria-hidden
       viewBox="0 0 24 16"
-      className="h-3.5 w-5 transition-transform duration-500 ease-suave group-hover:translate-x-1.5"
+      className="h-3.5 w-5 shrink-0 transition-transform duration-500 ease-suave group-hover:translate-x-1.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="1"
