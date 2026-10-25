@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'motion/react'
-import { useRef } from 'react'
+import { useRef, type ReactNode } from 'react'
 import sillonAvif from '@/assets/images/bn-sillon-carpeta.avif'
 import sillonJpg from '@/assets/images/bn-sillon-carpeta.jpg'
 import texturaAvif from '@/assets/images/bn-textura.avif'
@@ -151,7 +151,14 @@ function Mirada() {
   )
 }
 
-// Franja a sangre con la textura de seda del manual: la frase que resume la forma de trabajar
+// Mobile: imagen ampliada (150 % de alto) para quedarse con la zona clara y la ramita de hojas,
+// sin las manchas oscuras de los bordes. Desktop: encuadre centrado en las dos ramitas.
+const encuadreTextura =
+  'absolute -top-[25%] h-[150%] w-full object-cover object-[11%_50%] lg:static lg:size-full lg:object-[40%_42%]'
+
+// Franja a sangre con la textura de seda del manual: la frase que resume la forma de trabajar.
+// La textura teñida de burdeos, texto en crema y detalles en dorado suave.
+// Desktop: texto centrado. Mobile: franja compacta y texto alineado a la izquierda.
 function Sensible() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
@@ -160,38 +167,72 @@ function Sensible() {
 
   // En desktop, mismo alto que el bloque «La mirada de Mía» (~750 px)
   return (
-    <div ref={ref} className="relative isolate flex items-center overflow-hidden lg:min-h-[47rem]">
-      <motion.div className="absolute inset-0 -z-10" style={{ scale: escala, x: fondoX }}>
-        {/* Encuadre centrado en las dos ramitas de hojas de la textura */}
-        <Picture avif={texturaAvif} jpg={texturaJpg} alt="" loading="lazy" className="size-full object-cover object-[18%_36%] lg:object-[40%_42%]" />
+    <div
+      ref={ref}
+      className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema lg:min-h-[47rem]"
+    >
+      {/* La textura se tiñe de burdeos al multiplicarse con el fondo */}
+      <motion.div
+        className="absolute inset-0 -z-10 mix-blend-multiply"
+        style={{ scale: escala, x: fondoX }}
+      >
+        <Picture
+          avif={texturaAvif}
+          jpg={texturaJpg}
+          alt=""
+          loading="lazy"
+          className={encuadreTextura}
+        />
       </motion.div>
-      <div className="absolute inset-0 -z-10 bg-crema/35" />
 
-      <Container className="py-20 text-center lg:py-28">
+      <Container className="py-20 lg:py-28 lg:text-center">
         <Reveal y={12}>
-          <p className="etiqueta text-burdeos">Una idea resume su forma de trabajar</p>
+          <p className="etiqueta flex items-center gap-4 text-dorado-suave lg:block">
+            <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
+            Una idea resume su forma de trabajar
+          </p>
         </Reveal>
-        <Reveal delay={0.1}>
-          <blockquote className="mx-auto mt-6 max-w-5xl font-serif text-titulo font-medium text-negro lg:mt-8">
-            Operacionalizar
-            <br />
-            <Destacado delay={0.6}>lo sensible.</Destacado>
-          </blockquote>
-        </Reveal>
+        <blockquote className="mt-6 max-w-5xl font-serif text-[2.25rem] leading-[1.05] font-medium text-crema lg:mx-auto lg:mt-8 lg:text-titulo">
+          <LineaQueSube delay={0.1}>Operacionalizar</LineaQueSube>
+          <LineaQueSube delay={0.22}>
+            <Destacado delay={0.9}>lo sensible.</Destacado>
+          </LineaQueSube>
+        </blockquote>
         <motion.span
           aria-hidden
-          className="mx-auto mt-8 block h-px w-24 bg-dorado lg:mt-10"
+          className="mt-8 block h-px w-24 origin-left bg-dorado-suave lg:mx-auto lg:mt-10 lg:origin-center"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: easeSuave, delay: 0.4 }}
+          transition={{ duration: 1.4, ease: easeSuave, delay: 0.5 }}
         />
-        <Reveal delay={0.3}>
-          <p className="mx-auto mt-6 max-w-md text-cuerpo text-negro/75 lg:mt-8">
+        <Reveal delay={0.4}>
+          <p className="mt-6 max-w-xs text-cuerpo text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-md">
             Comprender qué está en juego para producir movimiento.
           </p>
         </Reveal>
       </Container>
     </div>
+  )
+}
+
+// Línea que sube desde una máscara al entrar en pantalla, como el título de la portada
+// (el disparador va en la máscara: la línea escondida debajo no cuenta como visible para el navegador)
+function LineaQueSube({ children, delay }: { children: ReactNode; delay: number }) {
+  return (
+    <motion.span
+      className="-mb-[0.06em] block overflow-hidden pb-[0.2em]"
+      initial="oculta"
+      whileInView="visible"
+      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
+    >
+      <motion.span
+        className="block"
+        variants={{ oculta: { y: '105%' }, visible: { y: 0 } }}
+        transition={{ duration: 1.3, ease: easeSuave, delay }}
+      >
+        {children}
+      </motion.span>
+    </motion.span>
   )
 }
