@@ -14,6 +14,7 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 import { easeSuave } from '@/lib/motion'
 import { useMediaQuery } from '@/lib/useMediaQuery'
+import { Destacado } from '@/components/marca/Destacado'
 
 // Textos provisorios: hay que validarlos con Marina
 const pasos = [
@@ -57,11 +58,11 @@ function Encabezado() {
     <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-7">
         <Eyebrow tone="light">Metodología</Eyebrow>
-        <h2 className="mt-8 text-[2.75rem] leading-[1.05] sm:text-6xl lg:mt-6 lg:bajo:text-5xl">
-          Cómo <em className="font-medium text-dorado-suave">trabajamos.</em>
+        <h2 className="mt-8 text-titulo lg:mt-6 lg:bajo:text-5xl">
+          Cómo <Destacado>trabajamos.</Destacado>
         </h2>
       </div>
-      <p className="text-[1.0625rem] leading-[1.8] text-crema/70 lg:col-span-4 lg:col-start-9">
+      <p className="text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9">
         Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
       </p>
     </div>
@@ -131,7 +132,7 @@ function LineaHorizontal() {
               style={{ scaleX: rellenoEscala }}
             />
 
-            <ol className="relative flex pr-[calc(50vw-12rem)] pl-[max(3rem,calc((100vw-80rem)/2+3rem))]">
+            <ol className="relative flex pr-[calc(50vw-12rem)] pl-[max(3rem,calc((100vw-80rem)/2+3rem))] 2xl:pl-(--margen-ancho)">
               {pasos.map((paso, i) => (
                 <PasoHorizontal
                   key={paso.titulo}
@@ -209,7 +210,7 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
         )}
         style={{ opacity: opacidad, y }}
       >
-        <span aria-hidden className="relative font-serif text-[4.5rem] leading-none font-medium italic bajo:text-[3.25rem]">
+        <span aria-hidden className="relative font-serif text-[4.5rem] leading-none font-medium tabular-nums lining-nums bajo:text-[3.25rem]">
           <span className="text-transparent [-webkit-text-stroke:1px_rgb(247_245_241/0.35)]">{numero(index)}</span>
           <motion.span className="absolute inset-0 text-dorado-suave" style={{ clipPath: rellenoNumero }}>
             {numero(index)}
@@ -228,7 +229,7 @@ function LineaVertical() {
   const { scrollYProgress } = useScroll({ target: listaRef, offset: ['start 0.65', 'end 0.65'] })
 
   return (
-    <Container className="py-28 sm:py-36">
+    <Container className="py-seccion">
       <Reveal>
         <Encabezado />
       </Reveal>
@@ -262,7 +263,7 @@ function LineaVertical() {
               variants={{ apagado: { opacity: 0.3, x: 12 }, encendido: { opacity: 1, x: 0 } }}
               transition={{ duration: 0.9, ease: easeSuave }}
             >
-              <span aria-hidden className="font-serif text-5xl leading-none font-medium text-dorado-suave italic">
+              <span aria-hidden className="font-serif text-5xl leading-none font-medium text-dorado-suave tabular-nums lining-nums">
                 {numero(i)}
               </span>
               <h3 className="mt-3 text-[1.75rem] leading-tight">{paso.titulo}</h3>

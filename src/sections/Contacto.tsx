@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState, type FormEvent, type ReactNode } from 'react'
-import aBurdeos from '@/assets/brand/a_mia_burdeos.svg'
+import aCrema from '@/assets/brand/a_mia_crema.svg'
+import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
-import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 import { contacto } from '@/lib/contacto'
 import { easeSuave } from '@/lib/motion'
-
-const motivos = ['Acompañamiento a la dirección', 'Lectura organizacional', 'Procesos de reorganización', 'Otro']
+import { usePatron } from '@/lib/opciones'
+import { Destacado } from '@/components/marca/Destacado'
 
 const canales = [
   { etiqueta: 'Email', valor: contacto.email, href: `mailto:${contacto.email}`, icono: <IconoEmail /> },
@@ -30,37 +30,49 @@ const canales = [
 ]
 
 export function Contacto() {
-  return (
-    <section id="contacto" className="relative overflow-hidden py-28 sm:py-36 lg:py-44">
-      {/* La «a» recortada por el borde, como en el reverso de la carpeta y los sobres */}
-      <img
-        aria-hidden
-        src={aBurdeos}
-        alt=""
-        className="pointer-events-none absolute -bottom-28 -left-24 w-72 opacity-[0.06] sm:w-96 lg:-left-32 lg:w-[34rem]"
-      />
+  const patron = usePatron()
 
-      <Container className="relative grid gap-16 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-5">
+  return (
+    <section id="contacto" className="relative grid lg:grid-cols-2">
+      {/* Mitad burdeos, como la carpeta abierta; con la opción «forro», la «a» tono sobre tono
+          y un velo burdeos encima para que el texto se lea limpio */}
+      <div className="relative overflow-hidden bg-burdeos text-crema">
+        {patron === 'forro' && (
+          <>
+            <PatronA paso={92} className="text-burdeos-medio opacity-55" />
+            <div aria-hidden className="absolute inset-0 bg-burdeos/60" />
+          </>
+        )}
+        {patron !== 'forro' && (
+          <img
+            aria-hidden
+            src={aCrema}
+            alt=""
+            className="pointer-events-none absolute -right-24 -bottom-28 w-80 opacity-[0.06] lg:-right-32 lg:w-[30rem]"
+          />
+        )}
+
+        {/* En pantallas muy anchas (2xl), el contenido de cada mitad se centra en su columna, alineado con el resto */}
+        <div className="relative px-6 py-20 sm:px-8 lg:py-20 lg:pr-16 lg:pl-[max(3rem,calc((100vw-80rem)/2+3rem))] xl:pr-24 2xl:px-(--margen-ancho)">
           <Reveal y={12}>
-            <Eyebrow>Contacto</Eyebrow>
+            <Eyebrow tone="light">Contacto</Eyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="mt-8 text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl">
-              Empecemos por una <em className="font-medium text-burdeos">conversación.</em>
+            <h2 className="mt-8 text-titulo">
+              Empecemos por una <Destacado>conversación.</Destacado>
             </h2>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-8 max-w-md text-[1.0625rem] leading-[1.8] text-negro/70">
+            <p className="mt-6 max-w-sm text-cuerpo text-crema/75">
               Cuéntanos en qué momento está tu empresa. Te responderemos personalmente lo antes posible.
             </p>
           </Reveal>
 
-          <ul className="mt-12 border-t border-burdeos/15">
+          <ul className="mt-8 border-t border-crema/15">
             {canales.map((canal, i) => (
               <motion.li
                 key={canal.etiqueta}
-                className="border-b border-burdeos/15"
+                className="border-b border-crema/15"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '0px 0px -10% 0px' }}
@@ -69,30 +81,30 @@ export function Contacto() {
                 <a
                   href={canal.href}
                   {...(canal.externo && { target: '_blank', rel: 'noopener noreferrer' })}
-                  className="group flex items-center gap-5 py-5 transition-colors duration-500 ease-suave"
+                  className="group flex items-center gap-5 py-3.5"
                 >
-                  <span className="grid size-12 shrink-0 place-items-center rounded-full border border-burdeos/20 text-burdeos transition-all duration-500 ease-suave group-hover:border-burdeos group-hover:bg-burdeos group-hover:text-crema">
-                    {canal.icono}
-                  </span>
+                  <span className="text-dorado-suave">{canal.icono}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[0.6875rem] font-medium tracking-[0.25em] text-burdeos/70 uppercase">
+                    <span className="etiqueta block text-crema/55">
                       {canal.etiqueta}
                     </span>
-                    <span className="mt-1 block truncate font-serif text-xl font-medium text-negro transition-colors duration-500 group-hover:text-burdeos sm:text-2xl">
+                    <span className="mt-0.5 block truncate font-serif text-xl font-medium text-crema transition-colors duration-500 group-hover:text-dorado-suave">
                       {canal.valor}
                     </span>
                   </span>
-                  <Flecha className="text-burdeos/40 transition-all duration-500 ease-suave group-hover:translate-x-1 group-hover:text-burdeos" />
+                  <Flecha className="text-crema/40 transition-all duration-500 ease-suave group-hover:translate-x-1 group-hover:text-dorado-suave" />
                 </a>
               </motion.li>
             ))}
           </ul>
         </div>
+      </div>
 
-        <Reveal delay={0.15} className="lg:col-span-6 lg:col-start-7">
+      <div className="flex items-center px-6 py-20 sm:px-8 lg:py-20 lg:pr-[max(3rem,calc((100vw-80rem)/2+3rem))] lg:pl-16 xl:pl-24 2xl:px-(--margen-ancho)">
+        <Reveal delay={0.15} className="w-full">
           <Formulario />
         </Reveal>
-      </Container>
+      </div>
     </section>
   )
 }
@@ -101,7 +113,6 @@ type Estado = 'inicial' | 'enviando' | 'enviado' | 'correo' | 'error'
 type Errores = Partial<Record<'nombre' | 'email' | 'mensaje' | 'privacidad', string>>
 
 function Formulario() {
-  const [motivo, setMotivo] = useState(motivos[0])
   const [estado, setEstado] = useState<Estado>('inicial')
   const [errores, setErrores] = useState<Errores>({})
 
@@ -131,7 +142,7 @@ function Formulario() {
       ]
         .filter((linea) => linea !== '' && linea !== undefined)
         .join('\n')
-      window.location.href = `mailto:${contacto.email}?subject=${encodeURIComponent(`Consulta web: ${motivo}`)}&body=${encodeURIComponent(cuerpo)}`
+      window.location.href = `mailto:${contacto.email}?subject=${encodeURIComponent('Consulta desde la web')}&body=${encodeURIComponent(cuerpo)}`
       setEstado('correo')
       return
     }
@@ -141,7 +152,7 @@ function Formulario() {
       const respuesta = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...datos, motivo }),
+        body: JSON.stringify(datos),
       })
       if (!respuesta.ok) throw new Error(String(respuesta.status))
       form.reset()
@@ -152,7 +163,7 @@ function Formulario() {
   }
 
   return (
-    <div className="relative rounded-[2rem] border border-burdeos/10 bg-white/70 p-7 sm:p-10 lg:p-12">
+    <div className="relative">
       <AnimatePresence mode="wait" initial={false}>
         {estado === 'enviado' || estado === 'correo' ? (
           <Gracias key="gracias" porCorreo={estado === 'correo'} onVolver={() => setEstado('inicial')} />
@@ -164,30 +175,9 @@ function Formulario() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5, ease: easeSuave }}
           >
-            <fieldset>
-              <legend className="text-[0.6875rem] font-medium tracking-[0.25em] text-burdeos uppercase">
-                ¿En qué podemos acompañarte?
-              </legend>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {motivos.map((opcion) => (
-                  <label key={opcion} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      name="motivo"
-                      value={opcion}
-                      checked={motivo === opcion}
-                      onChange={() => setMotivo(opcion)}
-                      className="peer sr-only"
-                    />
-                    <span className="block rounded-full border border-burdeos/20 px-4 py-2 text-[0.8125rem] text-negro/70 transition-all duration-300 ease-suave peer-checked:border-burdeos peer-checked:bg-burdeos peer-checked:text-crema peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-burdeos hover:border-burdeos/50">
-                      {opcion}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            <Eyebrow>Escríbenos</Eyebrow>
 
-            <div className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
               <Campo nombre="nombre" etiqueta="Nombre" autoComplete="name" error={errores.nombre} />
               <Campo nombre="email" etiqueta="Email" tipo="email" autoComplete="email" error={errores.email} />
               <Campo nombre="telefono" etiqueta="Teléfono (opcional)" tipo="tel" autoComplete="tel" />
@@ -199,7 +189,7 @@ function Formulario() {
               <input type="checkbox" name="privacidad" className="peer sr-only" />
               <span
                 aria-hidden
-                className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border border-burdeos/30 text-transparent transition-colors duration-300 peer-checked:border-burdeos peer-checked:bg-burdeos peer-checked:text-crema peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-burdeos"
+                className="mt-0.5 grid size-5 shrink-0 place-items-center border border-burdeos/30 text-transparent transition-colors duration-300 peer-checked:border-burdeos peer-checked:bg-burdeos peer-checked:text-crema peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-burdeos"
               >
                 <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="m3 8.5 3 3 7-7" />
@@ -207,7 +197,7 @@ function Formulario() {
               </span>
               <span>
                 He leído y acepto la{' '}
-                <a href="#privacidad" className="text-burdeos underline decoration-dorado underline-offset-4">
+                <a href="/privacidad" target="_blank" rel="noopener" className="text-burdeos underline decoration-dorado underline-offset-4">
                   política de privacidad
                 </a>
                 .
@@ -219,7 +209,7 @@ function Formulario() {
               <button
                 type="submit"
                 disabled={estado === 'enviando'}
-                className="group inline-flex h-13 items-center justify-center gap-3 rounded-full bg-burdeos px-8 text-xs font-medium tracking-[0.18em] whitespace-nowrap text-crema uppercase transition-colors duration-500 ease-suave hover:bg-burdeos-medio focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos disabled:opacity-60"
+                className="group inline-flex h-14 items-center justify-center gap-4 rounded-[40px] bg-burdeos px-10 text-xs font-medium tracking-[0.2em] whitespace-nowrap text-crema uppercase transition-colors duration-500 ease-suave hover:bg-burdeos-medio focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos disabled:opacity-60"
               >
                 {estado === 'enviando' ? 'Enviando…' : 'Enviar mensaje'}
                 <Flecha className="transition-transform duration-500 ease-suave group-hover:translate-x-1" />
@@ -320,10 +310,10 @@ function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => 
           transition={{ duration: 0.6, ease: easeSuave, delay: 0.9 }}
         />
       </svg>
-      <p className="mt-8 font-serif text-4xl font-medium text-burdeos">
+      <p className="mt-8 font-serif text-subtitulo font-medium text-burdeos">
         {porCorreo ? 'Ya casi está.' : 'Gracias por escribirnos.'}
       </p>
-      <p className="mt-4 max-w-sm text-[1.0625rem] leading-relaxed text-negro/70">
+      <p className="mt-4 max-w-sm text-cuerpo text-negro/70">
         {porCorreo
           ? 'Se abrió tu correo con el mensaje listo. Solo falta que lo envíes.'
           : 'Recibimos tu mensaje. Te responderemos personalmente lo antes posible.'}

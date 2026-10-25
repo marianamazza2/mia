@@ -5,14 +5,16 @@ import logo from '@/assets/brand/logo_mia_principal.svg'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { cn } from '@/lib/cn'
+import { useIntroLista } from '@/lib/intro'
 import { easeSuave } from '@/lib/motion'
 
+// Con «/» delante, los enlaces también funcionan desde las páginas legales
 const links = [
-  { href: '#inicio', label: 'Inicio' },
-  { href: '#sobre-mia', label: 'Sobre Mía' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#metodologia', label: 'Metodología' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '/#inicio', label: 'Inicio' },
+  { href: '/#sobre-mia', label: 'Sobre Mía' },
+  { href: '/#servicios', label: 'Servicios' },
+  { href: '/#metodologia', label: 'Metodología' },
+  { href: '/#contacto', label: 'Contacto' },
 ]
 
 export function Header() {
@@ -20,6 +22,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
+  const introLista = useIntroLista()
 
   // Se oculta al bajar y reaparece al subir
   useMotionValueEvent(scrollY, 'change', (y) => {
@@ -36,8 +39,8 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  // Sobre la foto del hero (o con el menú abierto) el header va en negativo
-  const onDark = !scrolled || open
+  // La portada es clara: el header solo va en negativo con el menú móvil abierto
+  const onDark = open
 
   return (
     <>
@@ -47,12 +50,12 @@ export function Header() {
           scrolled && !open ? 'border-dorado/25 bg-crema/85 backdrop-blur-md' : 'border-transparent',
         )}
         initial={{ y: '-100%' }}
-        animate={{ y: hidden && !open ? '-100%' : '0%' }}
+        animate={{ y: !introLista || (hidden && !open) ? '-100%' : '0%' }}
         transition={{ duration: 0.7, ease: easeSuave }}
       >
-        <Container className="flex h-20 items-center justify-between lg:h-24">
-          <a href="#inicio" aria-label="Mía, ir al inicio" onClick={() => setOpen(false)}>
-            <img src={onDark ? logoNegativo : logo} alt="" className="w-[140px] lg:w-[150px]" />
+        <Container className="flex h-18 items-center justify-between lg:h-20">
+          <a href="/#inicio" aria-label="Mía, ir al inicio" onClick={() => setOpen(false)}>
+            <img src={onDark ? logoNegativo : logo} alt="" className="w-[88px] lg:w-[118px]" />
           </a>
 
           <nav aria-label="Principal" className="hidden lg:block">
@@ -62,7 +65,7 @@ export function Header() {
                   <a
                     href={href}
                     className={cn(
-                      'group relative py-2 text-[0.8125rem] tracking-wide transition-colors duration-300',
+                      'group relative py-2 text-[0.9375rem] tracking-wide transition-colors duration-300',
                       onDark ? 'text-crema/80 hover:text-crema' : 'text-negro/75 hover:text-burdeos',
                     )}
                   >
@@ -74,7 +77,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <Button href="#contacto" size="sm" variant={onDark ? 'light' : 'primary'} className="hidden lg:inline-flex">
+          <Button href="/#contacto" size="sm" variant={onDark ? 'light' : 'outline'} className="hidden lg:inline-flex">
             Hablemos
           </Button>
 
@@ -108,7 +111,7 @@ export function Header() {
         {open && (
           <motion.div
             id="menu-movil"
-            className="fixed inset-0 z-40 flex flex-col bg-burdeos pt-28 pb-10 lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col bg-burdeos pt-24 pb-10 lg:hidden"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
@@ -141,7 +144,7 @@ export function Header() {
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 <span aria-hidden className="block h-px w-16 bg-dorado" />
-                <Button href="#contacto" variant="light" withArrow onClick={() => setOpen(false)}>
+                <Button href="/#contacto" variant="light" withArrow onClick={() => setOpen(false)}>
                   Reservar una conversación
                 </Button>
               </motion.div>
