@@ -219,7 +219,7 @@ function Carrusel() {
         onScroll={alDeslizar}
         role="region"
         aria-label="Servicios"
-        className="flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:scroll-px-8 sm:px-8 [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:scroll-px-8 sm:px-8 [&::-webkit-scrollbar]:hidden"
       >
         {servicios.map((servicio, i) => (
           <TarjetaServicio key={servicio.titulo} servicio={servicio} posicion={i} />
@@ -249,55 +249,103 @@ function Carrusel() {
 
 function TarjetaServicio({ servicio, posicion }: { servicio: Servicio; posicion: number }) {
   const oscuro = servicio.tono === 'burdeos'
+  // Un solo desplegable abierto a la vez dentro de cada tarjeta
+  const [abierto, setAbierto] = useState<'que-es' | 'para-quien' | null>(null)
+  const alternar = (cual: 'que-es' | 'para-quien') => setAbierto((actual) => (actual === cual ? null : cual))
 
   return (
     <article
       aria-label={`${posicion + 1} de ${servicios.length}`}
       className={cn(
-        'flex w-[86%] shrink-0 snap-start flex-col overflow-hidden rounded-[10px] sm:w-[62%] md:w-[46%]',
+        'flex w-[88%] shrink-0 snap-start flex-col overflow-hidden rounded-[10px] sm:w-[62%] md:w-[46%]',
         oscuro ? 'bg-burdeos text-crema' : 'border border-dorado/30 bg-white/45 text-negro',
       )}
     >
-      <Picture {...servicio.imagen} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+      {/* Foto apaisada y baja: la tarjeta se lee de un vistazo */}
+      <Picture {...servicio.imagen} loading="lazy" className="aspect-[2/1] w-full object-cover" />
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <span
-          aria-hidden
+      <div className="flex flex-1 flex-col px-5 pt-5 pb-5 sm:px-6">
+        <div className="flex items-baseline gap-4">
+          <span
+            aria-hidden
+            className={cn(
+              'font-serif text-2xl leading-none font-medium lining-nums tabular-nums',
+              oscuro ? 'text-dorado-suave' : 'text-burdeos/40',
+            )}
+          >
+            {servicio.numero}
+          </span>
+          {/* Siempre el alto de dos líneas, así todas las tarjetas miden lo mismo aunque el título ocupe una */}
+          <h3 className="min-h-[2.2em] font-serif text-[1.5rem] leading-[1.1]">{servicio.titulo}</h3>
+        </div>
+
+        <div className={cn('mt-5 mb-6 border-t', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
+          <Desplegable
+            titulo="Qué es"
+            texto={servicio.descripcion}
+            oscuro={oscuro}
+            abierto={abierto === 'que-es'}
+            onAlternar={() => alternar('que-es')}
+          />
+          <Desplegable
+            titulo="Para quién"
+            texto={servicio.paraQuien}
+            oscuro={oscuro}
+            abierto={abierto === 'para-quien'}
+            onAlternar={() => alternar('para-quien')}
+          />
+        </div>
+
+        {/* En la tarjeta, un link discreto en minúsculas: no compite con los rótulos de los desplegables */}
+        <a
+          href="#contacto"
           className={cn(
-            'font-serif text-4xl leading-none font-medium lining-nums tabular-nums',
-            oscuro ? 'text-crema/20' : 'text-burdeos/20',
+            'group/link mt-auto inline-flex items-center gap-2.5 self-start text-detalle whitespace-nowrap',
+            oscuro ? 'text-crema/85' : 'text-burdeos',
           )}
         >
-          {servicio.numero}
-        </span>
-        <h3 className="mt-3 text-subtitulo">{servicio.titulo}</h3>
-        <p className={cn('mt-4 text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>{servicio.descripcion}</p>
-
-        <ParaQuien texto={servicio.paraQuien} oscuro={oscuro} />
-
-        <Button href="#contacto" variant={oscuro ? 'light' : 'primary'} withArrow className="mt-auto w-full gap-3 px-4 tracking-[0.1em] sm:px-5 sm:tracking-[0.14em]">
-          Consultar este servicio
-        </Button>
+          <span className="relative py-0.5">
+            Consultar este servicio
+            <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado/60 transition-transform duration-500 ease-suave group-hover/link:scale-x-50" />
+          </span>
+          <svg
+            aria-hidden
+            viewBox="0 0 24 16"
+            className="h-3 w-4 shrink-0 transition-transform duration-500 ease-suave group-hover/link:translate-x-1.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+          >
+            <path d="M0 8h22M16 2l6 6-6 6" />
+          </svg>
+        </a>
       </div>
     </article>
   )
 }
 
-// «Para quién» plegado: se abre al tocarlo, para que las tarjetas no se alarguen
-function ParaQuien({ texto, oscuro }: { texto: string; oscuro: boolean }) {
-  const [abierto, setAbierto] = useState(false)
+type DesplegableProps = {
+  titulo: string
+  texto: string
+  oscuro: boolean
+  abierto: boolean
+  onAlternar: () => void
+}
+
+// Fila plegable de la tarjeta: el texto se abre al tocar el rótulo
+function Desplegable({ titulo, texto, oscuro, abierto, onAlternar }: DesplegableProps) {
   const id = useId()
 
   return (
-    <div className={cn('mt-6 mb-8 border-y', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
+    <div className={cn('border-b', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
       <button
         type="button"
         aria-expanded={abierto}
         aria-controls={id}
-        onClick={() => setAbierto((v) => !v)}
+        onClick={onAlternar}
         className={cn('etiqueta flex w-full items-center justify-between py-4', oscuro ? 'text-dorado-suave' : 'text-burdeos')}
       >
-        Para quién
+        {titulo}
         <svg
           aria-hidden
           viewBox="0 0 16 16"
@@ -317,7 +365,7 @@ function ParaQuien({ texto, oscuro }: { texto: string; oscuro: boolean }) {
         )}
       >
         <p className={cn('overflow-hidden text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>
-          <span className="block pb-4">{texto}</span>
+          <span className="block pb-5">{texto}</span>
         </p>
       </div>
     </div>

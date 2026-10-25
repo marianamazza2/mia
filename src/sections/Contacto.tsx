@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useId, useState, type FormEvent, type ReactNode } from 'react'
 import aCrema from '@/assets/brand/a_mia_crema.svg'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
@@ -122,12 +122,61 @@ export function Contacto() {
         </div>
       </div>
 
-      <div className="flex items-center px-6 py-20 sm:px-8 lg:py-20 lg:pr-[max(3rem,calc((100vw-80rem)/2+3rem))] lg:pl-16 xl:pl-24 2xl:px-(--margen-ancho)">
+      <div className="flex items-center px-6 py-16 sm:px-8 lg:py-20 lg:pr-[max(3rem,calc((100vw-80rem)/2+3rem))] lg:pl-16 xl:pl-24 2xl:px-(--margen-ancho)">
         <Reveal delay={0.15} className="w-full">
-          <Formulario />
+          <FormularioPlegable />
         </Reveal>
       </div>
     </section>
+  )
+}
+
+// Mobile: el formulario arranca plegado detrás de una invitación breve; en desktop se ve siempre
+function FormularioPlegable() {
+  const [abierto, setAbierto] = useState(false)
+  const id = useId()
+
+  return (
+    <>
+      <div className="lg:hidden">
+        <Eyebrow>Escríbenos</Eyebrow>
+        <p className="mt-6 font-serif text-subtitulo">¿Prefieres contárnoslo por escrito?</p>
+        <p className="mt-4 text-cuerpo text-negro/70">Déjanos tu mensaje y te responderemos personalmente.</p>
+        <button
+          type="button"
+          aria-expanded={abierto}
+          aria-controls={id}
+          onClick={() => setAbierto((v) => !v)}
+          className="mt-8 flex w-full items-center justify-between border-y border-burdeos/15 py-4 text-detalle text-burdeos"
+        >
+          {abierto ? 'Cerrar el formulario' : 'Abrir el formulario'}
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className={cn('size-2.5 transition-transform duration-500 ease-suave', abierto && 'rotate-45')}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          >
+            <path d="M8 1v14M1 8h14" />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        id={id}
+        className={cn(
+          'grid transition-[grid-template-rows,opacity] duration-700 ease-suave lg:grid-rows-[1fr] lg:opacity-100',
+          abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="pt-8 lg:pt-0">
+            <Formulario />
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -197,9 +246,10 @@ function Formulario() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5, ease: easeSuave }}
           >
-            <Eyebrow>Escríbenos</Eyebrow>
+            {/* En mobile, el antetítulo ya está en la invitación que abre el formulario */}
+            <Eyebrow className="max-lg:hidden">Escríbenos</Eyebrow>
 
-            <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+            <div className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:mt-10 lg:gap-y-8">
               <Campo nombre="nombre" etiqueta="Nombre" autoComplete="name" error={errores.nombre} />
               <Campo nombre="email" etiqueta="Email" tipo="email" autoComplete="email" error={errores.email} />
               <Campo nombre="telefono" etiqueta="Teléfono (opcional)" tipo="tel" autoComplete="tel" />
@@ -267,7 +317,7 @@ type CampoProps = {
 function Campo({ nombre, etiqueta, tipo = 'text', autoComplete, multilinea, error, className }: CampoProps) {
   const id = `contacto-${nombre}`
   const clases = cn(
-    'peer block w-full resize-none border-b bg-transparent pt-6 pb-2 text-[1.0625rem] text-negro outline-none transition-colors',
+    'peer block w-full resize-none border-b bg-transparent pt-5 pb-1.5 text-base text-negro outline-none transition-colors lg:pt-6 lg:pb-2 lg:text-[1.0625rem]',
     error ? 'border-burdeos' : 'border-burdeos/20',
   )
 
@@ -275,7 +325,7 @@ function Campo({ nombre, etiqueta, tipo = 'text', autoComplete, multilinea, erro
     <div className={className}>
       <div className="relative">
         {multilinea ? (
-          <textarea id={id} name={nombre} rows={4} placeholder=" " aria-invalid={!!error} className={clases} />
+          <textarea id={id} name={nombre} rows={4} placeholder=" " aria-invalid={!!error} className={cn(clases, 'max-lg:h-24')} />
         ) : (
           <input
             id={id}
@@ -289,7 +339,7 @@ function Campo({ nombre, etiqueta, tipo = 'text', autoComplete, multilinea, erro
         )}
         <label
           htmlFor={id}
-          className="pointer-events-none absolute top-6 left-0 origin-left text-[1.0625rem] text-negro/50 transition-all duration-300 ease-suave peer-focus:top-0 peer-focus:text-xs peer-focus:tracking-wide peer-focus:text-burdeos peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:tracking-wide"
+          className="pointer-events-none absolute top-5 left-0 origin-left text-detalle text-negro/45 lg:top-6 transition-all duration-300 ease-suave peer-focus:top-0 peer-focus:text-xs peer-focus:tracking-wide peer-focus:text-burdeos peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:tracking-wide"
         >
           {etiqueta}
         </label>

@@ -8,6 +8,7 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Picture } from '@/components/ui/Picture'
 import { useIntroLista } from '@/lib/intro'
 import { easeSuave } from '@/lib/motion'
+import { useMediaQuery } from '@/lib/useMediaQuery'
 
 const ejes = ['Liderazgo', 'Organización', 'Negocio']
 
@@ -18,23 +19,30 @@ export function Hero() {
   // La foto y el texto se mueven a distinta velocidad: un poco de profundidad
   const fotoY = useTransform(scrollYProgress, [0, 1], ['0%', '-8%'])
   const textoY = useTransform(scrollYProgress, [0, 1], ['0%', '14%'])
+  // En mobile ni el texto ni la foto se desplazan: la foto queda fija y la hoja con el texto sube por encima
+  const esDesktop = useMediaQuery('(min-width: 1024px)')
 
   return (
     // Todo queda «oculto» hasta que sube el telón de la intro; las piezas heredan el estado por variantes
     <motion.section
       ref={ref}
       id="inicio"
-      className="relative isolate overflow-hidden"
+      className="relative isolate overflow-clip"
       initial="oculto"
       animate={lista ? 'visible' : 'oculto'}
     >
-      <Container className="relative grid min-h-svh items-center gap-16 pt-28 pb-20 lg:grid-cols-12 lg:gap-8 lg:pt-32 lg:pb-20">
-        <motion.div className="relative z-10 lg:col-span-7" style={{ y: textoY }}>
+      {/* Mobile y tablet: foto a sangre arriba y el texto en una hoja crema que se apoya sobre ella.
+          Desktop: texto a la izquierda y foto a la derecha */}
+      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-32 lg:pb-20">
+        <motion.div
+          className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-9 pb-14 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
+          style={{ y: esDesktop ? textoY : 0 }}
+        >
           <Entra y={12} delay={0.5}>
             <Eyebrow>Consultora para empresarias</Eyebrow>
           </Entra>
 
-          <h1 className="mt-6 text-display leading-[0.94] font-medium lg:mt-8 lg:text-[6rem] lg:bajo:text-[5.25rem]">
+          <h1 className="mt-6 text-titulo leading-[0.94] font-medium lg:mt-8 lg:text-[6rem] lg:bajo:text-[5.25rem]">
             <Line delay={0.35}>
               Lo que no se ve
             </Line>
@@ -64,12 +72,15 @@ export function Hero() {
           </Entra>
         </motion.div>
 
-        {/* Foto principal en blanco y negro */}
-        <div className="relative lg:col-span-5 lg:self-stretch">
-          <motion.div className="relative ml-auto w-[82%] lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:w-[88%]" style={{ y: fotoY }}>
+        {/* Foto principal en blanco y negro. En mobile queda fija arriba y la hoja de texto sube y la tapa */}
+        <div className="sticky top-0 order-first -mx-6 sm:-mx-8 lg:relative lg:order-none lg:col-span-5 lg:mx-0 lg:self-stretch">
+          <motion.div
+            className="relative h-[46svh] min-h-72 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
+            style={{ y: esDesktop ? fotoY : 0 }}
+          >
             {/* La foto sube desde abajo, en el mismo sentido que el telón */}
             <motion.div
-              className="aspect-[4/5] size-full overflow-hidden rounded-[10px] bg-negro/5 lg:aspect-auto"
+              className="size-full overflow-hidden bg-negro/5 lg:rounded-[10px]"
               variants={{ oculto: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)' } }}
               transition={{ duration: 1.6, ease: easeSuave, delay: 0.15 }}
             >
@@ -83,14 +94,14 @@ export function Hero() {
                   jpg={portadaJpg}
                   alt="Mujer con la carpeta burdeos de Mía bajo el brazo"
                   fetchPriority="high"
-                  className="size-full object-cover object-[45%_center]"
+                  className="size-full object-cover object-[50%_30%] lg:object-[45%_center]"
                 />
               </motion.div>
             </motion.div>
 
             {/* Ejes del trabajo, en vertical sobre el borde de la foto */}
             <motion.p
-              className="absolute top-0 -left-8 hidden origin-top-left -rotate-90 text-[0.625rem] tracking-[0.4em] whitespace-nowrap text-negro/50 uppercase sm:block"
+              className="absolute top-0 -left-8 hidden origin-top-left -rotate-90 text-[0.625rem] tracking-[0.4em] whitespace-nowrap text-negro/50 uppercase lg:block"
               style={{ translateX: '-100%' }}
               variants={{ oculto: { opacity: 0 }, visible: { opacity: 1 } }}
               transition={{ duration: 1.2, delay: 1.6 }}

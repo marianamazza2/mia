@@ -70,7 +70,10 @@ function Pregunta() {
   )
 }
 
-// A quién acompaña Mía y de dónde viene su mirada. Foto en B/N a sangre por la izquierda.
+// A quién acompaña Mía y de dónde viene su mirada.
+// Desktop: foto a sangre por la izquierda y texto centrado a la derecha.
+// Mobile: composición editorial: título, foto corrida a la derecha con un rótulo vertical en el margen,
+// y el texto con letra capitular.
 function Mirada() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
@@ -78,63 +81,71 @@ function Mirada() {
 
   return (
     <div ref={ref} className="relative py-20 lg:py-0">
-      <div className="grid lg:grid-cols-12">
-        <div className="relative px-6 sm:px-8 lg:col-span-6 lg:px-0">
+      <div className="grid lg:grid-cols-12 lg:grid-rows-[minmax(6rem,1fr)_auto_auto_minmax(6rem,1fr)]">
+        {/* Encabezado */}
+        <div className="px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:px-0 lg:pr-12 2xl:pr-(--margen-ancho)">
+          <Reveal y={12}>
+            <Eyebrow>La mirada de Mía</Eyebrow>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <h3 className="mt-6 text-subtitulo lg:mt-10">
+              Lleva esa mirada al lugar donde las decisiones suceden: <Destacado>la empresa.</Destacado>
+            </h3>
+          </Reveal>
+        </div>
+
+        {/* Foto */}
+        <div className="relative mt-10 pr-6 pl-16 sm:pr-8 sm:pl-24 lg:col-span-6 lg:col-start-1 lg:row-span-full lg:row-start-1 lg:mt-0 lg:p-0">
+          {/* Rótulo vertical en el margen, solo en mobile */}
+          <p
+            aria-hidden
+            className="etiqueta absolute top-0 left-6 rotate-180 text-[0.625rem] text-negro/45 [writing-mode:vertical-rl] sm:left-8 lg:hidden"
+          >
+            Psicología · Psicoanálisis · Empresa
+          </p>
           {/* El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible */}
           <motion.div
-            className="relative aspect-[5/4] sm:aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto"
+            className="relative aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto"
             initial="oculta"
             whileInView="visible"
             viewport={{ once: true, margin: '0px 0px -20% 0px' }}
           >
             <motion.div
-              className="absolute inset-0 overflow-hidden"
+              className="absolute inset-0 overflow-hidden rounded-[10px] lg:rounded-none"
               variants={{ oculta: { clipPath: 'inset(0 100% 0 0)' }, visible: { clipPath: 'inset(0 0% 0 0)' } }}
               transition={{ duration: 1.8, ease: easeSuave }}
             >
               <motion.div className="absolute inset-x-0 -top-[8%] h-[116%]" style={{ y: fotoY }}>
-              <Picture
-                avif={sillonAvif}
-                jpg={sillonJpg}
-                alt="Empresaria con la carpeta burdeos de Mía sobre las piernas"
-                loading="lazy"
-                className="size-full object-cover object-[50%_40%]"
+                <Picture
+                  avif={sillonAvif}
+                  jpg={sillonJpg}
+                  alt="Empresaria con la carpeta burdeos de Mía sobre las piernas"
+                  loading="lazy"
+                  className="size-full object-cover object-[50%_40%]"
                 />
               </motion.div>
             </motion.div>
           </motion.div>
         </div>
 
-        <div className="mt-bloque flex items-center px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-0 lg:py-24 lg:pr-12 2xl:pr-(--margen-ancho)">
-          <div>
-            <Reveal y={12}>
-              <Eyebrow>La mirada de Mía</Eyebrow>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              <h3 className="mt-8 text-subtitulo lg:mt-10">
-                Lleva esa mirada al lugar donde las decisiones suceden:{' '}
-                <Destacado>la empresa.</Destacado>
-              </h3>
-            </Reveal>
-
-            <Reveal delay={0.2} className="mt-8 space-y-5 text-cuerpo text-negro/70 lg:mt-10">
-              <p>
-                Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
-                reorganización o expansión. Mujeres que han construido un negocio, pero que empiezan a percibir
-                que la forma en que hoy lo conducen ya no alcanza para lo que la empresa necesita.
-              </p>
-              {/* En mobile, la historia queda plegada tras «Leer más» */}
-              <LeerMas>
-                <p>
-                  Mía comenzó siendo una manera de mirar, mucho antes de ser una consultora. Desde la psicología y
-                  el psicoanálisis, observó que muchas veces una persona sabe qué debería hacer y tiene las
-                  herramientas, y aun así algo insiste, se repite y traba el movimiento.
-                </p>
-              </LeerMas>
-            </Reveal>
-          </div>
-        </div>
+        {/* Texto: en mobile, el primer párrafo abre con capitular y la historia queda tras «Leer más» */}
+        <Reveal
+          delay={0.2}
+          className="mt-10 space-y-5 px-6 text-cuerpo text-negro/70 sm:px-8 lg:col-span-5 lg:col-start-8 lg:row-start-3 lg:px-0 lg:pr-12 2xl:pr-(--margen-ancho)"
+        >
+          <p className="max-lg:first-letter:float-left max-lg:first-letter:mt-1 max-lg:first-letter:mr-2.5 max-lg:first-letter:font-serif max-lg:first-letter:text-[3.75rem] max-lg:first-letter:leading-[0.8] max-lg:first-letter:font-medium max-lg:first-letter:text-burdeos">
+            Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
+            reorganización o expansión. Mujeres que han construido un negocio, pero que empiezan a percibir que
+            la forma en que hoy lo conducen ya no alcanza para lo que la empresa necesita.
+          </p>
+          <LeerMas>
+            <p>
+              Mía comenzó siendo una manera de mirar, mucho antes de ser una consultora. Desde la psicología y el
+              psicoanálisis, observó que muchas veces una persona sabe qué debería hacer y tiene las herramientas,
+              y aun así algo insiste, se repite y traba el movimiento.
+            </p>
+          </LeerMas>
+        </Reveal>
       </div>
     </div>
   )

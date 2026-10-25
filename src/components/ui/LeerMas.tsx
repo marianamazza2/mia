@@ -30,18 +30,18 @@ export function LeerMas({ children, tono = 'claro', className }: LeerMasProps) {
         aria-controls={id}
         onClick={() => setAbierto((v) => !v)}
         className={cn(
-          'etiqueta group mt-5 inline-flex items-center gap-3 lg:hidden',
+          'group mt-5 inline-flex items-center gap-2.5 text-detalle lg:hidden',
           tono === 'oscuro' ? 'text-dorado-suave' : 'text-burdeos',
         )}
       >
-        <span className="relative py-1">
+        <span className="relative py-0.5">
           {abierto ? 'Leer menos' : 'Leer más'}
-          <span className="absolute inset-x-0 -bottom-0.5 h-px bg-dorado" />
+          <span className="absolute inset-x-0 -bottom-0.5 h-px bg-dorado/60" />
         </span>
         <svg
           aria-hidden
           viewBox="0 0 16 16"
-          className={cn('size-3 transition-transform duration-500 ease-suave', abierto && 'rotate-45')}
+          className={cn('size-2.5 transition-transform duration-500 ease-suave', abierto && 'rotate-45')}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.25"

@@ -1,5 +1,6 @@
 import {
   motion,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -48,12 +49,13 @@ export function Metodologia() {
 
   return (
     <section id="metodologia" className="relative bg-burdeos-profundo text-crema">
-      {isDesktop && !reduceMotion ? <LineaHorizontal /> : <LineaVertical />}
+      {isDesktop && !reduceMotion ? <LineaHorizontal /> : <LineaVertical fija={!reduceMotion} />}
     </section>
   )
 }
 
-function Encabezado() {
+// «compacto»: en la versión fija de mobile, el párrafo se oculta en pantallas bajas para que entren los cinco pasos
+function Encabezado({ compacto = false }: { compacto?: boolean }) {
   return (
     <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-7">
@@ -62,7 +64,7 @@ function Encabezado() {
           Cómo <Destacado>trabajamos.</Destacado>
         </h2>
       </div>
-      <p className="text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9">
+      <p className={cn('text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9', compacto && '[@media(max-height:720px)]:hidden')}>
         Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
       </p>
     </div>
@@ -225,7 +227,7 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
 
 // Móvil y tablet: la línea vertical como acordeón. Se ven los cinco pasos y se abre el que se toca;
 // la línea dorada se llena hasta el paso abierto
-function LineaVertical() {
+function LineaVertical({ fija }: { fija: boolean }) {
   const [abierto, setAbierto] = useState(0)
   // Alto de una fila cerrada: los nodos quedan a esa distancia entre sí, abra el paso que se abra
   const filaRef = useRef<HTMLHeadingElement>(null)
@@ -238,13 +240,29 @@ function LineaVertical() {
     return () => window.removeEventListener('resize', medir)
   }, [])
 
-  return (
-    <Container className="py-seccion">
+  // Versión fija: la sección queda quieta en pantalla y cada tramo de scroll abre el paso siguiente
+  const recorridoRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: recorridoRef, offset: ['start start', 'end end'] })
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    if (fija) setAbierto(Math.min(pasos.length - 1, Math.max(0, Math.floor(v * pasos.length))))
+  })
+
+  // Al tocar un paso en la versión fija, se lleva el scroll hasta su tramo
+  const abrir = (i: number) => {
+    const recorrido = recorridoRef.current
+    if (!fija || !recorrido) return setAbierto(i)
+    const inicio = recorrido.getBoundingClientRect().top + window.scrollY
+    const largo = recorrido.offsetHeight - window.innerHeight
+    window.scrollTo({ top: inicio + (largo * (i + 0.5)) / pasos.length, behavior: 'smooth' })
+  }
+
+  const contenido = (
+    <>
       <Reveal>
-        <Encabezado />
+        <Encabezado compacto={fija} />
       </Reveal>
 
-      <ol className="relative mt-12">
+      <ol className="relative mt-10">
         <span aria-hidden className="absolute top-7 left-[9px] w-px bg-crema/15" style={{ height: (pasos.length - 1) * fila }} />
         <motion.span
           aria-hidden
@@ -260,12 +278,23 @@ function LineaVertical() {
             index={i}
             abierto={abierto === i}
             pasado={i <= abierto}
-            onAbrir={() => setAbierto(i)}
+            onAbrir={() => abrir(i)}
             filaRef={i === 0 ? filaRef : undefined}
           />
         ))}
       </ol>
-    </Container>
+    </>
+  )
+
+  if (!fija) return <Container className="py-seccion">{contenido}</Container>
+
+  return (
+    <div ref={recorridoRef} style={{ height: `calc(100svh + ${pasos.length * 45}svh)` }}>
+      {/* Alineado arriba (no centrado), así el bloque no se corre cuando cambia el largo del texto abierto */}
+      <div className="sticky top-0 h-svh overflow-hidden">
+        <Container className="pt-[max(4.5rem,11svh)]">{contenido}</Container>
+      </div>
+    </div>
   )
 }
 
