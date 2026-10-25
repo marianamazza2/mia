@@ -6,7 +6,10 @@ import lecturaAvif from '@/assets/images/bn-servicio-lectura.avif'
 import lecturaJpg from '@/assets/images/bn-servicio-lectura.jpg'
 import reorganizacionAvif from '@/assets/images/bn-servicio-reorganizacion.avif'
 import reorganizacionJpg from '@/assets/images/bn-servicio-reorganizacion.jpg'
+import { Destacado } from '@/components/marca/Destacado'
+import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
+import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Picture } from '@/components/ui/Picture'
@@ -16,7 +19,7 @@ import { useMediaQuery } from '@/lib/useMediaQuery'
 // Textos provisorios: hay que validarlos con Marina
 const servicios = [
   {
-    numero: 'I',
+    numero: '01',
     titulo: 'Acompañamiento a la dirección',
     descripcion:
       'Un proceso individual para revisar cómo decides, delegas y sostienes tu empresa. Trabajamos sobre lo que se repite y traba el movimiento, para que puedas conducir desde un lugar más claro.',
@@ -25,7 +28,7 @@ const servicios = [
     tono: 'claro',
   },
   {
-    numero: 'II',
+    numero: '02',
     titulo: 'Lectura organizacional',
     descripcion:
       'Una mirada externa sobre la relación entre liderazgo y organización: cómo circulan las decisiones, qué roles se sostienen y dónde se pierde energía. Para decidir qué cambiar con criterio.',
@@ -34,7 +37,7 @@ const servicios = [
     tono: 'burdeos',
   },
   {
-    numero: 'III',
+    numero: '03',
     titulo: 'Procesos de reorganización',
     descripcion:
       'Acompañamiento a la dirección y a su equipo en momentos de crecimiento, reorganización o expansión, sin perder de vista los objetivos del negocio.',
@@ -51,27 +54,39 @@ export function Servicios() {
   const reduceMotion = useReducedMotion()
   const apilar = isDesktop && !reduceMotion
 
+  // La marca de agua se va encendiendo mientras el encabezado sube, y se desliza apenas más lento que el texto
+  const encabezadoRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: encabezadoRef, offset: ['start end', 'start 0.15'] })
+  const opacidadPatron = useTransform(scrollYProgress, [0, 1], [0, 0.03])
+  const desplazamientoPatron = useTransform(scrollYProgress, [0, 1], [40, 0])
+
   return (
     <section id="servicios" className="relative">
-      <Container className="pt-seccion pb-bloque">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            <Reveal y={12}>
-              <Eyebrow>Servicios</Eyebrow>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="mt-8 text-titulo lg:mt-10">
-                Tres formas de <em className="font-medium text-burdeos">acompañar.</em>
-              </h2>
+      {/* Encabezado con la «a» como marca de agua, casi invisible detrás */}
+      <div ref={encabezadoRef} className="relative overflow-hidden">
+        <motion.div aria-hidden className="absolute inset-0" style={{ opacity: opacidadPatron, y: desplazamientoPatron }}>
+          <PatronA paso={84} difuminado className="text-burdeos" />
+        </motion.div>
+        <Container className="relative pt-seccion pb-bloque">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              <Reveal y={12}>
+                <Eyebrow>Servicios</Eyebrow>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h2 className="mt-8 text-titulo lg:mt-10">
+                  Tres formas de <Destacado>acompañar.</Destacado>
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={0.2} className="self-end lg:col-span-4 lg:col-start-9">
+              <p className="text-cuerpo text-negro/70">
+                Cada proceso parte de lo mismo: comprender qué está pasando antes de decidir qué cambiar.
+              </p>
             </Reveal>
           </div>
-          <Reveal delay={0.2} className="self-end lg:col-span-4 lg:col-start-9">
-            <p className="text-cuerpo text-negro/70">
-              Cada proceso parte de lo mismo: comprender qué está pasando antes de decidir qué cambiar.
-            </p>
-          </Reveal>
-        </div>
-      </Container>
+        </Container>
+      </div>
 
       {apilar ? <Apilados /> : <Lista />}
     </section>
@@ -119,20 +134,21 @@ function Panel({ servicio }: { servicio: Servicio }) {
         oscuro ? 'bg-burdeos text-crema' : 'border-t border-dorado/40 bg-crema text-negro',
       )}
     >
-      <div className="relative flex flex-col justify-center px-6 py-20 sm:px-8 lg:py-16 lg:pr-16 lg:pl-[max(3rem,calc((100vw-80rem)/2+3rem))]">
+      {/* En pantallas muy anchas (2xl), el texto se centra en su mitad, alineado con el resto de la página */}
+      <div className="relative flex flex-col justify-center px-6 py-20 sm:px-8 lg:py-16 lg:pr-16 lg:pl-[max(3rem,calc((100vw-80rem)/2+3rem))] 2xl:px-(--margen-ancho)">
+        {/* Número y título en Cormorant recta; todo lo demás en Inter. Sin itálicas ni contornos,
+            con la misma numeración (01, 02…) que la línea de tiempo */}
         <span
           aria-hidden
           className={cn(
-            'font-serif text-numeral font-medium italic lg:bajo:text-[7rem]',
-            oscuro
-              ? 'text-transparent [-webkit-text-stroke:1px_rgb(201_168_107/0.7)]'
-              : 'text-transparent [-webkit-text-stroke:1px_rgb(79_11_18/0.45)]',
+            'font-serif text-numeral font-medium tabular-nums lining-nums lg:bajo:text-[7rem]',
+            oscuro ? 'text-crema/15' : 'text-burdeos/15',
           )}
         >
           {servicio.numero}
         </span>
 
-        <h3 className="mt-8 max-w-lg text-subtitulo lg:bajo:mt-5 lg:bajo:text-[2.75rem]">
+        <h3 className="mt-6 max-w-lg text-subtitulo lg:bajo:mt-4 lg:bajo:text-[2.75rem]">
           {servicio.titulo}
         </h3>
         <p className={cn('mt-6 max-w-lg text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>
@@ -141,41 +157,18 @@ function Panel({ servicio }: { servicio: Servicio }) {
 
         <div className="mt-10 flex max-w-lg gap-5 lg:bajo:mt-7">
           <span aria-hidden className="mt-2.5 h-px w-10 shrink-0 bg-dorado" />
-          <p className={cn('text-detalle', oscuro ? 'text-crema/75' : 'text-negro/70')}>
-            <span
-              className={cn(
-                'etiqueta block',
-                oscuro ? 'text-dorado-suave' : 'text-burdeos',
-              )}
-            >
+          <p className={cn('text-cuerpo', oscuro ? 'text-crema/75' : 'text-negro/70')}>
+            <span className={cn('etiqueta block', oscuro ? 'text-dorado-suave' : 'text-burdeos')}>
               Para quién
             </span>
-            <span className="mt-2 block font-serif text-destacado italic">{servicio.paraQuien}</span>
+            <span className="mt-2 block">{servicio.paraQuien}</span>
           </p>
         </div>
 
-        <a
-          href="#contacto"
-          className={cn(
-            'group/link mt-10 inline-flex items-center gap-4 self-start text-xs font-medium tracking-[0.2em] uppercase lg:bajo:mt-7',
-            oscuro ? 'text-crema' : 'text-burdeos',
-          )}
-        >
-          <span className="relative py-1">
-            Consultar este servicio
-            <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado transition-transform duration-500 ease-suave group-hover/link:scale-x-50" />
-          </span>
-          <svg
-            aria-hidden
-            viewBox="0 0 24 16"
-            className="h-3.5 w-5 transition-transform duration-500 ease-suave group-hover/link:translate-x-1.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-          >
-            <path d="M0 8h22M16 2l6 6-6 6" />
-          </svg>
-        </a>
+        {/* Mismo botón que el resto de la web; en el panel burdeos va en crema */}
+        <Button href="#contacto" variant={oscuro ? 'light' : 'primary'} withArrow className="mt-10 self-start lg:bajo:mt-7">
+          Consultar este servicio
+        </Button>
       </div>
 
       <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto">

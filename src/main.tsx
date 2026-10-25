@@ -1,5 +1,4 @@
 import '@fontsource-variable/cormorant-garamond/wght.css'
-import '@fontsource-variable/cormorant-garamond/wght-italic.css'
 import '@fontsource-variable/inter/wght.css'
 import { MotionConfig } from 'motion/react'
 import { StrictMode } from 'react'

@@ -1,6 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
-import { useRef } from 'react'
-import { cn } from '@/lib/cn'
+import { Fragment, useRef } from 'react'
+import { Destacado } from '@/components/marca/Destacado'
 
 type Segment = { text: string; em?: boolean }
 
@@ -15,21 +15,37 @@ export function ScrollRevealText({ segments, className }: ScrollRevealTextProps)
   const reduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.85', 'end 0.4'] })
 
-  const words = segments.flatMap(({ text, em }) => text.split(' ').map((word) => ({ word, em })))
+  const total = segments.reduce((suma, { text }) => suma + text.split(' ').length, 0)
+  let indice = 0
 
   return (
     <h2 ref={ref} className={className}>
-      {words.map(({ word, em }, i) => (
-        <Word
-          key={i}
-          progress={scrollYProgress}
-          range={[i / words.length, (i + 1) / words.length]}
-          static={!!reduceMotion}
-          className={cn(em && 'italic text-dorado-suave')}
-        >
-          {word}
-        </Word>
-      ))}
+      {segments.map(({ text, em }, s) => {
+        const palabras = text.split(' ').map((palabra, p) => {
+          const i = indice++
+          return (
+            <Fragment key={i}>
+              {p > 0 && ' '}
+              <Word progress={scrollYProgress} range={[i / total, (i + 1) / total]} static={!!reduceMotion}>
+                {palabra}
+              </Word>
+            </Fragment>
+          )
+        })
+
+        return (
+          <Fragment key={s}>
+            {s > 0 && ' '}
+            {em ? (
+              <Destacado delay={0.6}>
+                {palabras}
+              </Destacado>
+            ) : (
+              palabras
+            )}
+          </Fragment>
+        )
+      })}
     </h2>
   )
 }
@@ -39,17 +55,10 @@ type WordProps = {
   progress: MotionValue<number>
   range: [number, number]
   static: boolean
-  className?: string
 }
 
-function Word({ children, progress, range, static: isStatic, className }: WordProps) {
+function Word({ children, progress, range, static: isStatic }: WordProps) {
   const opacity = useTransform(progress, range, [0.16, 1])
 
-  return (
-    <>
-      <motion.span className={className} style={isStatic ? undefined : { opacity }}>
-        {children}
-      </motion.span>{' '}
-    </>
-  )
+  return <motion.span style={isStatic ? undefined : { opacity }}>{children}</motion.span>
 }

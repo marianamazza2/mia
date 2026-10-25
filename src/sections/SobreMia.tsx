@@ -5,22 +5,13 @@ import sillonJpg from '@/assets/images/bn-sillon-carpeta.jpg'
 import texturaAvif from '@/assets/images/bn-textura.avif'
 import texturaJpg from '@/assets/images/bn-textura.jpg'
 import { Llave } from '@/components/marca/Llave'
-import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
 import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Picture } from '@/components/ui/Picture'
 import { easeSuave } from '@/lib/motion'
-import { usePatron } from '@/lib/opciones'
-
-const equilibrios = [
-  { valor: 'Sensibilidad', matiz: 'sin perder rigor' },
-  { valor: 'Profundidad', matiz: 'sin volverse solemne' },
-  { valor: 'Humanidad', matiz: 'sin perder dirección comercial' },
-]
-
-const descartes = ['coaching', 'terapia', 'consultoría tradicional']
+import { Destacado } from '@/components/marca/Destacado'
 
 export function SobreMia() {
   return (
@@ -28,7 +19,6 @@ export function SobreMia() {
       <Pregunta />
       <Mirada />
       <Sensible />
-      <Equilibrio />
     </section>
   )
 }
@@ -71,7 +61,7 @@ function Pregunta() {
               relación entre quien la dirige, las decisiones que toma y el modo en que esas decisiones ordenan
               el negocio.
             </p>
-            <p className="font-serif text-destacado text-crema italic">Mía trabaja sobre esa relación.</p>
+            <p className="font-serif text-destacado text-crema">Mía trabaja sobre esa relación.</p>
           </Reveal>
         </div>
       </Container>
@@ -86,8 +76,8 @@ function Mirada() {
   const fotoY = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
 
   return (
-    <div ref={ref} className="relative py-seccion lg:py-0">
-      <div className="grid lg:min-h-[110svh] lg:grid-cols-12">
+    <div ref={ref} className="relative py-20 lg:py-0">
+      <div className="grid lg:grid-cols-12">
         <div className="relative px-6 sm:px-8 lg:col-span-6 lg:px-0">
           {/* El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible */}
           <motion.div
@@ -114,7 +104,7 @@ function Mirada() {
           </motion.div>
         </div>
 
-        <div className="mt-bloque flex items-center px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-0 lg:py-seccion lg:pr-12">
+        <div className="mt-bloque flex items-center px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-0 lg:py-24 lg:pr-12 2xl:pr-(--margen-ancho)">
           <div>
             <Reveal y={12}>
               <Eyebrow>La mirada de Mía</Eyebrow>
@@ -123,7 +113,7 @@ function Mirada() {
             <Reveal delay={0.1}>
               <h3 className="mt-8 text-subtitulo lg:mt-10">
                 Lleva esa mirada al lugar donde las decisiones suceden:{' '}
-                <em className="font-medium text-burdeos">la empresa.</em>
+                <Destacado>la empresa.</Destacado>
               </h3>
             </Reveal>
 
@@ -150,109 +140,43 @@ function Mirada() {
 function Sensible() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const escala = useTransform(scrollYProgress, [0, 1], [1.18, 1])
+  const escala = useTransform(scrollYProgress, [0, 1], [1.08, 1])
   const fondoX = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
+  // En desktop, mismo alto que el bloque «La mirada de Mía» (~750 px)
   return (
-    <div ref={ref} className="relative isolate flex min-h-[85svh] items-center overflow-hidden">
+    <div ref={ref} className="relative isolate flex items-center overflow-hidden lg:min-h-[47rem]">
       <motion.div className="absolute inset-0 -z-10" style={{ scale: escala, x: fondoX }}>
-        <Picture avif={texturaAvif} jpg={texturaJpg} alt="" loading="lazy" className="size-full object-cover" />
+        {/* Encuadre centrado en las dos ramitas de hojas de la textura */}
+        <Picture avif={texturaAvif} jpg={texturaJpg} alt="" loading="lazy" className="size-full object-cover object-[18%_36%] lg:object-[40%_42%]" />
       </motion.div>
-      <div className="absolute inset-0 -z-10 bg-crema/55" />
+      <div className="absolute inset-0 -z-10 bg-crema/35" />
 
-      <Container className="py-seccion text-center">
+      <Container className="py-20 text-center lg:py-28">
         <Reveal y={12}>
           <p className="etiqueta text-burdeos">Una idea resume su forma de trabajar</p>
         </Reveal>
         <Reveal delay={0.1}>
-          <blockquote className="mx-auto mt-8 max-w-5xl font-serif text-display font-medium text-negro lg:mt-10">
-            Operacionalizar <em className="block text-burdeos">lo sensible.</em>
+          <blockquote className="mx-auto mt-6 max-w-5xl font-serif text-titulo font-medium text-negro lg:mt-8">
+            Operacionalizar
+            <br />
+            <Destacado delay={0.6}>lo sensible.</Destacado>
           </blockquote>
         </Reveal>
         <motion.span
           aria-hidden
-          className="mx-auto mt-12 block h-px w-24 bg-dorado"
+          className="mx-auto mt-8 block h-px w-24 bg-dorado lg:mt-10"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.4, ease: easeSuave, delay: 0.4 }}
         />
         <Reveal delay={0.3}>
-          <p className="mx-auto mt-8 max-w-md text-cuerpo text-negro/75">
+          <p className="mx-auto mt-6 max-w-md text-cuerpo text-negro/75 lg:mt-8">
             Comprender qué está en juego para producir movimiento.
           </p>
         </Reveal>
       </Container>
     </div>
-  )
-}
-
-// Lo que Mía no es (tachado) y el equilibrio desde el que trabaja
-function Equilibrio() {
-  const patron = usePatron()
-
-  return (
-    <div id="equilibrio" className="relative overflow-hidden py-seccion">
-      {patron === 'marca-de-agua' && <PatronA paso={84} difuminado className="text-burdeos opacity-[0.07]" />}
-
-      <Container className="relative">
-        <Reveal>
-          <p className="max-w-5xl font-serif text-titulo leading-[1.15] font-medium">
-            No es{' '}
-            {descartes.map((descarte, i) => (
-              <span key={descarte}>
-                {/* Palabra por palabra, para que el tachado acompañe el salto de línea */}
-                {descarte.split(' ').map((palabra, j) => (
-                  <span key={palabra}>
-                    {j > 0 && ' '}
-                    <Tachado delay={0.4 + i * 0.35 + j * 0.2}>{palabra}</Tachado>
-                  </span>
-                ))}
-                {i < descartes.length - 1 ? ', ni ' : '.'}
-              </span>
-            ))}
-          </p>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-8 max-w-xl text-cuerpo text-negro/70 lg:mt-10 lg:ml-[calc(100%/12*6)]">
-            Es una forma distinta de mirar las organizaciones, construida sobre un equilibrio poco común.
-          </p>
-        </Reveal>
-
-        <ul className="mt-bloque grid border-t border-dorado/40 sm:grid-cols-3">
-          {equilibrios.map(({ valor, matiz }, i) => (
-            <motion.li
-              key={valor}
-              className="border-b border-dorado/40 py-10 sm:border-b-0 sm:border-l sm:px-8 sm:py-14 sm:first:border-l-0 sm:first:pl-0 lg:px-12"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-              transition={{ duration: 1.1, ease: easeSuave, delay: i * 0.15 }}
-            >
-              <span className="font-serif text-lg text-burdeos-medio italic">{['I', 'II', 'III'][i]}.</span>
-              <p className="mt-6 font-serif text-subtitulo font-semibold text-burdeos">{valor}</p>
-              <p className="mt-3 font-serif text-destacado text-negro/60 italic">{matiz}</p>
-            </motion.li>
-          ))}
-        </ul>
-      </Container>
-    </div>
-  )
-}
-
-// Palabra que se tacha con un filete burdeos al entrar en pantalla
-function Tachado({ children, delay }: { children: string; delay: number }) {
-  return (
-    <span className="relative inline-block text-negro/35">
-      {children}
-      <motion.span
-        aria-hidden
-        className="absolute inset-x-0 top-[55%] h-[2px] origin-left bg-burdeos"
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-        transition={{ duration: 0.9, ease: easeSuave, delay }}
-      />
-    </span>
   )
 }

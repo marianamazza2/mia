@@ -20,7 +20,7 @@ export function CintaA() {
           <div key={copia} className="flex shrink-0 items-center">
             {fila.map((palabra, i) => (
               <span key={`${palabra}-${i}`} className="flex items-center">
-                <span className="px-10 font-serif text-3xl text-negro/80 italic sm:text-4xl">{palabra}</span>
+                <span className="px-10 font-serif text-3xl text-negro/80 sm:text-4xl">{palabra}</span>
                 <img src={aBurdeos} alt="" className="size-8 sm:size-9" />
               </span>
             ))}

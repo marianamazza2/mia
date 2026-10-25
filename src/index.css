@@ -40,14 +40,20 @@
 
   /* Curva de movimiento: entradas suaves, sin rebotes */
   --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Curva con más carácter para la intro: arranca lento, cruza rápido y frena suave */
-  --ease-telon: cubic-bezier(0.76, 0, 0.24, 1);
+  /* Curva del telón de la intro: arranca y frena despacio, sin acelerones */
+  --ease-telon: cubic-bezier(0.6, 0.05, 0.3, 1);
 }
 
 /* Pantallas bajas (portátiles de 720–800 px de alto) */
 @custom-variant bajo (@media (max-height: 820px));
 
 @layer base {
+  /* Margen lateral en pantallas muy anchas (2xl): el mismo para el contenedor y para las secciones
+     partidas en dos mitades, así todo queda alineado. Deja 36rem de contenido centrados en cada mitad. */
+  :root {
+    --margen-ancho: calc((50vw - 36rem) / 2);
+  }
+
   html {
     @apply scroll-smooth;
   }
@@ -99,4 +105,24 @@
     0 0,
     calc(var(--paso, 72px) / 2) calc(var(--paso, 72px) / 2);
   mask-repeat: repeat;
+}
+
+/* Texto de las páginas legales: listas, enlaces y negritas con el estilo de la marca */
+@layer components {
+  .legal ul {
+    @apply space-y-2;
+  }
+  .legal li {
+    @apply relative pl-6;
+  }
+  .legal li::before {
+    content: '';
+    @apply absolute top-[0.85em] left-0 h-px w-3 bg-dorado;
+  }
+  .legal a {
+    @apply text-burdeos underline decoration-dorado underline-offset-4 transition-colors hover:text-burdeos-medio;
+  }
+  .legal strong {
+    @apply font-medium text-negro;
+  }
 }
