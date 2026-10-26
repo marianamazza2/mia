@@ -53,7 +53,7 @@ export function Servicios() {
   // La marca de agua se va encendiendo mientras el encabezado sube, y se desliza apenas más lento que el texto
   const encabezadoRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: encabezadoRef, offset: ['start end', 'start 0.15'] })
-  const opacidadPatron = useTransform(scrollYProgress, [0, 1], [0, 0.03])
+  const opacidadPatron = useTransform(scrollYProgress, [0, 1], [0, 0.045])
   const desplazamientoPatron = useTransform(scrollYProgress, [0, 1], [40, 0])
 
   return (

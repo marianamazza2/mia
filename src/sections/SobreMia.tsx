@@ -127,11 +127,10 @@ function Sensible() {
   const escala = useTransform(scrollYProgress, [0, 1], [1.08, 1])
   const fondoX = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
-  // En desktop, mismo alto que el bloque «La mirada de Mía» (~830 px)
   return (
     <div
       ref={ref}
-      className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema lg:min-h-[52rem]"
+      className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema"
     >
       {/* La textura se tiñe de burdeos al multiplicarse con el fondo */}
       <motion.div
@@ -146,7 +145,7 @@ function Sensible() {
         />
       </motion.div>
 
-      <Container className="py-20 lg:py-28 lg:text-center">
+      <Container className="py-20 lg:py-32 lg:text-center">
         <Reveal y={12}>
           <p className="etiqueta flex items-center gap-4 text-dorado-suave lg:block">
             <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
@@ -169,7 +168,9 @@ function Sensible() {
         />
         <Reveal delay={0.4}>
           <p className="mt-6 max-w-xs text-cuerpo text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-md">
-            Comprender qué está en juego para producir movimiento.
+            {/* En desktop, «producir movimiento» va junto en la segunda línea */}
+            Comprender qué está en juego para <br className="hidden lg:block" />
+            producir movimiento.
           </p>
         </Reveal>
       </Container>

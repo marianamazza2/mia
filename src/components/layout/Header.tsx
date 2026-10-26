@@ -20,16 +20,11 @@ const links = [
 export function Header() {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
-  const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const introLista = useIntroLista()
 
-  // Se oculta al bajar y reaparece al subir
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    const previous = scrollY.getPrevious() ?? 0
-    setScrolled(y > 24)
-    setHidden(y > previous && y > 200)
-  })
+  // Queda siempre fijo arriba; al bajar toma fondo crema translúcido
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24))
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -50,7 +45,7 @@ export function Header() {
           scrolled && !open ? 'border-dorado/25 bg-crema/85 backdrop-blur-md' : 'border-transparent',
         )}
         initial={{ y: '-100%' }}
-        animate={{ y: !introLista || (hidden && !open) ? '-100%' : '0%' }}
+        animate={{ y: introLista ? '0%' : '-100%' }}
         transition={{ duration: 0.7, ease: easeSuave }}
       >
         <Container className="flex h-18 items-center justify-between lg:h-20">
