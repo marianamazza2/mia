@@ -1,11 +1,8 @@
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { useId, useRef, useState } from 'react'
-import direccionAvif from '@/assets/images/bn-servicio-direccion.avif'
-import direccionJpg from '@/assets/images/bn-servicio-direccion.jpg'
-import lecturaAvif from '@/assets/images/bn-servicio-lectura.avif'
-import lecturaJpg from '@/assets/images/bn-servicio-lectura.jpg'
-import reorganizacionAvif from '@/assets/images/bn-servicio-reorganizacion.avif'
-import reorganizacionJpg from '@/assets/images/bn-servicio-reorganizacion.jpg'
+import direccion from '@/assets/images/bn-servicio-direccion.webp'
+import lectura from '@/assets/images/bn-servicio-lectura.webp'
+import reorganizacion from '@/assets/images/bn-servicio-reorganizacion.webp'
 import { Destacado } from '@/components/marca/Destacado'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
@@ -24,7 +21,7 @@ const servicios = [
     descripcion:
       'Un proceso individual para revisar cómo decides, delegas y sostienes tu empresa. Trabajamos sobre lo que se repite y traba el movimiento, para que puedas conducir desde un lugar más claro.',
     paraQuien: 'Fundadoras y directoras que sienten que todo depende de ellas y que les cuesta delegar.',
-    imagen: { avif: direccionAvif, jpg: direccionJpg, alt: 'Manos sacando la tarjeta burdeos de Mía de un tarjetero' },
+    imagen: { src: direccion, alt: 'Manos sacando la tarjeta burdeos de Mía de un tarjetero' },
     tono: 'claro',
   },
   {
@@ -33,7 +30,7 @@ const servicios = [
     descripcion:
       'Una mirada externa sobre la relación entre liderazgo y organización: cómo circulan las decisiones, qué roles se sostienen y dónde se pierde energía. Para decidir qué cambiar con criterio.',
     paraQuien: 'Empresas consolidadas que necesitan ordenar su funcionamiento antes de dar el siguiente paso.',
-    imagen: { avif: lecturaAvif, jpg: lecturaJpg, alt: 'Empresaria revisando la carpeta y la papelería de Mía' },
+    imagen: { src: lectura, alt: 'Empresaria revisando la carpeta y la papelería de Mía' },
     tono: 'burdeos',
   },
   {
@@ -42,7 +39,7 @@ const servicios = [
     descripcion:
       'Acompañamiento a la dirección y a su equipo en momentos de crecimiento, reorganización o expansión, sin perder de vista los objetivos del negocio.',
     paraQuien: 'Empresas que atraviesan un cambio de estructura, de etapa o de escala.',
-    imagen: { avif: reorganizacionAvif, jpg: reorganizacionJpg, alt: 'Mano sosteniendo un sobre de Mía' },
+    imagen: { src: reorganizacion, alt: 'Mano sosteniendo un sobre de Mía' },
     tono: 'claro',
   },
 ] as const

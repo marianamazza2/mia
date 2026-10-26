@@ -1,9 +1,6 @@
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
-import sillonAvif from '@/assets/images/bn-sillon-carpeta.avif'
-import sillonJpg from '@/assets/images/bn-sillon-carpeta.jpg'
-import texturaAvif from '@/assets/images/bn-textura.avif'
-import texturaJpg from '@/assets/images/bn-textura.jpg'
+import textura from '@/assets/images/bn-textura.webp'
 import { Llave } from '@/components/marca/Llave'
 import { Reveal } from '@/components/motion/Reveal'
 import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
@@ -13,6 +10,7 @@ import { LeerMas } from '@/components/ui/LeerMas'
 import { Picture } from '@/components/ui/Picture'
 import { easeSuave } from '@/lib/motion'
 import { Destacado } from '@/components/marca/Destacado'
+import { Retratos } from '@/sections/Retratos'
 
 export function SobreMia() {
   return (
@@ -70,20 +68,15 @@ function Pregunta() {
   )
 }
 
-// A quién acompaña Mía y de dónde viene su mirada.
-// Desktop: foto a sangre por la izquierda y texto centrado a la derecha.
-// Mobile: composición editorial: título, foto corrida a la derecha con un rótulo vertical en el margen,
-// y el texto con letra capitular.
+// A quién acompaña Mía, de dónde viene su mirada y quiénes están detrás.
+// Desktop: los dos retratos a la izquierda, desfasados como en una revista; título y texto a la derecha.
+// Mobile: título, los retratos lado a lado y el texto con letra capitular.
 function Mirada() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const fotoY = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
-
   return (
-    <div ref={ref} className="relative py-20 lg:py-0">
-      <div className="grid lg:grid-cols-12 lg:grid-rows-[minmax(6rem,1fr)_auto_auto_minmax(6rem,1fr)]">
+    <div className="py-seccion lg:py-24">
+      <Container className="grid lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-x-8">
         {/* Encabezado */}
-        <div className="px-6 sm:px-8 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:px-0 lg:pr-12 2xl:pr-(--margen-ancho)">
+        <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end">
           <Reveal y={12}>
             <Eyebrow>La mirada de Mía</Eyebrow>
           </Reveal>
@@ -94,44 +87,13 @@ function Mirada() {
           </Reveal>
         </div>
 
-        {/* Foto */}
-        <div className="relative mt-10 pr-6 pl-16 sm:pr-8 sm:pl-24 lg:col-span-6 lg:col-start-1 lg:row-span-full lg:row-start-1 lg:mt-0 lg:p-0">
-          {/* Rótulo vertical en el margen, solo en mobile */}
-          <p
-            aria-hidden
-            className="etiqueta absolute top-0 left-6 rotate-180 text-[0.625rem] text-negro/45 [writing-mode:vertical-rl] sm:left-8 lg:hidden"
-          >
-            Psicología · Psicoanálisis · Empresa
-          </p>
-          {/* El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible */}
-          <motion.div
-            className="relative aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto"
-            initial="oculta"
-            whileInView="visible"
-            viewport={{ once: true, margin: '0px 0px -20% 0px' }}
-          >
-            <motion.div
-              className="absolute inset-0 overflow-hidden rounded-[10px] lg:rounded-none"
-              variants={{ oculta: { clipPath: 'inset(0 100% 0 0)' }, visible: { clipPath: 'inset(0 0% 0 0)' } }}
-              transition={{ duration: 1.8, ease: easeSuave }}
-            >
-              <motion.div className="absolute inset-x-0 -top-[8%] h-[116%]" style={{ y: fotoY }}>
-                <Picture
-                  avif={sillonAvif}
-                  jpg={sillonJpg}
-                  alt="Empresaria con la carpeta burdeos de Mía sobre las piernas"
-                  loading="lazy"
-                  className="size-full object-cover object-[50%_40%]"
-                />
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </div>
+        {/* Quiénes están detrás de Mía */}
+        <Retratos className="mt-10 lg:col-span-6 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-center" />
 
         {/* Texto: en mobile, el primer párrafo abre con capitular y la historia queda tras «Leer más» */}
         <Reveal
           delay={0.2}
-          className="mt-10 space-y-5 px-6 text-cuerpo text-negro/70 sm:px-8 lg:col-span-5 lg:col-start-8 lg:row-start-3 lg:px-0 lg:pr-12 2xl:pr-(--margen-ancho)"
+          className="mt-12 space-y-5 text-cuerpo text-negro/70 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:mt-10 lg:self-start"
         >
           <p className="max-lg:first-letter:float-left max-lg:first-letter:mt-1 max-lg:first-letter:mr-2.5 max-lg:first-letter:font-serif max-lg:first-letter:text-[3.75rem] max-lg:first-letter:leading-[0.8] max-lg:first-letter:font-medium max-lg:first-letter:text-burdeos">
             Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
@@ -146,7 +108,7 @@ function Mirada() {
             </p>
           </LeerMas>
         </Reveal>
-      </div>
+      </Container>
     </div>
   )
 }
@@ -165,11 +127,11 @@ function Sensible() {
   const escala = useTransform(scrollYProgress, [0, 1], [1.08, 1])
   const fondoX = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
-  // En desktop, mismo alto que el bloque «La mirada de Mía» (~750 px)
+  // En desktop, mismo alto que el bloque «La mirada de Mía» (~830 px)
   return (
     <div
       ref={ref}
-      className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema lg:min-h-[47rem]"
+      className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema lg:min-h-[52rem]"
     >
       {/* La textura se tiñe de burdeos al multiplicarse con el fondo */}
       <motion.div
@@ -177,8 +139,7 @@ function Sensible() {
         style={{ scale: escala, x: fondoX }}
       >
         <Picture
-          avif={texturaAvif}
-          jpg={texturaJpg}
+          src={textura}
           alt=""
           loading="lazy"
           className={encuadreTextura}

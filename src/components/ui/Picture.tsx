@@ -1,17 +1,12 @@
 import type { ComponentProps } from 'react'
 
 type PictureProps = ComponentProps<'img'> & {
-  avif: string
-  jpg: string
+  /** Imagen en WebP: es el único formato que usa el sitio */
+  src: string
   alt: string
 }
 
-// AVIF con JPG de respaldo
-export function Picture({ avif, jpg, alt, ...props }: PictureProps) {
-  return (
-    <picture>
-      <source srcSet={avif} type="image/avif" />
-      <img src={jpg} alt={alt} decoding="async" {...props} />
-    </picture>
-  )
+// Foto del sitio: WebP, decodificada sin bloquear el resto de la página
+export function Picture({ src, alt, ...props }: PictureProps) {
+  return <img src={src} alt={alt} decoding="async" {...props} />
 }

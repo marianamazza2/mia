@@ -1,7 +1,6 @@
 import { motion, useScroll, useTransform, type Transition } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
-import portadaAvif from '@/assets/images/bn-portada.avif'
-import portadaJpg from '@/assets/images/bn-portada.jpg'
+import portada from '@/assets/images/bn-portada.webp'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
@@ -90,8 +89,7 @@ export function Hero() {
                 transition={{ duration: 2.4, ease: easeSuave, delay: 0.15 }}
               >
                 <Picture
-                  avif={portadaAvif}
-                  jpg={portadaJpg}
+                  src={portada}
                   alt="Mujer con la carpeta burdeos de Mía bajo el brazo"
                   fetchPriority="high"
                   className="size-full object-cover object-[50%_30%] lg:object-[45%_center]"

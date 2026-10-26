@@ -19,7 +19,7 @@ Landing de Mía, consultora para empresarias.
 - `src/components/layout/`: `Header` con menú móvil.
 - `src/assets/brand/`: logos SVG de la marca. El favicon (isotipo) está en `public/favicon.svg`.
 - `src/legal/`: páginas legales (aviso legal, privacidad y cookies). Los textos están en `documentos.tsx` y cada página tiene su HTML en la raíz (`aviso-legal.html`, `privacidad.html`, `cookies.html`). En Vercel se sirven sin `.html` (`/privacidad`) gracias a `cleanUrls` en `vercel.json`. Los datos de la titular están en `src/lib/contacto.ts`.
-- `src/assets/images/`: fotos en AVIF con JPG de respaldo. Las actuales son mockups del manual de marca, provisorias hasta tener las fotos reales.
+- `src/assets/images/`: fotos, todas en **WebP**. Van en blanco y negro (las de producto conservan el detalle burdeos). Las de ambientación son mockups del manual de marca, provisorias hasta tener fotos reales; `equipo-marina.webp` es el retrato de Marina.
 
 ## Formulario de contacto
 
