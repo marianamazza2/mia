@@ -2,7 +2,13 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 import { Fragment, useRef } from 'react'
 import { Destacado } from '@/components/marca/Destacado'
 
-type Segment = { text: string; em?: boolean }
+type Segment = {
+  text: string
+  /** En caligrafía (Destacado con «firma») */
+  firma?: boolean
+  /** Va pegado al segmento anterior, sin espacio (por ejemplo, el punto final) */
+  pegado?: boolean
+}
 
 type ScrollRevealTextProps = {
   segments: Segment[]
@@ -13,14 +19,16 @@ type ScrollRevealTextProps = {
 export function ScrollRevealText({ segments, className }: ScrollRevealTextProps) {
   const ref = useRef<HTMLHeadingElement>(null)
   const reduceMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.85', 'end 0.4'] })
+  // Arranca cuando el texto asoma por abajo y termina cuando su última línea llega a dos tercios de la pantalla:
+  // así se lee entero, encendido, antes de que suba hacia el borde de arriba
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.95', 'end 0.68'] })
 
   const total = segments.reduce((suma, { text }) => suma + text.split(' ').length, 0)
   let indice = 0
 
   return (
     <h2 ref={ref} className={className}>
-      {segments.map(({ text, em }, s) => {
+      {segments.map(({ text, firma, pegado }, s) => {
         const palabras = text.split(' ').map((palabra, p) => {
           const i = indice++
           return (
@@ -35,14 +43,8 @@ export function ScrollRevealText({ segments, className }: ScrollRevealTextProps)
 
         return (
           <Fragment key={s}>
-            {s > 0 && ' '}
-            {em ? (
-              <Destacado delay={0.6}>
-                {palabras}
-              </Destacado>
-            ) : (
-              palabras
-            )}
+            {s > 0 && !pegado && ' '}
+            {firma ? <Destacado firma>{palabras}</Destacado> : palabras}
           </Fragment>
         )
       })}

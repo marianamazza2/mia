@@ -22,7 +22,7 @@ export function SobreMia() {
   )
 }
 
-// Bloque burdeos: la pregunta que atraviesa el trabajo de Mía, con una llave que se dibuja detrás
+// Bloque burdeos: la idea que atraviesa el trabajo de Mía, con una llave que se dibuja detrás
 function Pregunta() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.6'] })
@@ -44,23 +44,24 @@ function Pregunta() {
         </Reveal>
 
         <ScrollRevealText
-          className="mt-8 max-w-5xl text-titulo font-medium lg:mt-10"
+          className="mt-8 max-w-5xl text-titulo lg:mt-10"
           segments={[
-            { text: '¿Qué hacemos con aquello que' },
-            { text: 'no se ve,', em: true },
-            { text: 'pero que está produciendo efectos concretos?' },
+            { text: 'Comprender una dificultad es importante; saber intervenir sobre ella, es' },
+            { text: 'fundamental', firma: true },
+            { text: '', pegado: true },
           ]}
         />
 
         <div className="mt-bloque grid lg:grid-cols-12">
           <Reveal className="space-y-5 text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
             <p>
-              Esa pregunta atraviesa todo el trabajo de Mía. Porque lo que organiza el funcionamiento de una
-              empresa no siempre está en sus procesos ni en su estrategia, sino en un lugar menos visible: la
-              relación entre quien la dirige, las decisiones que toma y el modo en que esas decisiones ordenan
-              el negocio.
+              Mía es una consultora que trabaja con la relación entre la posición de quien dirige, las decisiones
+              que toma y las condiciones de funcionamiento de su organización.
             </p>
-            <p className="font-serif text-destacado text-crema">Mía trabaja sobre esa relación.</p>
+            <p>
+              Nos interesa identificar qué está en juego en cada situación, reconocer cómo están dispuestos los
+              recursos existentes y construir criterios de intervención que permitan producir cambios concretos.
+            </p>
           </Reveal>
         </div>
       </Container>
@@ -69,7 +70,7 @@ function Pregunta() {
 }
 
 // A quién acompaña Mía, de dónde viene su mirada y quiénes están detrás.
-// Desktop: los dos retratos a la izquierda, desfasados como en una revista; título y texto a la derecha.
+// Desktop: los dos retratos a la izquierda, lado a lado bajo su título; título y texto a la derecha.
 // Mobile: título, los retratos lado a lado y el texto con letra capitular.
 function Mirada() {
   return (
@@ -81,7 +82,7 @@ function Mirada() {
             <Eyebrow>La mirada de Mía</Eyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h3 className="mt-6 text-subtitulo lg:mt-10">
+            <h3 className="mt-6 text-frase lg:mt-10">
               Lleva esa mirada al lugar donde las decisiones suceden: <Destacado>la empresa.</Destacado>
             </h3>
           </Reveal>
@@ -152,10 +153,10 @@ function Sensible() {
             Una idea resume su forma de trabajar
           </p>
         </Reveal>
-        <blockquote className="mt-6 max-w-5xl font-serif text-[2.25rem] leading-[1.05] font-medium text-crema lg:mx-auto lg:mt-8 lg:text-titulo">
-          <LineaQueSube delay={0.1}>Operacionalizar</LineaQueSube>
+        <blockquote className="mt-6 max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">
+          <LineaQueSube delay={0.1}>Hacer operativo</LineaQueSube>
           <LineaQueSube delay={0.22}>
-            <Destacado delay={0.9}>lo sensible.</Destacado>
+            <Destacado>lo sensible.</Destacado>
           </LineaQueSube>
         </blockquote>
         <motion.span
@@ -167,10 +168,9 @@ function Sensible() {
           transition={{ duration: 1.4, ease: easeSuave, delay: 0.5 }}
         />
         <Reveal delay={0.4}>
-          <p className="mt-6 max-w-xs text-cuerpo text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-md">
-            {/* En desktop, «producir movimiento» va junto en la segunda línea */}
-            Comprender qué está en juego para <br className="hidden lg:block" />
-            producir movimiento.
+          <p className="mt-6 max-w-sm text-cuerpo text-balance text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-xl">
+            Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
+            empresa y convertirlo en una posibilidad concreta de acción.
           </p>
         </Reveal>
       </Container>

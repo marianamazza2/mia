@@ -9,8 +9,6 @@ import { useIntroLista } from '@/lib/intro'
 import { easeSuave } from '@/lib/motion'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 
-const ejes = ['Liderazgo', 'Organización', 'Negocio']
-
 export function Hero() {
   const ref = useRef<HTMLElement>(null)
   const lista = useIntroLista()
@@ -32,7 +30,8 @@ export function Hero() {
     >
       {/* Mobile y tablet: foto a sangre arriba y el texto en una hoja crema que se apoya sobre ella.
           Desktop: texto a la izquierda y foto a la derecha */}
-      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-32 lg:pb-20">
+      {/* En pantallas bajas se achica el aire, nunca la letra: el título mide lo mismo en cualquier escritorio */}
+      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-32 lg:pb-20 lg:bajo:pt-22 lg:bajo:pb-6">
         <motion.div
           className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-9 pb-14 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
           style={{ y: esDesktop ? textoY : 0 }}
@@ -41,32 +40,35 @@ export function Hero() {
             <Eyebrow>Consultora para empresarias</Eyebrow>
           </Entra>
 
-          <h1 className="mt-6 text-titulo leading-[0.94] font-medium lg:mt-8 lg:text-[6rem] lg:bajo:text-[5.25rem]">
-            <Line delay={0.35}>
-              Lo que no se ve
-            </Line>
-            <Line delay={0.47}>también dirige</Line>
+          <h1 className="mt-6 text-display lg:mt-8 lg:bajo:mt-4">
+            <Line delay={0.35}>Una forma sólida</Line>
+            <Line delay={0.47}>de dirigir</Line>
             <Line delay={0.59}>tu empresa.</Line>
           </h1>
 
-          <div className="mt-8 grid gap-10 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8 lg:mt-10">
+          <div className="mt-8 grid gap-10 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8 lg:mt-10 lg:bajo:mt-5">
             <motion.span
               aria-hidden
               className="mt-3 hidden h-px w-16 origin-left bg-dorado sm:block"
               variants={{ oculto: { scaleX: 0 }, visible: { scaleX: 1 } }}
               transition={{ duration: 1.4, ease: easeSuave, delay: 1.1 }}
             />
+            {/* Dos niveles: la idea principal en cuerpo y el complemento más chico y suave, para que el bloque no pese */}
             <Entra delay={1}>
-              <p className="max-w-lg text-cuerpo text-negro/70">
-                Mía acompaña a mujeres que lideran empresas a comprender cómo su forma de conducir incide en
-                el funcionamiento de su organización, para pensarla y desarrollarla desde un lugar más claro.
+              <p className="max-w-lg text-cuerpo text-negro/75">
+                Acompañamos a empresarias a consolidar su posición en la dirección de sus negocios, encontrar
+                criterios para tomar decisiones y desarrollar nuevas posibilidades de acción.
+              </p>
+              <p className="mt-4 max-w-lg text-detalle text-negro/55 lg:bajo:mt-3">
+                Trabajamos junto a ellas sobre los desafíos de su empresa, sus equipos y su organización, para
+                construir formas de funcionamiento sostenibles.
               </p>
             </Entra>
           </div>
 
-          <Entra delay={1.15} className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24 lg:mt-10">
+          <Entra delay={1.15} className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24 lg:mt-10 lg:bajo:mt-5">
             <Button href="#contacto" withArrow>
-              Reservar una conversación
+              Conversemos sobre tu empresa
             </Button>
           </Entra>
         </motion.div>
@@ -74,7 +76,7 @@ export function Hero() {
         {/* Foto principal en blanco y negro. En mobile queda fija arriba y la hoja de texto sube y la tapa */}
         <div className="sticky top-0 order-first -mx-6 sm:-mx-8 lg:relative lg:order-none lg:col-span-5 lg:mx-0 lg:self-stretch">
           <motion.div
-            className="relative h-[46svh] min-h-72 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
+            className="relative h-[42svh] min-h-64 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
             style={{ y: esDesktop ? fotoY : 0 }}
           >
             {/* La foto sube desde abajo, en el mismo sentido que el telón */}
@@ -96,16 +98,6 @@ export function Hero() {
                 />
               </motion.div>
             </motion.div>
-
-            {/* Ejes del trabajo, en vertical sobre el borde de la foto */}
-            <motion.p
-              className="absolute top-0 -left-8 hidden origin-top-left -rotate-90 text-[0.625rem] tracking-[0.4em] whitespace-nowrap text-negro/50 uppercase lg:block"
-              style={{ translateX: '-100%' }}
-              variants={{ oculto: { opacity: 0 }, visible: { opacity: 1 } }}
-              transition={{ duration: 1.2, delay: 1.6 }}
-            >
-              {ejes.join('  ·  ')}
-            </motion.p>
           </motion.div>
 
         </div>

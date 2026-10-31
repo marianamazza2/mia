@@ -5,6 +5,7 @@ import { Intro } from '@/components/marca/Intro'
 import { SelectorOpciones } from '@/components/marca/SelectorOpciones'
 import { mostrarOpciones, usePatron } from '@/lib/opciones'
 import { Contacto } from '@/sections/Contacto'
+import { Cuando } from '@/sections/Cuando'
 import { Hero } from '@/sections/Hero'
 import { Metodologia } from '@/sections/Metodologia'
 import { Servicios } from '@/sections/Servicios'
@@ -20,6 +21,7 @@ function App() {
       <main>
         <Hero />
         <SobreMia />
+        <Cuando />
         <Servicios />
         <Metodologia />
         {patron === 'cinta' && <CintaA />}

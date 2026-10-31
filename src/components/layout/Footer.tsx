@@ -7,6 +7,7 @@ const anio = new Date().getFullYear()
 
 const links = [
   { href: '/#sobre-mia', label: 'Sobre Mía' },
+  { href: '/#cuando', label: 'Cuándo' },
   { href: '/#servicios', label: 'Servicios' },
   { href: '/#metodologia', label: 'Metodología' },
   { href: '/#contacto', label: 'Contacto' },
@@ -34,7 +35,7 @@ export function Footer() {
           <div className="col-span-2 lg:col-span-5">
             {/* Sin descriptor: a este tamaño no se leería; el texto de abajo ya cumple ese papel */}
             <img src={logoNegativo} alt="Mía, consultora para empresarias" className="w-24 lg:w-28" />
-            <p className="mt-5 max-w-sm font-serif text-xl leading-snug text-crema/80">
+            <p className="mt-5 max-w-sm font-serif text-menor text-crema/80">
               Darle lugar a aquello que, sin ser percibido, organiza el funcionamiento de una empresa.
             </p>
           </div>

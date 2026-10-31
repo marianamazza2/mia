@@ -14,26 +14,43 @@
   /* Tipografía — Cormorant Garamond 600 en títulos, Inter 400 en texto */
   --font-serif: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* Caligrafía para palabras sueltas (Destacado con «firma»): nunca para frases enteras */
+  --font-firma: 'WindSong', cursive;
 
-  /* Escala tipográfica fluida: crece en línea recta entre 375 px (mobile) y 1440 px (desktop).
-     En mobile: display 40 · título 32 · subtítulo 26 · destacado 20 · cuerpo 16 · detalle 14 px.
-     Display → portada y frases protagonistas · Título → h2 de sección · Subtítulo → h3
-     Destacado → frases en itálica · Cuerpo → texto corrido · Detalle → textos secundarios */
-  --text-display: clamp(2.5rem, 1rem + 6.39vw, 6.75rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.01em;
-  --text-titulo: clamp(2rem, 1.03rem + 4.13vw, 4.75rem);
+  /* Escala tipográfica: en mobile crece en línea recta desde 375 px y en escritorio queda fija, sea cual sea la
+     pantalla (alta, baja, ancha), para que cada nivel mida siempre lo mismo. Los títulos llegan a su tamaño a
+     1280 px; Subtítulo y Frase, a 1024 px. No hay excepciones por sección ni por altura de pantalla.
+     Cinco niveles en Cormorant, y cada título de la web cae en uno (los números grandes de Servicios
+     y Metodología son decorativos y quedan aparte):
+       1 · Display    40 → 96  · 500 · solo la portada
+       2 · Título     32 → 76  · 500 · título de cada sección
+       3 · Subtítulo  26 → 48  · 500 · título de un bloque dentro de una sección («Dirección y coordinación»)
+      3b · Frase      24 → 40  · 500 · frase larga que abre un bloque («Lleva esa mirada…»), un paso por debajo
+       4 · Tarjeta    22 → 28  · 600 · títulos de tarjetas, pasos, ítems y personas
+       5 · Menor      18 → 20  · 400 · serif chica: canales, footer, numeraciones
+     Y en Inter: Cuerpo (16 → 17) para el texto corrido y Detalle (14 → 15) para los secundarios */
+  --text-display: clamp(2.5rem, 1.05rem + 6.188vw, 6rem);
+  --text-display--line-height: 0.94;
+  --text-display--font-weight: 500;
+  --text-titulo: clamp(2rem, 0.861rem + 4.862vw, 4.75rem);
   --text-titulo--line-height: 1.05;
-  --text-subtitulo: clamp(1.625rem, 1.05rem + 2.44vw, 3.25rem);
+  --text-titulo--font-weight: 500;
+  --text-subtitulo: clamp(1.625rem, 0.831rem + 3.39vw, 3rem);
   --text-subtitulo--line-height: 1.08;
-  --text-destacado: clamp(1.25rem, 1.07rem + 0.75vw, 1.75rem);
-  --text-destacado--line-height: 1.35;
+  --text-subtitulo--font-weight: 500;
+  --text-frase: clamp(1.5rem, 0.922rem + 2.465vw, 2.5rem);
+  --text-frase--line-height: 1.12;
+  --text-frase--font-weight: 500;
+  --text-tarjeta: clamp(1.375rem, 1.22rem + 0.663vw, 1.75rem);
+  --text-tarjeta--line-height: 1.15;
+  --text-tarjeta--font-weight: 600;
+  --text-menor: clamp(1.125rem, 1.073rem + 0.221vw, 1.25rem);
+  --text-menor--line-height: 1.35;
+  --text-menor--font-weight: 400;
   --text-cuerpo: clamp(1rem, 0.98rem + 0.09vw, 1.0625rem);
   --text-cuerpo--line-height: 1.8;
   --text-detalle: clamp(0.875rem, 0.85rem + 0.09vw, 0.9375rem);
   --text-detalle--line-height: 1.65;
-  --text-numeral: clamp(4rem, 1.89rem + 9.01vw, 10rem);
-  --text-numeral--line-height: 0.8;
 
   /* Ritmo vertical: aire entre secciones y entre el encabezado y el contenido de cada una */
   --spacing-seccion: clamp(5.5rem, 3.21rem + 9.77vw, 12rem);
@@ -75,11 +92,14 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
+  /* El peso lo pone cada nivel de la escala (500 en los grandes, 600 en las tarjetas). Va como propiedad
+     suelta y no con `font-medium`: esa clase fija la variable de peso y le ganaría al nivel «Tarjeta» */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-serif font-semibold text-balance;
+    @apply font-serif text-balance;
+    font-weight: 500;
   }
 
   ::selection {

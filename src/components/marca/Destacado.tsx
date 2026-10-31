@@ -5,30 +5,36 @@ import { easeSereno } from '@/lib/motion'
 
 type DestacadoProps = {
   children: ReactNode
-  /** Segundos de espera antes de dibujarse */
-  delay?: number
-  /** Toma el estado «oculto / visible» del padre (la portada, que espera a la intro) en vez de su propia entrada en pantalla */
-  heredar?: boolean
+  /** En WindSong, la caligrafía: la palabra aparece como escrita a mano */
+  firma?: boolean
   className?: string
 }
 
-// Destaca una parte de una frase sin cambiarle el color ni ponerla en itálica: las palabras
-// se apoyan en un filete dorado suave que se dibuja despacio, de izquierda a derecha, como los títulos del manual.
-// El grosor acompaña al tamaño del texto, sin bajar de 1 px.
-export function Destacado({ children, delay = 0.4, heredar = false, className }: DestacadoProps) {
-  const entrada = heredar
-    ? {}
-    : { initial: 'oculto', whileInView: 'visible', viewport: { once: true, margin: '0px 0px -15% 0px' } }
+// Marca la parte de una frase que se dice con más voz. Sin «firma» no cambia el texto (se quitó el filete
+// dorado); queda marcada para poder probar otros tratamientos. Con «firma», va en WindSong, al mismo
+// tamaño que el texto que la rodea (su letra es chica, así no invade), y se descubre de izquierda a derecha, despacio, como un trazo
+export function Destacado({ children, firma = false, className }: DestacadoProps) {
+  if (!firma) return <em className={cn('not-italic', className)}>{children}</em>
 
   return (
-    <motion.em className={cn('relative inline-block whitespace-nowrap not-italic', className)} {...entrada}>
-      {children}
+    // El observador va en el contenedor: con el recorte completo el navegador da al texto por invisible
+    <motion.em
+      className={cn('inline-block font-firma text-[1em] leading-none font-normal not-italic', className)}
+      initial="oculto"
+      whileInView="visible"
+      viewport={{ once: true, margin: '0px 0px -15% 0px' }}
+    >
       <motion.span
-        aria-hidden
-        className="absolute -right-[0.12em] bottom-[0.04em] -left-[0.04em] h-[max(1px,0.015em)] origin-left bg-dorado-suave"
-        variants={{ oculto: { scaleX: 0 }, visible: { scaleX: 1 } }}
-        transition={{ duration: 2.8, ease: easeSereno, delay }}
-      />
+        className="inline-block"
+        // Márgenes negativos en el recorte: los trazos de la caligrafía salen de la caja de la letra
+        variants={{
+          oculto: { clipPath: 'inset(-0.4em 100% -0.4em -0.4em)' },
+          visible: { clipPath: 'inset(-0.4em -0.4em -0.4em -0.4em)' },
+        }}
+        transition={{ duration: 2.6, ease: easeSereno, delay: 0.3 }}
+      >
+        {children}
+      </motion.span>
     </motion.em>
   )
 }

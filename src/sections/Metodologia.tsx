@@ -17,27 +17,26 @@ import { easeSuave } from '@/lib/motion'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 import { Destacado } from '@/components/marca/Destacado'
 
-// Textos provisorios: hay que validarlos con Marina
 const pasos = [
   {
-    titulo: 'Primera conversación',
-    texto: 'Nos conocemos y escuchamos qué está pasando en tu empresa y qué te trae hasta aquí.',
+    titulo: 'Conocemos tu punto de partida',
+    texto: 'Hablamos del momento que atraviesa tu empresa y de aquello que se repite aunque ya hayas probado otras soluciones.',
   },
   {
-    titulo: 'Lectura de la situación',
-    texto: 'Observamos cómo se toman las decisiones, qué se delega y qué se repite, para comprender lo que organiza el funcionamiento.',
+    titulo: 'Precisamos sobre qué trabajaremos y las alternativas posibles',
+    texto: 'Analizamos las dificultades y los elementos que intervienen en ellas para identificar posibilidades concretas de acción.',
   },
   {
-    titulo: 'Diseño del proceso',
-    texto: 'Definimos juntas el foco, los tiempos y el formato del acompañamiento según el momento de la empresa.',
+    titulo: 'Diseñamos un camino y criterios para avanzar',
+    texto: 'Definimos una orientación de trabajo a partir de tus objetivos, recursos y condiciones de tu empresa.',
   },
   {
-    titulo: 'Acompañamiento',
-    texto: 'Trabajamos sobre la relación entre liderazgo y organización, con criterio y sin perder de vista el negocio.',
+    titulo: 'Llevamos las decisiones a la práctica',
+    texto: 'Acompañamos su puesta en marcha, trabajando sobre los recursos y las condiciones necesarias para hacerlas posibles.',
   },
   {
-    titulo: 'Cierre y continuidad',
-    texto: 'Revisamos lo recorrido, consolidamos lo que cambió y dejamos claro cómo sostenerlo.',
+    titulo: 'Ajustamos para consolidar',
+    texto: 'Abordamos las situaciones que se presentan y redefinimos estrategias para consolidar las formas de funcionamiento que permiten sostener a la empresa.',
   },
 ]
 
@@ -60,11 +59,11 @@ function Encabezado({ compacto = false }: { compacto?: boolean }) {
     <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-7">
         <Eyebrow tone="light">Metodología</Eyebrow>
-        <h2 className="mt-8 text-titulo lg:mt-6 lg:bajo:text-5xl">
+        <h2 className={cn('mt-8 text-titulo lg:mt-6', compacto && '[@media(max-height:720px)]:mt-5')}>
           Cómo <Destacado>trabajamos.</Destacado>
         </h2>
       </div>
-      <p className={cn('text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9', compacto && '[@media(max-height:720px)]:hidden')}>
+      <p className={cn('text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9', compacto && '[@media(max-height:860px)]:hidden')}>
         Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
       </p>
     </div>
@@ -118,7 +117,7 @@ function LineaHorizontal() {
           className="pointer-events-none absolute -bottom-[20%] -left-[8%] w-[38%] opacity-[0.04]"
         />
 
-        <Container className="relative pt-28 bajo:pt-24">
+        <Container className="relative pt-28 bajo:pt-[5.25rem]">
           <Reveal>
             <Encabezado />
           </Reveal>
@@ -134,7 +133,7 @@ function LineaHorizontal() {
               style={{ scaleX: rellenoEscala }}
             />
 
-            <ol className="relative flex pr-[calc(50vw-12rem)] pl-[max(3rem,calc((100vw-80rem)/2+3rem))] 2xl:pl-(--margen-ancho)">
+            <ol className="relative flex pr-[calc(50vw-14rem)] pl-[max(3rem,calc((100vw-80rem)/2+3rem))] 2xl:pl-(--margen-ancho)">
               {pasos.map((paso, i) => (
                 <PasoHorizontal
                   key={paso.titulo}
@@ -151,7 +150,7 @@ function LineaHorizontal() {
           </motion.div>
         </div>
 
-        <Container className="relative flex items-center justify-between pb-8 text-[0.6875rem] tracking-[0.3em] text-crema/50 uppercase">
+        <Container className="relative flex items-center justify-between pb-8 bajo:pb-5 text-[0.6875rem] tracking-[0.3em] text-crema/50 uppercase">
           <span>Desliza para recorrer</span>
           <span className="flex items-center gap-3 font-serif text-base tracking-normal normal-case">
             <ContadorPaso valor={pasoActual} />
@@ -187,7 +186,7 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
   const escalaNodo = useTransform(encendido, [0.85, 1], [0.4, 1], { clamp: true })
 
   return (
-    <li ref={pasoRef} className="relative w-[24rem] shrink-0">
+    <li ref={pasoRef} className="relative w-[28rem] shrink-0">
       {/* Nodo sobre el riel */}
       <span
         aria-hidden
@@ -212,14 +211,14 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
         )}
         style={{ opacity: opacidad, y }}
       >
-        <span aria-hidden className="relative font-serif text-[4.5rem] leading-none font-medium tabular-nums lining-nums bajo:text-[3.25rem]">
+        <span aria-hidden className="relative font-serif text-[3.75rem] leading-none font-medium tabular-nums lining-nums bajo:text-[2.75rem]">
           <span className="text-transparent [-webkit-text-stroke:1px_rgb(247_245_241/0.35)]">{numero(index)}</span>
           <motion.span className="absolute inset-0 text-dorado-suave" style={{ clipPath: rellenoNumero }}>
             {numero(index)}
           </motion.span>
         </span>
-        <h3 className="mt-3 text-[1.75rem] leading-tight text-crema bajo:mt-2 bajo:text-2xl">{paso.titulo}</h3>
-        <p className="mt-2 max-w-[21rem] text-[0.9375rem] leading-relaxed text-crema/70 bajo:text-sm">{paso.texto}</p>
+        <h3 className="mt-3 text-tarjeta text-crema bajo:mt-2">{paso.titulo}</h3>
+        <p className="mt-2 max-w-[23rem] text-[0.9375rem] leading-relaxed text-crema/70 bajo:text-sm">{paso.texto}</p>
       </motion.div>
     </li>
   )
@@ -229,12 +228,14 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
 // la línea dorada se llena hasta el paso abierto
 function LineaVertical({ fija }: { fija: boolean }) {
   const [abierto, setAbierto] = useState(0)
-  // Alto de una fila cerrada: los nodos quedan a esa distancia entre sí, abra el paso que se abra
-  const filaRef = useRef<HTMLHeadingElement>(null)
-  const [fila, setFila] = useState(0)
+  // Alto de cada fila cerrada (los títulos ocupan una, dos o tres líneas). Los pasos anteriores al abierto
+  // están siempre cerrados, así que el nodo de cada paso queda a la suma de las filas que tiene arriba
+  const filasRef = useRef<(HTMLHeadingElement | null)[]>([])
+  const [filas, setFilas] = useState<number[]>([])
+  const hasta = (i: number) => filas.slice(0, i).reduce((suma, alto) => suma + alto, 0)
 
   useLayoutEffect(() => {
-    const medir = () => setFila(filaRef.current?.offsetHeight ?? 0)
+    const medir = () => setFilas(filasRef.current.map((fila) => fila?.offsetHeight ?? 0))
     medir()
     window.addEventListener('resize', medir)
     return () => window.removeEventListener('resize', medir)
@@ -262,13 +263,13 @@ function LineaVertical({ fija }: { fija: boolean }) {
         <Encabezado compacto={fija} />
       </Reveal>
 
-      <ol className="relative mt-10">
-        <span aria-hidden className="absolute top-7 left-[9px] w-px bg-crema/15" style={{ height: (pasos.length - 1) * fila }} />
+      <ol className={cn('relative mt-10', fija && '[@media(max-height:720px)]:mt-5')}>
+        <span aria-hidden className="absolute top-[1.4rem] left-[9px] w-px bg-crema/15" style={{ height: hasta(pasos.length - 1) }} />
         <motion.span
           aria-hidden
-          className="absolute top-7 left-[9px] w-px bg-dorado-suave"
+          className="absolute top-[1.4rem] left-[9px] w-px bg-dorado-suave"
           initial={false}
-          animate={{ height: abierto * fila }}
+          animate={{ height: hasta(abierto) }}
           transition={{ duration: 0.8, ease: easeSuave }}
         />
         {pasos.map((paso, i) => (
@@ -279,7 +280,9 @@ function LineaVertical({ fija }: { fija: boolean }) {
             abierto={abierto === i}
             pasado={i <= abierto}
             onAbrir={() => abrir(i)}
-            filaRef={i === 0 ? filaRef : undefined}
+            filaRef={(fila) => {
+              filasRef.current[i] = fila
+            }}
           />
         ))}
       </ol>
@@ -315,7 +318,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
       {/* Nodo sobre la línea: se enciende en los pasos ya recorridos */}
       <span
         aria-hidden
-        className="absolute top-[1.125rem] left-0 grid size-5 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
+        className="absolute top-[0.8rem] left-0 grid size-5 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
       >
         <span
           className={cn(
@@ -331,11 +334,11 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
           aria-expanded={abierto}
           aria-controls={id}
           onClick={onAbrir}
-          className="flex w-full items-baseline gap-4 py-3 text-left"
+          className="flex w-full items-baseline gap-4 py-2.5 text-left"
         >
           <span
             className={cn(
-              'font-serif text-2xl font-medium tabular-nums lining-nums transition-colors duration-500',
+              'font-serif text-xl font-medium tabular-nums lining-nums transition-colors duration-500',
               abierto ? 'text-dorado-suave' : 'text-crema/35',
             )}
           >
@@ -343,7 +346,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
           </span>
           <span
             className={cn(
-              'flex-1 font-serif text-[1.5rem] leading-tight transition-colors duration-500',
+              'flex-1 font-serif text-tarjeta text-balance transition-colors duration-500',
               abierto ? 'text-crema' : 'text-crema/60',
             )}
           >
@@ -359,7 +362,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
           abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
       >
-        <p className="overflow-hidden pl-[3.25rem] text-detalle text-crema/70">
+        <p className="overflow-hidden pl-[2.2rem] text-detalle text-crema/70">
           <span className="block pb-5">{paso.texto}</span>
         </p>
       </div>

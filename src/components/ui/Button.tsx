@@ -19,6 +19,18 @@ type ButtonProps = ComponentProps<'a'> & {
   withArrow?: boolean
 }
 
+// Las clases de la píldora, compartidas por el enlace (Button) y el botón de acción (ButtonAccion)
+function claseBoton(variant: keyof typeof variants = 'primary', size: keyof typeof sizes = 'md', className?: string) {
+  return cn(
+    'group inline-flex items-center justify-center gap-4 rounded-[40px] font-medium tracking-[0.14em] whitespace-nowrap uppercase sm:tracking-[0.2em]',
+    'transition-colors duration-500 ease-suave',
+    'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos',
+    variants[variant],
+    sizes[size],
+    className,
+  )
+}
+
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -28,17 +40,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <a
-      className={cn(
-        'group inline-flex items-center justify-center gap-4 rounded-[40px] font-medium tracking-[0.14em] whitespace-nowrap uppercase sm:tracking-[0.2em]',
-        'transition-colors duration-500 ease-suave',
-        'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burdeos',
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-      {...props}
-    >
+    <a className={claseBoton(variant, size, className)} {...props}>
       {children}
       {withArrow && <Arrow />}
     </a>
@@ -58,4 +60,20 @@ function Arrow() {
       <path d="M0 8h22M16 2l6 6-6 6" />
     </svg>
   )
+}
+
+type ButtonAccionProps = ComponentProps<'button'> & {
+  variant?: keyof typeof variants
+  size?: keyof typeof sizes
+}
+
+// La misma píldora como <button>, para acciones en la página (por ejemplo, abrir el formulario)
+export function ButtonAccion({
+  variant = 'primary',
+  size = 'md',
+  className,
+  type = 'button',
+  ...props
+}: ButtonAccionProps) {
+  return <button type={type} className={claseBoton(variant, size, className)} {...props} />
 }

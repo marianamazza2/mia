@@ -12,6 +12,7 @@ import { easeSuave } from '@/lib/motion'
 const links = [
   { href: '/#inicio', label: 'Inicio' },
   { href: '/#sobre-mia', label: 'Sobre Mía' },
+  { href: '/#cuando', label: 'Cuándo' },
   { href: '/#servicios', label: 'Servicios' },
   { href: '/#metodologia', label: 'Metodología' },
   { href: '/#contacto', label: 'Contacto' },
@@ -140,7 +141,7 @@ export function Header() {
               >
                 <span aria-hidden className="block h-px w-16 bg-dorado" />
                 <Button href="/#contacto" variant="light" withArrow onClick={() => setOpen(false)}>
-                  Reservar una conversación
+                  Conversemos sobre tu empresa
                 </Button>
               </motion.div>
             </Container>

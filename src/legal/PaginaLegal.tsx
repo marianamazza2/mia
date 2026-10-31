@@ -21,7 +21,7 @@ export function PaginaLegal({ id }: { id: IdDocumento }) {
                 <Eyebrow>Información legal</Eyebrow>
               </Reveal>
               <Reveal delay={0.1}>
-                <h1 className="mt-8 text-titulo font-medium">{documento.titulo}</h1>
+                <h1 className="mt-8 text-titulo">{documento.titulo}</h1>
               </Reveal>
               <Reveal delay={0.15}>
                 <p className="mt-6 max-w-xl text-cuerpo text-negro/70">{documento.descripcion}</p>
@@ -58,8 +58,8 @@ export function PaginaLegal({ id }: { id: IdDocumento }) {
             <article className="legal lg:col-span-8">
               {documento.apartados.map((apartado, i) => (
                 <section key={apartado.titulo} className="border-t border-dorado/40 py-10 first:pt-10 lg:py-12">
-                  <h2 className="flex items-baseline gap-5 font-serif text-[1.75rem] leading-tight font-semibold lg:text-[2rem]">
-                    <span className="font-serif text-lg font-medium text-burdeos/40 lining-nums tabular-nums">
+                  <h2 className="flex items-baseline gap-5 text-tarjeta">
+                    <span className="font-serif text-menor text-burdeos/40 lining-nums tabular-nums">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     {apartado.titulo}
