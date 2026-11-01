@@ -7,10 +7,10 @@ import { easeSereno, easeTelon } from '@/lib/motion'
 
 type Fase = 'logo' | 'despide' | 'telon' | 'fin'
 
-// Tiempos de la intro, en milisegundos. El logo y el descriptor terminan de aparecer a los ~2,1 s,
-// quedan un segundo quietos y se despiden despacio; el telón sube cuando ya casi no se ven.
-const DESPIDE_LOGO = 3150
-const SUBE_TELON = DESPIDE_LOGO + 1000
+// Tiempos de la intro, en milisegundos. El logo y el descriptor terminan de aparecer a los ~1,7 s,
+// quedan medio segundo quietos y se despiden; el telón sube cuando ya casi no se ven.
+const DESPIDE_LOGO = 2150
+const SUBE_TELON = DESPIDE_LOGO + 650
 const DURACION_TELON = 2.1 // segundos
 // La portada arranca cuando el telón ya dejó ver la parte de arriba
 const ARRANCA_PORTADA = SUBE_TELON + 500
@@ -83,7 +83,7 @@ export function Intro() {
         <motion.div
           className="relative flex flex-col items-center"
           animate={despidiendo ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }}
-          transition={{ duration: 1.6, ease: easeSereno }}
+          transition={{ duration: 1, ease: easeSereno }}
         >
           {/* El logotipo se escribe de izquierda a derecha */}
           <motion.img
@@ -92,19 +92,19 @@ export function Intro() {
             className="w-[min(58vw,19rem)]"
             initial={{ clipPath: 'inset(0 100% 0 0)', scale: 1.06 }}
             animate={{ clipPath: 'inset(0 0% 0 0)', scale: 1 }}
-            transition={{ duration: 1.3, ease: easeSereno, delay: 0.15 }}
+            transition={{ duration: 1.1, ease: easeSereno, delay: 0.1 }}
           />
           <motion.span
             className="mt-8 block h-px w-24 bg-dorado-suave"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 1.1, ease: easeSereno, delay: 0.8 }}
+            transition={{ duration: 0.9, ease: easeSereno, delay: 0.6 }}
           />
           <motion.span
             className="etiqueta mt-6 text-crema/80"
             initial={{ opacity: 0, letterSpacing: '0.48em' }}
             animate={{ opacity: 1, letterSpacing: '0.38em' }}
-            transition={{ duration: 1.4, ease: easeSereno, delay: 0.75 }}
+            transition={{ duration: 1.1, ease: easeSereno, delay: 0.55 }}
           >
             Consultora para empresarias
           </motion.span>

@@ -22,14 +22,14 @@
      1280 px; Subtítulo y Frase, a 1024 px. No hay excepciones por sección ni por altura de pantalla.
      Cinco niveles en Cormorant, y cada título de la web cae en uno (los números grandes de Servicios
      y Metodología son decorativos y quedan aparte):
-       1 · Display    40 → 96  · 500 · solo la portada
+       1 · Display    40 → 80  · 500 · solo la portada
        2 · Título     32 → 76  · 500 · título de cada sección
        3 · Subtítulo  26 → 48  · 500 · título de un bloque dentro de una sección («Dirección y coordinación»)
       3b · Frase      24 → 40  · 500 · frase larga que abre un bloque («Lleva esa mirada…»), un paso por debajo
        4 · Tarjeta    22 → 28  · 600 · títulos de tarjetas, pasos, ítems y personas
        5 · Menor      18 → 20  · 400 · serif chica: canales, footer, numeraciones
      Y en Inter: Cuerpo (16 → 17) para el texto corrido y Detalle (14 → 15) para los secundarios */
-  --text-display: clamp(2.5rem, 1.05rem + 6.188vw, 6rem);
+  --text-display: clamp(2.5rem, 1.464rem + 4.42vw, 5rem);
   --text-display--line-height: 0.94;
   --text-display--font-weight: 500;
   --text-titulo: clamp(2rem, 0.861rem + 4.862vw, 4.75rem);
@@ -55,6 +55,8 @@
   /* Ritmo vertical: aire entre secciones y entre el encabezado y el contenido de cada una */
   --spacing-seccion: clamp(5.5rem, 3.21rem + 9.77vw, 12rem);
   --spacing-bloque: clamp(3rem, 1.77rem + 5.26vw, 6.5rem);
+  /* Aire entre el último párrafo y el botón que lo sigue: el mismo en toda la web y en cualquier pantalla */
+  --spacing-cta: 3rem;
 
   /* Curva de movimiento: entradas suaves, sin rebotes */
   --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);

@@ -1,6 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
-import aCrema from '@/assets/brand/a_mia_crema.svg'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
 import { Button, ButtonAccion } from '@/components/ui/Button'
@@ -9,7 +8,6 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 import { contacto } from '@/lib/contacto'
 import { easeSereno, easeSuave } from '@/lib/motion'
-import { usePatron } from '@/lib/opciones'
 import { Destacado } from '@/components/marca/Destacado'
 
 // La reserva va por WhatsApp; aquí quedan los demás canales
@@ -209,7 +207,7 @@ const ladoDerecho =
 // Acción al pie de cada opción, con una nota breve debajo: así los dos botones quedan a la par
 function Pie({ nota, children }: { nota: string; children: ReactNode }) {
   return (
-    <div className="mt-8 flex flex-1 flex-col justify-end">
+    <div className="mt-cta flex flex-1 flex-col justify-end">
       {children}
       <p className="mt-4 text-[0.8125rem] text-negro/50">{nota}</p>
     </div>
@@ -264,7 +262,7 @@ function Mitad({ id, lado, canal, icono, activa = false, delay = 0, sobreElLomo,
   )
 }
 
-// Plano burdeos con la «a» de la marca de fondo (tono sobre tono con la opción «forro», o una sola «a» grande)
+// Plano burdeos con la «a» de la marca de fondo, tono sobre tono como el interior de la carpeta
 function FondoA({
   className,
   claseContenido,
@@ -274,23 +272,10 @@ function FondoA({
   claseContenido?: string
   children: ReactNode
 }) {
-  const patron = usePatron()
-
   return (
     <div className={cn('relative overflow-hidden bg-burdeos text-crema', className)}>
-      {patron === 'forro' ? (
-        <>
-          <PatronA paso={92} className="text-burdeos-medio opacity-55" />
-          <div aria-hidden className="absolute inset-0 bg-burdeos/60" />
-        </>
-      ) : (
-        <img
-          aria-hidden
-          src={aCrema}
-          alt=""
-          className="pointer-events-none absolute -right-20 -bottom-24 w-72 opacity-[0.06] lg:w-96"
-        />
-      )}
+      <PatronA paso={92} className="text-burdeos-medio opacity-55" />
+      <div aria-hidden className="absolute inset-0 bg-burdeos/60" />
       <div className={cn('relative', claseContenido)}>{children}</div>
     </div>
   )

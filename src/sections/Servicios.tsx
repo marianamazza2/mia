@@ -275,7 +275,7 @@ function Panel({ servicio }: { servicio: Servicio }) {
           href={servicio.consulta}
           variant={oscuro ? 'light' : 'primary'}
           withArrow
-          className="mt-12 self-start lg:bajo:mt-9"
+          className="mt-cta self-start"
         >
           Consultar este servicio
         </Button>

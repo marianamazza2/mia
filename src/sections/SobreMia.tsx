@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'motion/react'
-import { useRef, type ReactNode } from 'react'
+import { useRef, type ReactNode, type RefObject } from 'react'
 import textura from '@/assets/images/bn-textura.webp'
 import { Llave } from '@/components/marca/Llave'
 import { Reveal } from '@/components/motion/Reveal'
@@ -22,20 +22,29 @@ export function SobreMia() {
   )
 }
 
-// Bloque burdeos: la idea que atraviesa el trabajo de Mía, con una llave que se dibuja detrás
+// Bloque burdeos: la idea que atraviesa el trabajo de Mía, con una llave que se dibuja con el scroll.
+// Mobile: la llave queda detrás, a la derecha. Desktop: acostada en el hueco de la izquierda, bajo el título,
+// con el paletón apuntando al texto, como si lo abriera
 function Pregunta() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.6'] })
-  const trazo = useTransform(scrollYProgress, [0, 0.9], [0, 1])
   const llaveY = useTransform(scrollYProgress, [0, 1], ['6%', '-6%'])
+  // Cada llave se dibuja según su propia posición (no la del bloque), así termina mientras todavía se ve
+  const llaveMobile = useRef<HTMLDivElement>(null)
+  const llaveDesktop = useRef<HTMLDivElement>(null)
+  // En mobile la llave está corrida media altura hacia arriba (-translate-y-1/2), que el scroll no ve:
+  // su «start» ya es el centro visible
+  const trazoMobile = useTrazo(llaveMobile, ['start 1.1', 'start 0.55'])
+  const trazoDesktop = useTrazo(llaveDesktop, ['start 0.95', 'center 0.55'])
 
   return (
     <div ref={ref} className="relative overflow-hidden bg-burdeos text-crema">
       <motion.div
-        className="absolute top-1/2 right-[3%] w-28 -translate-y-1/2 rotate-[14deg] text-crema/30 sm:w-36 lg:right-[4%] lg:w-44"
+        ref={llaveMobile}
+        className="absolute top-1/2 right-[3%] w-28 -translate-y-1/2 rotate-[14deg] text-crema/20 sm:w-36 lg:hidden"
         style={{ y: llaveY }}
       >
-        <Llave progreso={trazo} className="w-full" />
+        <Llave progreso={trazoMobile} className="w-full" />
       </motion.div>
 
       <Container className="relative py-seccion">
@@ -52,7 +61,18 @@ function Pregunta() {
           ]}
         />
 
-        <div className="mt-bloque grid lg:grid-cols-12">
+        <div className="mt-bloque grid lg:grid-cols-12 lg:items-center">
+          {/* La caja tiene la proporción de la llave acostada; adentro va parada y se gira un cuarto de vuelta */}
+          <motion.div
+            ref={llaveDesktop}
+            aria-hidden
+            className="relative hidden aspect-[32/10] w-[calc(100%-4rem)] text-dorado-suave/55 lg:col-span-6 lg:block"
+            style={{ y: llaveY }}
+          >
+            <div className="absolute top-1/2 left-1/2 h-[320%] w-[31.25%] -translate-x-1/2 -translate-y-1/2 -rotate-90">
+              <Llave progreso={trazoDesktop} className="size-full" />
+            </div>
+          </motion.div>
           <Reveal className="space-y-5 text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
             <p>
               Mía es una consultora que trabaja con la relación entre la posición de quien dirige, las decisiones
@@ -68,6 +88,15 @@ function Pregunta() {
     </div>
   )
 }
+
+// Empieza a dibujarse cuando la llave asoma por abajo y queda completa cuando su centro llega a poco más de
+// la mitad de la pantalla
+function useTrazo(ref: RefObject<HTMLElement | null>, offset: ScrollOffset) {
+  const { scrollYProgress } = useScroll({ target: ref, offset })
+  return scrollYProgress
+}
+
+type ScrollOffset = NonNullable<Parameters<typeof useScroll>[0]>['offset']
 
 // A quién acompaña Mía, de dónde viene su mirada y quiénes están detrás.
 // Desktop: los dos retratos a la izquierda, lado a lado bajo su título; título y texto a la derecha.

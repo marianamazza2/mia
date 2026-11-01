@@ -31,7 +31,7 @@ export function Hero() {
       {/* Mobile y tablet: foto a sangre arriba y el texto en una hoja crema que se apoya sobre ella.
           Desktop: texto a la izquierda y foto a la derecha */}
       {/* En pantallas bajas se achica el aire, nunca la letra: el título mide lo mismo en cualquier escritorio */}
-      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-32 lg:pb-20 lg:bajo:pt-22 lg:bajo:pb-6">
+      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-36 lg:pb-20 lg:bajo:pt-30 lg:bajo:pb-6">
         <motion.div
           className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-9 pb-14 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
           style={{ y: esDesktop ? textoY : 0 }}
@@ -40,7 +40,7 @@ export function Hero() {
             <Eyebrow>Consultora para empresarias</Eyebrow>
           </Entra>
 
-          <h1 className="mt-6 text-display lg:mt-8 lg:bajo:mt-4">
+          <h1 className="mt-6 text-display lg:mt-8 lg:bajo:mt-6">
             <Line delay={0.35}>Una forma sólida</Line>
             <Line delay={0.47}>de dirigir</Line>
             <Line delay={0.59}>tu empresa.</Line>
@@ -66,7 +66,7 @@ export function Hero() {
             </Entra>
           </div>
 
-          <Entra delay={1.15} className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24 lg:mt-10 lg:bajo:mt-5">
+          <Entra delay={1.15} className="mt-cta flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24">
             <Button href="#contacto" withArrow>
               Conversemos sobre tu empresa
             </Button>
@@ -76,7 +76,7 @@ export function Hero() {
         {/* Foto principal en blanco y negro. En mobile queda fija arriba y la hoja de texto sube y la tapa */}
         <div className="sticky top-0 order-first -mx-6 sm:-mx-8 lg:relative lg:order-none lg:col-span-5 lg:mx-0 lg:self-stretch">
           <motion.div
-            className="relative h-[42svh] min-h-64 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
+            className="relative h-[40svh] min-h-64 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
             style={{ y: esDesktop ? fotoY : 0 }}
           >
             {/* La foto sube desde abajo, en el mismo sentido que el telón */}

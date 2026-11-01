@@ -52,7 +52,7 @@ export function Retratos({ className }: { className?: string }) {
     <>
       <div className={className}>
         <Reveal>
-          <h4 className="text-subtitulo">
+          <h4 className="text-titulo">
             Dirección y coordinación
           </h4>
         </Reveal>
