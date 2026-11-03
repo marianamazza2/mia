@@ -223,14 +223,14 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
 }
 
 // Móvil: cada paso dispone de casi una pantalla de scroll, incluido el último.
-// Si no caben en la pantalla, se leen en el flujo normal, sin recortar contenido.
+// Si el conjunto supera la pantalla, acompaña el recorrido desplazándose hacia arriba.
 function LineaVertical() {
   const [abierto, setAbierto] = useState<number | null>(0)
   const reduceMotion = useReducedMotion()
   const recorridoRef = useRef<HTMLDivElement>(null)
   const contenidoRef = useRef<HTMLDivElement>(null)
   const pantallaRef = useRef<HTMLDivElement>(null)
-  const [medidas, setMedidas] = useState({ altura: 0, pantalla: 0 })
+  const [medidas, setMedidas] = useState({ altura: 0, pantalla: 0, paso: 0 })
   const margenSuperior = 72
 
   useLayoutEffect(() => {
@@ -245,10 +245,14 @@ function LineaVertical() {
       const alturaCerrada = contenido.getBoundingClientRect().height
         - paneles.reduce((total, panel) => total + panel.getBoundingClientRect().height, 0)
       const altura = Math.ceil(alturaCerrada + Math.max(...textos.map((texto) => texto.getBoundingClientRect().height)))
+      const paso = Math.ceil(Math.max(...textos.map((texto) => {
+        const titulo = texto.closest('li')?.querySelector('h3')
+        return (titulo?.getBoundingClientRect().height ?? 0) + texto.getBoundingClientRect().height
+      })))
       const altoPantalla = pantalla.offsetHeight
-      setMedidas((actual) => actual.altura === altura && actual.pantalla === altoPantalla
+      setMedidas((actual) => actual.altura === altura && actual.pantalla === altoPantalla && actual.paso === paso
         ? actual
-        : { altura, pantalla: altoPantalla })
+        : { altura, pantalla: altoPantalla, paso })
     }
     const observer = new ResizeObserver(medir)
     observer.observe(contenido)
@@ -260,10 +264,17 @@ function LineaVertical() {
     }
   }, [])
 
-  const fija = medidas.pantalla > 0 && medidas.altura + margenSuperior <= medidas.pantalla && !reduceMotion
+  // Solo recurrimos al acordeón manual si ni siquiera cabe un paso completo.
+  const fija = medidas.pantalla > 0 && medidas.paso + margenSuperior + 48 <= medidas.pantalla && !reduceMotion
   const { scrollYProgress } = useScroll({
     target: recorridoRef,
     offset: [`start ${margenSuperior}px`, `end ${medidas.pantalla}px`],
+  })
+  const desplazamiento = useTransform(scrollYProgress, (progreso) => {
+    const sobrante = Math.max(0, medidas.altura - (medidas.pantalla - margenSuperior))
+    // El último paso ya debe verse completo al abrirse, antes de salir de la sección.
+    const avance = Math.max(0, Math.min(1, progreso / ((pasos.length - 1) / pasos.length)))
+    return fija ? -sobrante * avance : 0
   })
   useMotionValueEvent(scrollYProgress, 'change', (progreso) => {
     if (fija) setAbierto(Math.max(0, Math.min(pasos.length - 1, Math.floor(progreso * pasos.length))))
@@ -283,24 +294,26 @@ function LineaVertical() {
   return (
     <div ref={recorridoRef} className="relative" style={fija ? { height: `calc(${100 + pasos.length * 90}svh - ${margenSuperior}px)` } : undefined}>
       <div ref={pantallaRef} aria-hidden className="pointer-events-none absolute top-0 h-svh w-px invisible" />
-      <div className={cn(fija && 'sticky top-18')} style={fija ? { height: `calc(100svh - ${margenSuperior}px)` } : undefined}>
-        <Container ref={contenidoRef} className="py-6 sm:py-8 lg:py-seccion [@media(max-height:740px)]:py-4">
-          <Reveal>
-            <Encabezado />
-          </Reveal>
-          <ol className="mt-4 lg:mt-10 [@media(max-height:740px)]:mt-3">
-            {pasos.map((paso, i) => (
-              <PasoAcordeon
-                key={paso.titulo}
-                paso={paso}
-                index={i}
-                abierto={abierto === i}
-                pasado={abierto !== null && i <= abierto}
-                onAbrir={() => abrir(i)}
-              />
-            ))}
-          </ol>
-        </Container>
+      <div className={cn(fija && 'sticky top-18 overflow-hidden')} style={fija ? { height: `calc(100svh - ${margenSuperior}px)` } : undefined}>
+        <motion.div style={{ y: desplazamiento }}>
+          <Container ref={contenidoRef} className="py-seccion">
+            <Reveal>
+              <Encabezado />
+            </Reveal>
+            <ol className="mt-8 lg:mt-10">
+              {pasos.map((paso, i) => (
+                <PasoAcordeon
+                  key={paso.titulo}
+                  paso={paso}
+                  index={i}
+                  abierto={abierto === i}
+                  pasado={abierto !== null && i <= abierto}
+                  onAbrir={() => abrir(i)}
+                />
+              ))}
+            </ol>
+          </Container>
+        </motion.div>
       </div>
     </div>
   )
@@ -318,7 +331,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
   const id = `paso-${index}`
 
   return (
-    <li className="relative pl-8 before:absolute before:top-6 before:bottom-0 before:left-[9px] before:w-px before:bg-crema/15 last:before:hidden lg:pl-12">
+    <li className="relative pb-4 pl-8 last:pb-0 before:absolute before:top-6 before:bottom-0 before:left-[9px] before:w-px before:bg-crema/15 last:before:hidden lg:pl-12">
       {/* Nodo sobre la línea: se enciende en los pasos ya recorridos */}
       <span
         aria-hidden
@@ -338,7 +351,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
           aria-expanded={abierto}
           aria-controls={id}
           onClick={onAbrir}
-          className="flex min-h-11 w-full items-baseline gap-3 py-2.5 text-left lg:gap-4 [@media(max-height:740px)]:py-1.5"
+          className="flex min-h-11 w-full items-baseline gap-3 py-2.5 text-left lg:gap-4"
         >
           <span
             className={cn(
@@ -381,7 +394,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
         )}
       >
         <p className="overflow-hidden pl-[2.2rem] text-detalle text-crema/70">
-          <span data-paso-texto className="block pb-5 [@media(max-height:740px)]:pb-3">{paso.texto}</span>
+          <span data-paso-texto className="block pb-5">{paso.texto}</span>
         </p>
       </div>
     </li>
