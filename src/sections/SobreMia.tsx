@@ -73,15 +73,17 @@ function Pregunta() {
               <Llave progreso={trazoDesktop} className="size-full" />
             </div>
           </motion.div>
-          <Reveal className="space-y-5 text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
+          <Reveal className="text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
             <p>
               Mía es una consultora que trabaja con la relación entre la posición de quien dirige, las decisiones
               que toma y las condiciones de funcionamiento de su organización.
             </p>
-            <p>
-              Nos interesa identificar qué está en juego en cada situación, reconocer cómo están dispuestos los
-              recursos existentes y construir criterios de intervención que permitan producir cambios concretos.
-            </p>
+            <LeerMas tono="oscuro">
+              <p>
+                Nos interesa identificar qué está en juego en cada situación, reconocer cómo están dispuestos los
+                recursos existentes y construir criterios de intervención que permitan producir cambios concretos.
+              </p>
+            </LeerMas>
           </Reveal>
         </div>
       </Container>
@@ -175,14 +177,14 @@ function Sensible() {
         />
       </motion.div>
 
-      <Container className="py-20 lg:py-32 lg:text-center">
+      <Container className="py-10 lg:py-32 lg:text-center">
         <Reveal y={12}>
-          <p className="etiqueta flex items-center gap-4 text-dorado-suave lg:block">
+          <p className="etiqueta hidden items-center gap-4 text-dorado-suave lg:block">
             <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
             Una idea resume su forma de trabajar
           </p>
         </Reveal>
-        <blockquote className="mt-6 max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">
+        <blockquote className="max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">
           <LineaQueSube delay={0.1}>Hacer operativo</LineaQueSube>
           <LineaQueSube delay={0.22}>
             <Destacado>lo sensible.</Destacado>
@@ -190,16 +192,19 @@ function Sensible() {
         </blockquote>
         <motion.span
           aria-hidden
-          className="mt-8 block h-px w-24 origin-left bg-dorado-suave lg:mx-auto lg:mt-10 lg:origin-center"
+          className="mt-4 block h-px w-24 origin-left bg-dorado-suave lg:mx-auto lg:mt-10 lg:origin-center"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.4, ease: easeSuave, delay: 0.5 }}
         />
         <Reveal delay={0.4}>
-          <p className="mt-6 max-w-sm text-cuerpo text-balance text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-xl">
-            Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
-            empresa y convertirlo en una posibilidad concreta de acción.
+          <p className="mt-4 max-w-sm text-cuerpo text-balance text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-xl">
+            <span className="lg:hidden">Reconocer lo que ocurre en tu empresa y convertirlo en acción.</span>
+            <span className="hidden lg:inline">
+              Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
+              empresa y convertirlo en una posibilidad concreta de acción.
+            </span>
           </p>
         </Reveal>
       </Container>

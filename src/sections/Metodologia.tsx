@@ -7,13 +7,12 @@ import {
   useTransform,
   type MotionValue,
 } from 'motion/react'
-import { useLayoutEffect, useRef, useState, type Ref } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import aCrema from '@/assets/brand/a_mia_crema.svg'
 import { Reveal } from '@/components/motion/Reveal'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
-import { easeSuave } from '@/lib/motion'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 import { Destacado } from '@/components/marca/Destacado'
 
@@ -48,22 +47,21 @@ export function Metodologia() {
 
   return (
     <section id="metodologia" className="relative bg-burdeos-profundo text-crema">
-      {isDesktop && !reduceMotion ? <LineaHorizontal /> : <LineaVertical fija={!reduceMotion} />}
+      {isDesktop && !reduceMotion ? <LineaHorizontal /> : <LineaVertical />}
     </section>
   )
 }
 
-// «compacto»: en la versión fija de mobile, el párrafo se oculta en pantallas bajas para que entren los cinco pasos
-function Encabezado({ compacto = false }: { compacto?: boolean }) {
+function Encabezado() {
   return (
     <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-7">
         <Eyebrow tone="light">Metodología</Eyebrow>
-        <h2 className={cn('mt-8 text-titulo lg:mt-6', compacto && '[@media(max-height:720px)]:mt-5')}>
+        <h2 className="mt-5 text-titulo lg:mt-6">
           Cómo <Destacado>trabajamos.</Destacado>
         </h2>
       </div>
-      <p className={cn('text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9', compacto && '[@media(max-height:860px)]:hidden')}>
+      <p className="hidden text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9 lg:block">
         Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
       </p>
     </div>
@@ -224,78 +222,70 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
   )
 }
 
-// Móvil y tablet: la línea vertical como acordeón. Se ven los cinco pasos y se abre el que se toca;
-// la línea dorada se llena hasta el paso abierto
-function LineaVertical({ fija }: { fija: boolean }) {
-  const [abierto, setAbierto] = useState(0)
-  // Alto de cada fila cerrada (los títulos ocupan una, dos o tres líneas). Los pasos anteriores al abierto
-  // están siempre cerrados, así que el nodo de cada paso queda a la suma de las filas que tiene arriba
-  const filasRef = useRef<(HTMLHeadingElement | null)[]>([])
-  const [filas, setFilas] = useState<number[]>([])
-  const hasta = (i: number) => filas.slice(0, i).reduce((suma, alto) => suma + alto, 0)
+// Móvil: el scroll recorre los cinco pasos en 1,8 pantallas en total.
+// Si no caben en la pantalla, se leen en el flujo normal, sin recortar contenido.
+function LineaVertical() {
+  const [abierto, setAbierto] = useState<number | null>(0)
+  const reduceMotion = useReducedMotion()
+  const recorridoRef = useRef<HTMLDivElement>(null)
+  const contenidoRef = useRef<HTMLDivElement>(null)
+  const [cabe, setCabe] = useState(false)
 
   useLayoutEffect(() => {
-    const medir = () => setFilas(filasRef.current.map((fila) => fila?.offsetHeight ?? 0))
-    medir()
+    const contenido = contenidoRef.current
+    if (!contenido) return
+    // Reserva para el header y para las diferencias de largo entre las descripciones.
+    const medir = () => setCabe(contenido.offsetHeight + 104 <= window.innerHeight)
+    const observer = new ResizeObserver(medir)
+    observer.observe(contenido)
     window.addEventListener('resize', medir)
-    return () => window.removeEventListener('resize', medir)
+    medir()
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', medir)
+    }
   }, [])
 
-  // Versión fija: la sección queda quieta en pantalla y cada tramo de scroll abre el paso siguiente
-  const recorridoRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: recorridoRef, offset: ['start start', 'end end'] })
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    if (fija) setAbierto(Math.min(pasos.length - 1, Math.max(0, Math.floor(v * pasos.length))))
+  const fija = cabe && !reduceMotion
+  const { scrollYProgress } = useScroll({
+    target: recorridoRef,
+    offset: fija ? ['start 64px', 'end end'] : ['start center', 'end center'],
+  })
+  useMotionValueEvent(scrollYProgress, 'change', (progreso) => {
+    if (!reduceMotion) setAbierto(Math.min(pasos.length - 1, Math.floor(progreso * pasos.length)))
   })
 
-  // Al tocar un paso en la versión fija, se lleva el scroll hasta su tramo
   const abrir = (i: number) => {
+    if (!fija || !recorridoRef.current) {
+      setAbierto((actual) => actual === i ? null : i)
+      return
+    }
     const recorrido = recorridoRef.current
-    if (!fija || !recorrido) return setAbierto(i)
-    const inicio = recorrido.getBoundingClientRect().top + window.scrollY
-    const largo = recorrido.offsetHeight - window.innerHeight
-    window.scrollTo({ top: inicio + (largo * (i + 0.5)) / pasos.length, behavior: 'smooth' })
+    const inicio = recorrido.getBoundingClientRect().top + window.scrollY - 64
+    const distancia = recorrido.offsetHeight - window.innerHeight + 64
+    window.scrollTo({ top: inicio + distancia * ((i + 0.5) / pasos.length), behavior: 'smooth' })
   }
 
-  const contenido = (
-    <>
-      <Reveal>
-        <Encabezado compacto={fija} />
-      </Reveal>
-
-      <ol className={cn('relative mt-10', fija && '[@media(max-height:720px)]:mt-5')}>
-        <span aria-hidden className="absolute top-[1.4rem] left-[9px] w-px bg-crema/15" style={{ height: hasta(pasos.length - 1) }} />
-        <motion.span
-          aria-hidden
-          className="absolute top-[1.4rem] left-[9px] w-px bg-dorado-suave"
-          initial={false}
-          animate={{ height: hasta(abierto) }}
-          transition={{ duration: 0.8, ease: easeSuave }}
-        />
-        {pasos.map((paso, i) => (
-          <PasoAcordeon
-            key={paso.titulo}
-            paso={paso}
-            index={i}
-            abierto={abierto === i}
-            pasado={i <= abierto}
-            onAbrir={() => abrir(i)}
-            filaRef={(fila) => {
-              filasRef.current[i] = fila
-            }}
-          />
-        ))}
-      </ol>
-    </>
-  )
-
-  if (!fija) return <Container className="py-seccion">{contenido}</Container>
-
   return (
-    <div ref={recorridoRef} style={{ height: `calc(100svh + ${pasos.length * 45}svh)` }}>
-      {/* Alineado arriba (no centrado), así el bloque no se corre cuando cambia el largo del texto abierto */}
-      <div className="sticky top-0 h-svh overflow-hidden">
-        <Container className="pt-[max(4.5rem,11svh)]">{contenido}</Container>
+    <div ref={recorridoRef} style={fija ? { height: '180svh' } : undefined}>
+      <div ref={contenidoRef} className={cn(fija && 'sticky top-16')}>
+        <Container className="py-seccion">
+          <Reveal>
+            <Encabezado />
+          </Reveal>
+          <ol className="mt-6 lg:mt-10">
+            {pasos.map((paso, i) => (
+              <PasoAcordeon
+                key={paso.titulo}
+                paso={paso}
+                index={i}
+                abierto={abierto === i}
+                pasado={abierto !== null && i <= abierto}
+                onAbrir={() => abrir(i)}
+              />
+            ))}
+          </ol>
+        </Container>
       </div>
     </div>
   )
@@ -307,14 +297,13 @@ type PasoAcordeonProps = {
   abierto: boolean
   pasado: boolean
   onAbrir: () => void
-  filaRef?: Ref<HTMLHeadingElement>
 }
 
-function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAcordeonProps) {
+function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonProps) {
   const id = `paso-${index}`
 
   return (
-    <li className="relative pl-12">
+    <li className="relative pl-8 before:absolute before:top-6 before:bottom-0 before:left-[9px] before:w-px before:bg-crema/15 last:before:hidden lg:pl-12">
       {/* Nodo sobre la línea: se enciende en los pasos ya recorridos */}
       <span
         aria-hidden
@@ -328,13 +317,13 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
         />
       </span>
 
-      <h3 ref={filaRef}>
+      <h3>
         <button
           type="button"
           aria-expanded={abierto}
           aria-controls={id}
           onClick={onAbrir}
-          className="flex w-full items-baseline gap-4 py-2.5 text-left"
+          className="flex min-h-11 w-full items-baseline gap-3 py-2.5 text-left lg:gap-4"
         >
           <span
             className={cn(
@@ -352,13 +341,26 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir, filaRef }: PasoAc
           >
             {paso.titulo}
           </span>
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className={cn('size-3 shrink-0 self-center text-dorado-suave transition-transform duration-300 motion-reduce:transition-none', abierto && 'rotate-180')}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m3 6 5 5 5-5" />
+          </svg>
         </button>
       </h3>
 
       <div
         id={id}
+        inert={!abierto}
         className={cn(
-          'grid transition-[grid-template-rows,opacity] duration-700 ease-suave',
+          'grid transition-[grid-template-rows,opacity] duration-300 ease-suave motion-reduce:transition-none',
           abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
       >

@@ -33,7 +33,7 @@ export function Hero() {
       {/* En pantallas bajas se achica el aire, nunca la letra: el título mide lo mismo en cualquier escritorio */}
       <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-36 lg:pb-20 lg:bajo:pt-30 lg:bajo:pb-6">
         <motion.div
-          className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-9 pb-14 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
+          className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-8 pb-10 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
           style={{ y: esDesktop ? textoY : 0 }}
         >
           <Entra y={12} delay={0.5}>
@@ -46,7 +46,7 @@ export function Hero() {
             <Line delay={0.59}>tu empresa.</Line>
           </h1>
 
-          <div className="mt-8 grid gap-10 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8 lg:mt-10 lg:bajo:mt-5">
+          <div className="mt-6 grid gap-10 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8 lg:mt-10 lg:bajo:mt-5">
             <motion.span
               aria-hidden
               className="mt-3 hidden h-px w-16 origin-left bg-dorado sm:block"
@@ -56,10 +56,15 @@ export function Hero() {
             {/* Dos niveles: la idea principal en cuerpo y el complemento más chico y suave, para que el bloque no pese */}
             <Entra delay={1}>
               <p className="max-w-lg text-cuerpo text-negro/75">
-                Acompañamos a empresarias a consolidar su posición en la dirección de sus negocios, encontrar
-                criterios para tomar decisiones y desarrollar nuevas posibilidades de acción.
+                <span className="lg:hidden">
+                  Acompañamos a empresarias a fortalecer su dirección, tomar decisiones y hacer crecer su negocio.
+                </span>
+                <span className="hidden lg:inline">
+                  Acompañamos a empresarias a consolidar su posición en la dirección de sus negocios, encontrar
+                  criterios para tomar decisiones y desarrollar nuevas posibilidades de acción.
+                </span>
               </p>
-              <p className="mt-4 max-w-lg text-detalle text-negro/55 lg:bajo:mt-3">
+              <p className="mt-4 hidden max-w-lg text-detalle text-negro/55 lg:block lg:bajo:mt-3">
                 Trabajamos junto a ellas sobre los desafíos de su empresa, sus equipos y su organización, para
                 construir formas de funcionamiento sostenibles.
               </p>
@@ -68,7 +73,8 @@ export function Hero() {
 
           <Entra delay={1.15} className="mt-cta flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24">
             <Button href="#contacto" withArrow>
-              Conversemos sobre tu empresa
+              <span className="lg:hidden">Hablemos</span>
+              <span className="hidden lg:inline">Conversemos sobre tu empresa</span>
             </Button>
           </Entra>
         </motion.div>

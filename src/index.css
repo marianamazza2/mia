@@ -74,6 +74,15 @@
     --margen-ancho: calc((50vw - 36rem) / 2);
   }
 
+  /* Ritmo más compacto en móvil y tablet, conservando la escala de texto. */
+  @media (width < 64rem) {
+    :root {
+      --spacing-seccion: clamp(3rem, 2rem + 4vw, 4.5rem);
+      --spacing-bloque: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
+      --spacing-cta: 1.75rem;
+    }
+  }
+
   html {
     @apply scroll-smooth;
   }

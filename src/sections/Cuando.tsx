@@ -57,7 +57,7 @@ export function Cuando() {
           </h2>
         </Reveal>
 
-        <div className="mt-bloque grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="mt-bloque grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
           <div className="lg:sticky lg:top-32 lg:col-span-5 lg:self-start">
             <Reveal delay={0.15}>
               <p className="text-cuerpo text-negro/70">
@@ -65,7 +65,7 @@ export function Cuando() {
                 y el porvenir de la empresa requieren decisiones que implican algo más que una respuesta inmediata:
                 necesitan un espacio desde el cual poder pensarlas y construir cómo llevarlas adelante.
               </p>
-              <p className="mt-10 font-serif text-frase text-burdeos">En Mía te acompañamos cuando…</p>
+              <p className="mt-6 font-serif text-frase text-burdeos lg:mt-10">En Mía te acompañamos cuando…</p>
             </Reveal>
           </div>
 

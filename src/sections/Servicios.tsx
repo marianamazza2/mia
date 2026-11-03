@@ -166,13 +166,13 @@ export function Servicios() {
         {/* Desktop: paneles que se apilan (o en lista, con «reducir movimiento»); mobile y tablet: carrusel */}
         {isDesktop ? reduceMotion ? <Lista /> : <Apilados /> : <CarruselServicios />}
 
-        {/* Debajo de la Mentoría, sin corte de color, lo que se le puede sumar: plegado hasta que se pide */}
+        {/* Escritorio: las ampliaciones van debajo. En móvil se leen dentro de la tarjeta. */}
         <div
           id={intervencionesId}
           ref={intervencionesRef}
-          inert={!ampliada}
+          inert={!isDesktop || !ampliada}
           className={cn(
-            'grid scroll-mt-16 transition-[grid-template-rows,opacity] duration-1000 ease-suave',
+            'hidden scroll-mt-16 transition-[grid-template-rows,opacity] duration-1000 ease-suave lg:grid',
             ampliada ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
           )}
         >
@@ -423,55 +423,66 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
         oscuro ? 'bg-burdeos text-crema' : 'border border-dorado/30 bg-white/45 text-negro',
       )}
     >
-      {/* Foto apaisada y baja: la tarjeta se lee de un vistazo */}
       <Picture {...servicio.imagen} loading="lazy" className="aspect-[2/1] w-full object-cover" />
 
-      <div className="flex flex-1 flex-col px-5 pt-5 pb-5 sm:px-6">
-        <div className="flex items-baseline gap-4">
-          <span
-            aria-hidden
-            className={cn(
-              'font-serif text-2xl leading-none font-medium lining-nums tabular-nums',
-              oscuro ? 'text-dorado-suave' : 'text-burdeos/40',
-            )}
+      <div className="flex flex-1 flex-col p-5 text-detalle sm:p-6">
+        <h3 className="text-tarjeta">{servicio.titulo}</h3>
+        <p className={cn('mt-3', oscuro ? 'text-crema/85' : 'text-negro/75')}>
+          {servicio.ampliable
+            ? 'Fortalece tu dirección y acompaña el desarrollo de tu empresa.'
+            : 'Ordena una dificultad o decisión y encuentra cómo avanzar.'}
+        </p>
+        <p className={cn('mt-3', oscuro ? 'text-crema/65' : 'text-negro/55')}>
+          {servicio.ampliable ? 'Acompañamiento continuado' : 'Sesión individual · 60–90 min'}
+        </p>
+
+        <div className="mt-4">
+          <Desplegable
+            titulo={abierto ? 'Ver menos' : 'Ver detalles'}
+            oscuro={oscuro}
+            abierto={abierto}
+            onAlternar={() => setAbierto((v) => !v)}
           >
-            {servicio.numero}
-          </span>
-          <h3 className="text-tarjeta">{servicio.titulo}</h3>
-        </div>
-
-        {/* Bajada siempre visible; la descripción completa y la nota, en «En detalle» */}
-        <p className={cn('mt-4 text-detalle', oscuro ? 'text-crema/85' : 'text-negro/75')}>{servicio.bajada}</p>
-
-        <div className={cn('mt-5 border-t', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
-          <Desplegable titulo="En detalle" oscuro={oscuro} abierto={abierto} onAlternar={() => setAbierto((v) => !v)}>
             <div className="space-y-3">
-              {servicio.descripcion.map((parrafo) => (
-                <p key={parrafo}>{parrafo}</p>
-              ))}
-              {servicio.nota && (
-                <Ficha servicio={{ ...servicio, formato: undefined }} oscuro={oscuro} className="pt-2" />
+              {servicio.descripcion.map((parrafo) => <p key={parrafo}>{parrafo}</p>)}
+              {servicio.nota && <p>{servicio.nota}</p>}
+              {servicio.ampliable && (
+                <div className="space-y-3 border-t border-crema/15 pt-4">
+                  <p>La mentoría puede ampliarse con intervenciones complementarias:</p>
+                  <ul className="space-y-3">
+                    {intervenciones.map((intervencion) => (
+                      <li key={intervencion.titulo}>
+                        <details className="group/complemento">
+                          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                            {intervencion.titulo}
+                            <svg aria-hidden viewBox="0 0 16 16" className="size-3 shrink-0 transition-transform group-open/complemento:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" strokeWidth="1.25">
+                              <path d="m3 6 5 5 5-5" />
+                            </svg>
+                          </summary>
+                          <div className="space-y-3 py-2">
+                            {intervencion.texto.map((parrafo) => <p key={parrafo}>{parrafo}</p>)}
+                          </div>
+                        </details>
+                      </li>
+                    ))}
+                  </ul>
+                  <p>Se suman a la mentoría cuando tu empresa lo necesita; no se contratan por separado.</p>
+                </div>
               )}
             </div>
           </Desplegable>
         </div>
 
-        {servicio.formato && (
-          <p
-            className={cn('mt-4 flex items-center gap-2.5 text-[0.8125rem]', oscuro ? 'text-crema/75' : 'text-burdeos')}
-          >
-            <IconoReloj />
-            {servicio.formato}
-          </p>
-        )}
-
-        {servicio.ampliable && <Ampliable compacto className="mt-4" />}
-
-        <div className="mt-6 flex-1" />
-        {/* En la tarjeta, un link discreto en minúsculas: no compite con los rótulos de los desplegables */}
-        <EnlaceConsulta href={servicio.consulta} oscuro={oscuro}>
-          Consultar este servicio
-        </EnlaceConsulta>
+        <a
+          href={servicio.consulta}
+          aria-label={`Consultar por ${servicio.titulo}`}
+          className={cn(
+            'mt-auto flex min-h-11 items-center justify-center rounded-full px-5 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4',
+            oscuro ? 'bg-crema text-burdeos hover:bg-white' : 'bg-burdeos text-crema hover:bg-burdeos-medio',
+          )}
+        >
+          Consultar
+        </a>
       </div>
     </article>
   )
@@ -706,14 +717,14 @@ function Desplegable({ titulo, children, oscuro, abierto, onAlternar }: Desplega
   const id = useId()
 
   return (
-    <div className={cn('border-b', oscuro ? 'border-crema/15' : 'border-burdeos/15')}>
+    <div className="pb-5">
       <button
         type="button"
         aria-expanded={abierto}
         aria-controls={id}
         onClick={onAlternar}
         className={cn(
-          'etiqueta flex w-full items-center justify-between py-4',
+          'flex min-h-11 w-full items-center justify-between gap-3 text-detalle',
           oscuro ? 'text-dorado-suave' : 'text-burdeos',
         )}
       >
@@ -721,23 +732,24 @@ function Desplegable({ titulo, children, oscuro, abierto, onAlternar }: Desplega
         <svg
           aria-hidden
           viewBox="0 0 16 16"
-          className={cn('size-3 transition-transform duration-500 ease-suave', abierto && 'rotate-45')}
+          className={cn('size-3 transition-transform duration-300 ease-suave motion-reduce:transition-none', abierto && 'rotate-180')}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.25"
         >
-          <path d="M8 1v14M1 8h14" />
+          <path d="m3 6 5 5 5-5" />
         </svg>
       </button>
       <div
         id={id}
+        inert={!abierto}
         className={cn(
-          'grid transition-[grid-template-rows,opacity] duration-500 ease-suave',
+          'grid transition-[grid-template-rows,opacity] duration-300 ease-suave motion-reduce:transition-none',
           abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
       >
         <div className={cn('overflow-hidden text-detalle', oscuro ? 'text-crema/75' : 'text-negro/70')}>
-          <div className="pb-5">{children}</div>
+          <div className="pt-3">{children}</div>
         </div>
       </div>
     </div>

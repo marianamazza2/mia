@@ -3,12 +3,14 @@ import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent,
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
 import { Button, ButtonAccion } from '@/components/ui/Button'
+import { Carrusel } from '@/components/ui/Carrusel'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 import { contacto } from '@/lib/contacto'
 import { easeSereno, easeSuave } from '@/lib/motion'
 import { Destacado } from '@/components/marca/Destacado'
+import { useMediaQuery } from '@/lib/useMediaQuery'
 
 // La reserva va por WhatsApp; aquí quedan los demás canales
 const canales = [
@@ -36,13 +38,16 @@ const canales = [
 // Arriba, la invitación en horizontal. Debajo, las dos maneras de empezar como un pliego abierto: dos mitades
 // unidas de borde a borde, con un filete dorado al medio como lomo y, sobre él, la flecha que va y viene.
 // A la izquierda, reservar Punto de Partida por WhatsApp; a la derecha, escribir para conocer las propuestas.
-// Más abajo, los demás canales sobre el burdeos con la «a»: en una franja con el formulario cerrado y, al
+// En móvil, las dos opciones comparten un carrusel de una tarjeta por pantalla.
+// En escritorio, los demás canales sobre el burdeos con la «a»: en una franja con el formulario cerrado y, al
 // abrirlo, en la mitad izquierda, con el formulario en la derecha, justo debajo de la opción que lo abrió
+// En móvil, esos datos se consultan en el footer para evitar duplicarlos.
 export function Contacto() {
   const [formularioAbierto, setFormularioAbierto] = useState(false)
   const panelId = useId()
   const panelRef = useRef<HTMLDivElement>(null)
   const reduceMotion = useReducedMotion()
+  const esDesktop = useMediaQuery('(min-width: 1024px)')
 
   const alternarFormulario = () => {
     const abrir = !formularioAbierto
@@ -60,35 +65,38 @@ export function Contacto() {
     <section id="contacto" className="relative">
       <Container className="pt-seccion">
         {/* Encabezado en dos columnas, como el de Servicios */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+        <div className="grid gap-5 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-6">
             <Reveal y={12}>
               <Eyebrow>Contacto</Eyebrow>
             </Reveal>
             <Reveal delay={0.1}>
-              <h2 className="mt-8 text-titulo lg:mt-10">
+              <h2 className="mt-5 text-titulo lg:mt-10">
                 Hablemos de <Destacado>tu empresa.</Destacado>
               </h2>
             </Reveal>
           </div>
           <Reveal delay={0.2} className="self-end lg:col-span-6 lg:col-start-7">
             <p className="text-cuerpo text-negro/70">
-              Si estás atravesando una dificultad, tienes una decisión importante por delante o quieres revisar algún
-              aspecto del funcionamiento de tu negocio, podemos comenzar por una conversación.
+              {esDesktop
+                ? 'Si estás atravesando una dificultad, tienes una decisión importante por delante o quieres revisar algún aspecto del funcionamiento de tu negocio, podemos comenzar por una conversación.'
+                : 'Cuéntanos qué necesita tu empresa. Podemos comenzar por una conversación.'}
             </p>
-            <p className="mt-4 text-detalle text-negro/50">
+            <p className="mt-4 hidden text-detalle text-negro/50 lg:block">
               No necesitas tener todas las respuestas ni saber exactamente qué tipo de acompañamiento necesitas.
             </p>
           </Reveal>
         </div>
       </Container>
 
-      {/* El pliego: las dos opciones unidas, con el mismo orden (canal, pregunta, texto, botón al pie) */}
-      <div className="mt-bloque grid border-t border-dorado/30 lg:grid-cols-2">
+      {/* En móvil, una opción por slide; en escritorio, las dos mitades del pliego. */}
+      <OpcionesContacto>
         <Mitad id="reservar" lado="izquierdo" canal="Por WhatsApp" icono={<IconoWhatsApp className="size-4" />}>
-          <Camino titulo="¿Quieres comenzar por una situación concreta?">
-            Reserva <span className="text-negro">Punto de Partida Mía</span>, una sesión individual para trabajar sobre
-            aquello que hoy necesitas abordar.
+          <Camino titulo={esDesktop ? '¿Quieres comenzar por una situación concreta?' : 'Trabajemos una situación concreta'}>
+            Reserva <span className="text-negro">Punto de Partida Mía</span>,{' '}
+            {esDesktop
+              ? 'una sesión individual para trabajar sobre aquello que hoy necesitas abordar.'
+              : 'una sesión individual sobre lo que hoy necesitas resolver.'}
           </Camino>
           <Pie nota="Coordinamos el día y la hora por WhatsApp.">
             <Button
@@ -96,7 +104,7 @@ export function Contacto() {
               target="_blank"
               rel="noopener noreferrer"
               withArrow
-              className="self-start"
+              className="self-start max-lg:gap-2 max-lg:px-4 max-lg:text-[0.625rem] max-lg:tracking-[0.08em]"
             >
               Reservar una sesión
             </Button>
@@ -110,20 +118,20 @@ export function Contacto() {
           icono={<IconoFormulario />}
           activa={formularioAbierto}
           delay={0.15}
-          // La flecha va sobre el lomo: arriba al medio en mobile, a la izquierda y a media altura en desktop
+          // La flecha va sobre el lomo, solo en escritorio.
           sobreElLomo={<IdaYVuelta />}
         >
-          <Camino titulo="¿Quieres conocer nuestras propuestas de acompañamiento?">
-            Si estás considerando trabajar con Mía o quieres conocer más sobre nuestras propuestas de acompañamiento,
-            puedes escribirnos a través de este formulario. Nos pondremos en contacto contigo para conocer tu empresa,
-            lo que necesitas y valorar cómo podemos trabajar juntas.
+          <Camino titulo={esDesktop ? '¿Quieres conocer nuestras propuestas de acompañamiento?' : 'Conoce nuestras propuestas'}>
+            {esDesktop
+              ? 'Si estás considerando trabajar con Mía o quieres conocer más sobre nuestras propuestas de acompañamiento, puedes escribirnos a través de este formulario. Nos pondremos en contacto contigo para conocer tu empresa, lo que necesitas y valorar cómo podemos trabajar juntas.'
+              : 'Cuéntanos qué necesitas y te contactaremos para valorar cómo podemos trabajar juntas.'}
           </Camino>
           <Pie nota="Te responderemos lo antes posible.">
             <ButtonAccion
               aria-expanded={formularioAbierto}
               aria-controls={panelId}
               onClick={alternarFormulario}
-              className="self-start"
+              className="self-start max-lg:gap-2 max-lg:px-4 max-lg:text-[0.625rem] max-lg:tracking-[0.08em]"
             >
               {formularioAbierto ? 'Cerrar el formulario' : 'Abrir el formulario'}
               {/* Flecha hacia abajo: el formulario se abre debajo */}
@@ -143,13 +151,13 @@ export function Contacto() {
             </ButtonAccion>
           </Pie>
         </Mitad>
-      </div>
+      </OpcionesContacto>
 
       {/* Cerrado: los demás canales en una franja burdeos con la «a», pegada al pliego */}
       <div
         inert={formularioAbierto}
         className={cn(
-          'grid transition-[grid-template-rows,opacity] duration-700 ease-suave',
+          'hidden transition-[grid-template-rows,opacity] duration-700 ease-suave lg:grid',
           formularioAbierto ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100',
         )}
       >
@@ -177,7 +185,7 @@ export function Contacto() {
           {/* Mismo marco que el pliego: filete dorado arriba y el lomo al medio */}
           <div className="grid border-t border-dorado/30 lg:grid-cols-2">
             <FondoA
-              className="order-2 lg:order-none"
+              className="hidden lg:order-none lg:block"
               claseContenido={cn(ladoIzquierdo, 'flex h-full flex-col justify-center')}
             >
               <Rotulo oscuro>Otros canales</Rotulo>
@@ -186,7 +194,7 @@ export function Contacto() {
               </p>
               <Canales disposicion="lista" className="mt-8 max-w-md" />
             </FondoA>
-            <div className={cn(ladoDerecho, 'order-1 bg-white/45 lg:order-none lg:border-l lg:border-dorado/30')}>
+            <div className={cn(ladoDerecho, 'order-1 bg-white/45 max-lg:py-8 lg:order-none lg:border-l lg:border-dorado/30')}>
               <Rotulo>Escríbenos</Rotulo>
               <Formulario />
             </div>
@@ -194,6 +202,18 @@ export function Contacto() {
         </div>
       </div>
     </section>
+  )
+}
+
+function OpcionesContacto({ children }: { children: ReactNode }) {
+  const esDesktop = useMediaQuery('(min-width: 1024px)')
+
+  return esDesktop ? (
+    <div className="mt-bloque grid grid-cols-2 border-t border-dorado/30">{children}</div>
+  ) : (
+    <Carrusel etiqueta="Opciones de contacto" anchoItem="w-full" className="mt-bloque mb-8">
+      {children}
+    </Carrusel>
   )
 }
 
@@ -237,7 +257,7 @@ type MitadProps = {
   children: ReactNode
 }
 
-// Cada mitad del pliego. La derecha lleva el lomo: un filete dorado arriba (mobile) o a la izquierda (desktop).
+// Cada mitad del pliego; en móvil se convierte en una tarjeta dentro del carrusel.
 // Al pasar el mouse, la mitad se aclara apenas: invita a elegirla
 function Mitad({ id, lado, canal, icono, activa = false, delay = 0, sobreElLomo, children }: MitadProps) {
   return (
@@ -246,6 +266,7 @@ function Mitad({ id, lado, canal, icono, activa = false, delay = 0, sobreElLomo,
       className={cn(
         'relative flex scroll-mt-20 flex-col transition-colors duration-700 ease-suave',
         lado === 'izquierdo' ? ladoIzquierdo : cn(ladoDerecho, 'border-t border-dorado/30 lg:border-t-0 lg:border-l'),
+        'max-lg:w-full max-lg:overflow-hidden max-lg:rounded-[10px] max-lg:border max-lg:border-dorado/30 max-lg:px-5 max-lg:py-8',
         activa ? 'bg-white/45' : 'hover:bg-white/25',
       )}
     >
@@ -282,7 +303,7 @@ function FondoA({
 }
 
 // Sobre el lomo del pliego, una flecha que va y otra que vuelve, meciéndose despacio: se elige una u otra.
-// En mobile, girada, en la línea que separa las dos opciones
+// Se oculta en móvil, donde las flechas del carrusel permiten elegir una opción.
 function IdaYVuelta() {
   const reduceMotion = useReducedMotion()
   const vaiven = (sentido: 1 | -1) =>
@@ -299,8 +320,8 @@ function IdaYVuelta() {
         }
 
   return (
-    <div aria-hidden className="absolute top-0 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 lg:top-1/2 lg:left-0">
-      <span className="grid size-14 place-items-center rounded-full border border-dorado/50 bg-crema text-burdeos max-lg:rotate-90">
+    <div aria-hidden className="absolute top-0 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:top-1/2 lg:left-0 lg:block">
+      <span className="grid size-14 place-items-center rounded-full border border-dorado/50 bg-crema text-burdeos">
         <svg viewBox="0 0 24 24" className="size-6 overflow-visible" fill="none" stroke="currentColor" strokeWidth="1">
           <motion.g {...vaiven(1)}>
             <path d="M4 8.5h15M15.5 5l3.5 3.5-3.5 3.5" />
