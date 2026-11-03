@@ -222,37 +222,51 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
   )
 }
 
-// Móvil: el scroll recorre los cinco pasos en 1,8 pantallas en total.
+// Móvil: cada paso dispone de casi una pantalla de scroll, incluido el último.
 // Si no caben en la pantalla, se leen en el flujo normal, sin recortar contenido.
 function LineaVertical() {
   const [abierto, setAbierto] = useState<number | null>(0)
   const reduceMotion = useReducedMotion()
   const recorridoRef = useRef<HTMLDivElement>(null)
   const contenidoRef = useRef<HTMLDivElement>(null)
-  const [cabe, setCabe] = useState(false)
+  const pantallaRef = useRef<HTMLDivElement>(null)
+  const [medidas, setMedidas] = useState({ altura: 0, pantalla: 0 })
+  const margenSuperior = 72
 
   useLayoutEffect(() => {
     const contenido = contenidoRef.current
-    if (!contenido) return
-    // Reserva para el header y para las diferencias de largo entre las descripciones.
-    const medir = () => setCabe(contenido.offsetHeight + 104 <= window.innerHeight)
+    const pantalla = pantallaRef.current
+    if (!contenido || !pantalla) return
+    const paneles = Array.from(contenido.querySelectorAll<HTMLElement>('[data-paso-panel]'))
+    const textos = Array.from(contenido.querySelectorAll<HTMLElement>('[data-paso-texto]'))
+    // Medimos la descripción más alta, incluso cerrada. Abrir otro paso nunca
+    // puede desactivar el sticky ni acortar de golpe la sección durante el scroll.
+    const medir = () => {
+      const alturaCerrada = contenido.getBoundingClientRect().height
+        - paneles.reduce((total, panel) => total + panel.getBoundingClientRect().height, 0)
+      const altura = Math.ceil(alturaCerrada + Math.max(...textos.map((texto) => texto.getBoundingClientRect().height)))
+      const altoPantalla = pantalla.offsetHeight
+      setMedidas((actual) => actual.altura === altura && actual.pantalla === altoPantalla
+        ? actual
+        : { altura, pantalla: altoPantalla })
+    }
     const observer = new ResizeObserver(medir)
     observer.observe(contenido)
-    window.addEventListener('resize', medir)
+    observer.observe(pantalla)
+    textos.forEach((texto) => observer.observe(texto))
     medir()
     return () => {
       observer.disconnect()
-      window.removeEventListener('resize', medir)
     }
   }, [])
 
-  const fija = cabe && !reduceMotion
+  const fija = medidas.pantalla > 0 && medidas.altura + margenSuperior <= medidas.pantalla && !reduceMotion
   const { scrollYProgress } = useScroll({
     target: recorridoRef,
-    offset: fija ? ['start 64px', 'end end'] : ['start center', 'end center'],
+    offset: [`start ${margenSuperior}px`, `end ${medidas.pantalla}px`],
   })
   useMotionValueEvent(scrollYProgress, 'change', (progreso) => {
-    if (!reduceMotion) setAbierto(Math.min(pasos.length - 1, Math.floor(progreso * pasos.length)))
+    if (fija) setAbierto(Math.max(0, Math.min(pasos.length - 1, Math.floor(progreso * pasos.length))))
   })
 
   const abrir = (i: number) => {
@@ -261,19 +275,20 @@ function LineaVertical() {
       return
     }
     const recorrido = recorridoRef.current
-    const inicio = recorrido.getBoundingClientRect().top + window.scrollY - 64
-    const distancia = recorrido.offsetHeight - window.innerHeight + 64
+    const inicio = recorrido.getBoundingClientRect().top + window.scrollY - margenSuperior
+    const distancia = recorrido.offsetHeight - medidas.pantalla + margenSuperior
     window.scrollTo({ top: inicio + distancia * ((i + 0.5) / pasos.length), behavior: 'smooth' })
   }
 
   return (
-    <div ref={recorridoRef} style={fija ? { height: '180svh' } : undefined}>
-      <div ref={contenidoRef} className={cn(fija && 'sticky top-16')}>
-        <Container className="py-seccion">
+    <div ref={recorridoRef} className="relative" style={fija ? { height: `calc(${100 + pasos.length * 90}svh - ${margenSuperior}px)` } : undefined}>
+      <div ref={pantallaRef} aria-hidden className="pointer-events-none absolute top-0 h-svh w-px invisible" />
+      <div className={cn(fija && 'sticky top-18')} style={fija ? { height: `calc(100svh - ${margenSuperior}px)` } : undefined}>
+        <Container ref={contenidoRef} className="py-6 sm:py-8 lg:py-seccion [@media(max-height:740px)]:py-4">
           <Reveal>
             <Encabezado />
           </Reveal>
-          <ol className="mt-6 lg:mt-10">
+          <ol className="mt-4 lg:mt-10 [@media(max-height:740px)]:mt-3">
             {pasos.map((paso, i) => (
               <PasoAcordeon
                 key={paso.titulo}
@@ -323,7 +338,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
           aria-expanded={abierto}
           aria-controls={id}
           onClick={onAbrir}
-          className="flex min-h-11 w-full items-baseline gap-3 py-2.5 text-left lg:gap-4"
+          className="flex min-h-11 w-full items-baseline gap-3 py-2.5 text-left lg:gap-4 [@media(max-height:740px)]:py-1.5"
         >
           <span
             className={cn(
@@ -358,6 +373,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
 
       <div
         id={id}
+        data-paso-panel
         inert={!abierto}
         className={cn(
           'grid transition-[grid-template-rows,opacity] duration-300 ease-suave motion-reduce:transition-none',
@@ -365,7 +381,7 @@ function PasoAcordeon({ paso, index, abierto, pasado, onAbrir }: PasoAcordeonPro
         )}
       >
         <p className="overflow-hidden pl-[2.2rem] text-detalle text-crema/70">
-          <span className="block pb-5">{paso.texto}</span>
+          <span data-paso-texto className="block pb-5 [@media(max-height:740px)]:pb-3">{paso.texto}</span>
         </p>
       </div>
     </li>
