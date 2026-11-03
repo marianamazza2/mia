@@ -8,7 +8,8 @@ type LeerMasProps = {
   className?: string
 }
 
-// En mobile, el contenido arranca plegado y se despliega con «Leer más»; en desktop se ve siempre
+// En mobile, el contenido arranca plegado y se despliega con «Ver más», pegado al texto; en desktop se ve siempre.
+// El aire entre párrafos va dentro de lo plegado, así cerrado no deja un hueco antes del botón
 export function LeerMas({ children, tono = 'claro', className }: LeerMasProps) {
   const [abierto, setAbierto] = useState(false)
   const id = useId()
@@ -22,7 +23,9 @@ export function LeerMas({ children, tono = 'claro', className }: LeerMasProps) {
           abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
       >
-        <div className="overflow-hidden">{children}</div>
+        <div className="overflow-hidden">
+          <div className="pt-5">{children}</div>
+        </div>
       </div>
       <button
         type="button"
@@ -30,12 +33,12 @@ export function LeerMas({ children, tono = 'claro', className }: LeerMasProps) {
         aria-controls={id}
         onClick={() => setAbierto((v) => !v)}
         className={cn(
-          'group mt-5 inline-flex items-center gap-2.5 text-detalle lg:hidden',
+          'group mt-3 inline-flex items-center gap-2.5 text-detalle lg:hidden',
           tono === 'oscuro' ? 'text-dorado-suave' : 'text-burdeos',
         )}
       >
         <span className="relative py-0.5">
-          {abierto ? 'Leer menos' : 'Leer más'}
+          {abierto ? 'Ver menos' : 'Ver más'}
           <span className="absolute inset-x-0 -bottom-0.5 h-px bg-dorado/60" />
         </span>
         <svg

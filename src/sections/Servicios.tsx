@@ -8,6 +8,7 @@ import { Reveal } from '@/components/motion/Reveal'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { Carrusel } from '@/components/ui/Carrusel'
 import { Picture } from '@/components/ui/Picture'
 import { cn } from '@/lib/cn'
 import { easeSereno } from '@/lib/motion'
@@ -163,7 +164,7 @@ export function Servicios() {
 
       <AmpliacionContext.Provider value={{ abierta: ampliada, id: intervencionesId, alternar: alternarAmpliacion }}>
         {/* Desktop: paneles que se apilan (o en lista, con «reducir movimiento»); mobile y tablet: carrusel */}
-        {isDesktop ? reduceMotion ? <Lista /> : <Apilados /> : <Carrusel />}
+        {isDesktop ? reduceMotion ? <Lista /> : <Apilados /> : <CarruselServicios />}
 
         {/* Debajo de la Mentoría, sin corte de color, lo que se le puede sumar: plegado hasta que se pide */}
         <div
@@ -399,76 +400,26 @@ function Lista() {
   )
 }
 
-// Mobile y tablet: carrusel que se desliza con el dedo; se ve un poco la tarjeta siguiente
-function Carrusel() {
-  const pistaRef = useRef<HTMLDivElement>(null)
-  const [actual, setActual] = useState(0)
-
-  const alDeslizar = () => {
-    const pista = pistaRef.current
-    if (!pista) return
-    const paso = (pista.children[1] as HTMLElement).offsetLeft - (pista.children[0] as HTMLElement).offsetLeft
-    setActual(Math.min(Math.round(pista.scrollLeft / paso), servicios.length - 1))
-  }
-
-  const ir = (i: number) => {
-    const pista = pistaRef.current
-    const tarjeta = pista?.children[i] as HTMLElement | undefined
-    if (!pista || !tarjeta) return
-    pista.scrollTo({
-      left: tarjeta.offsetLeft - pista.offsetLeft - parseFloat(getComputedStyle(pista).scrollPaddingLeft || '0'),
-      behavior: 'smooth',
-    })
-  }
-
+// Mobile y tablet: carrusel que se desliza con el dedo; se ve un poco la tarjeta siguiente.
+// Con aire abajo para que el contador no quede pegado a lo que sigue
+function CarruselServicios() {
   return (
-    <div className="pb-bloque">
-      <div
-        ref={pistaRef}
-        onScroll={alDeslizar}
-        role="region"
-        aria-label="Servicios"
-        className="flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:scroll-px-8 sm:px-8 [&::-webkit-scrollbar]:hidden"
-      >
-        {servicios.map((servicio, i) => (
-          <TarjetaServicio key={servicio.titulo} servicio={servicio} posicion={i} />
-        ))}
-      </div>
-
-      {/* Contador con filete de progreso y flechas */}
-      <Container className="mt-8 flex items-center justify-between">
-        <div className="flex items-center gap-4 font-serif text-lg lining-nums tabular-nums">
-          <span className="text-burdeos">{String(actual + 1).padStart(2, '0')}</span>
-          <span className="relative h-px w-16 bg-burdeos/15">
-            <span
-              className="absolute inset-y-0 left-0 bg-dorado transition-[width] duration-500 ease-suave"
-              style={{ width: `${((actual + 1) / servicios.length) * 100}%` }}
-            />
-          </span>
-          <span className="text-negro/40">{String(servicios.length).padStart(2, '0')}</span>
-        </div>
-        <div className="flex gap-3">
-          <FlechaCarrusel direccion="anterior" disabled={actual === 0} onClick={() => ir(actual - 1)} />
-          <FlechaCarrusel
-            direccion="siguiente"
-            disabled={actual === servicios.length - 1}
-            onClick={() => ir(actual + 1)}
-          />
-        </div>
-      </Container>
-    </div>
+    <Carrusel etiqueta="Servicios" className="pb-seccion">
+      {servicios.map((servicio) => (
+        <TarjetaServicio key={servicio.titulo} servicio={servicio} />
+      ))}
+    </Carrusel>
   )
 }
 
-function TarjetaServicio({ servicio, posicion }: { servicio: Servicio; posicion: number }) {
+function TarjetaServicio({ servicio }: { servicio: Servicio }) {
   const oscuro = servicio.tono === 'burdeos'
   const [abierto, setAbierto] = useState(false)
 
   return (
     <article
-      aria-label={`${posicion + 1} de ${servicios.length}`}
       className={cn(
-        'flex w-[88%] shrink-0 snap-start flex-col overflow-hidden rounded-[10px] sm:w-[62%] md:w-[46%]',
+        'flex w-full flex-col overflow-hidden rounded-[10px]',
         oscuro ? 'bg-burdeos text-crema' : 'border border-dorado/30 bg-white/45 text-negro',
       )}
     >
@@ -790,36 +741,5 @@ function Desplegable({ titulo, children, oscuro, abierto, onAlternar }: Desplega
         </div>
       </div>
     </div>
-  )
-}
-
-function FlechaCarrusel({
-  direccion,
-  disabled,
-  onClick,
-}: {
-  direccion: 'anterior' | 'siguiente'
-  disabled: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={direccion === 'anterior' ? 'Servicio anterior' : 'Servicio siguiente'}
-      disabled={disabled}
-      onClick={onClick}
-      className="grid size-11 place-items-center rounded-full border border-burdeos/25 text-burdeos transition-colors duration-300 hover:bg-burdeos hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-burdeos"
-    >
-      <svg
-        aria-hidden
-        viewBox="0 0 24 16"
-        className={cn('h-3 w-4', direccion === 'anterior' && 'rotate-180')}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.25"
-      >
-        <path d="M0 8h22M16 2l6 6-6 6" />
-      </svg>
-    </button>
   )
 }

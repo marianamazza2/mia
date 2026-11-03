@@ -3,6 +3,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import aBurdeos from '@/assets/brand/a_mia_burdeos.svg'
 import marina from '@/assets/images/equipo-marina.webp'
 import { Reveal } from '@/components/motion/Reveal'
+import { Carrusel } from '@/components/ui/Carrusel'
 import { Picture } from '@/components/ui/Picture'
 import { cn } from '@/lib/cn'
 import { easeSuave } from '@/lib/motion'
@@ -42,60 +43,98 @@ const equipo: Persona[] = [
   },
 ]
 
-// Los retratos de quienes están detrás de Mía, bajo el título «Dirección y coordinación», lado a lado y a la
-// misma altura. Debajo, solo nombre, rol y «Ver perfil»: la presentación completa se abre en un panel de perfil.
+// Los retratos de quienes están detrás de Mía, bajo el título «Dirección y coordinación».
+// Desktop: lado a lado y a la misma altura; debajo, nombre, rol y «Ver perfil».
+// Mobile: un carrusel de a una persona, más liviano: la foto (con un «+» que invita a tocarla), el nombre y el rol.
+// En los dos casos, la presentación completa se abre en un panel de perfil.
 export function Retratos({ className }: { className?: string }) {
   const [abierta, setAbierta] = useState<Persona | null>(null)
   const cerrar = useCallback(() => setAbierta(null), [])
+  const esDesktop = useMediaQuery('(min-width: 1024px)')
 
   return (
     <>
       <div className={className}>
         <Reveal>
-          <h4 className="text-titulo">
-            Dirección y coordinación
-          </h4>
+          <h4 className="text-titulo">Dirección y coordinación</h4>
         </Reveal>
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:gap-8 lg:mt-8 lg:gap-10">
-          {equipo.map((persona, i) => (
-            <li key={persona.nombre}>
-              <button
-                type="button"
-                onClick={() => setAbierta(persona)}
-                aria-label={`Ver el perfil de ${persona.nombre}`}
-                className="group block w-full text-left"
-              >
-                <Retrato persona={persona} delay={i * 0.2} />
-              </button>
-              <Reveal delay={0.3 + i * 0.2}>
-                <p className="mt-5 font-serif text-tarjeta lg:mt-6">
-                  {persona.nombre}
-                </p>
-                {/* De 1024 a 1279 px la columna es angosta: se cierra el espaciado para que el rol entre en una línea */}
-                <p className="etiqueta mt-3 text-[0.625rem] leading-snug text-burdeos lg:tracking-[0.16em] xl:text-[0.6875rem] xl:tracking-[0.28em]">
-                  {persona.rol}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setAbierta(persona)}
-                  className="group/link mt-4 inline-flex items-center gap-2.5 text-detalle text-burdeos"
-                >
-                  <span className="relative py-0.5">
-                    Ver perfil
-                    <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado/60 transition-transform duration-500 ease-suave group-hover/link:scale-x-50" />
-                  </span>
-                  <Flecha className="transition-transform duration-500 ease-suave group-hover/link:translate-x-1" />
-                </button>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+        {esDesktop ? (
+          <ul className="mt-8 grid grid-cols-2 gap-10">
+            {equipo.map((persona, i) => (
+              <li key={persona.nombre}>
+                <Tarjeta persona={persona} indice={i} onAbrir={setAbierta} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Carrusel etiqueta="Equipo" anchoItem="w-[80%] sm:w-[46%]" className="-mx-6 mt-8 sm:-mx-8">
+            {equipo.map((persona, i) => (
+              <Tarjeta key={persona.nombre} persona={persona} indice={i} onAbrir={setAbierta} compacta />
+            ))}
+          </Carrusel>
+        )}
       </div>
 
       <AnimatePresence>
         {abierta && <PanelPerfil key={abierta.nombre} persona={abierta} onCerrar={cerrar} />}
       </AnimatePresence>
     </>
+  )
+}
+
+type TarjetaProps = {
+  persona: Persona
+  indice: number
+  onAbrir: (persona: Persona) => void
+  /** Mobile: sin «Ver perfil»; la foto lleva un «+» y es la que abre el perfil */
+  compacta?: boolean
+}
+
+function Tarjeta({ persona, indice, onAbrir, compacta = false }: TarjetaProps) {
+  // En el carrusel las dos fotos entran a la vez; lado a lado, una después de la otra
+  const delay = compacta ? 0 : indice * 0.2
+
+  return (
+    <div className="w-full">
+      <button
+        type="button"
+        onClick={() => onAbrir(persona)}
+        aria-label={`Ver el perfil de ${persona.nombre}`}
+        className="group relative block w-full text-left"
+      >
+        <Retrato persona={persona} delay={delay} />
+        {compacta && (
+          <span
+            aria-hidden
+            className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-crema/90 text-burdeos"
+          >
+            <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.25">
+              <path d="M8 1v14M1 8h14" />
+            </svg>
+          </span>
+        )}
+      </button>
+      <Reveal delay={0.3 + delay}>
+        <p className={cn('font-serif text-tarjeta', compacta ? 'mt-4' : 'mt-6')}>{persona.nombre}</p>
+        {/* De 1024 a 1279 px la columna es angosta: se cierra el espaciado para que el rol entre en una línea */}
+        <p className="etiqueta mt-2 text-[0.625rem] leading-snug text-burdeos lg:mt-3 lg:tracking-[0.16em] xl:text-[0.6875rem] xl:tracking-[0.28em]">
+          {persona.rol}
+        </p>
+        {!compacta && (
+          <button
+            type="button"
+            onClick={() => onAbrir(persona)}
+            className="group/link mt-4 inline-flex items-center gap-2.5 text-detalle text-burdeos"
+          >
+            <span className="relative py-0.5">
+              Ver perfil
+              <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado/60 transition-transform duration-500 ease-suave group-hover/link:scale-x-50" />
+            </span>
+            <Flecha className="transition-transform duration-500 ease-suave group-hover/link:translate-x-1" />
+          </button>
+        )}
+      </Reveal>
+    </div>
   )
 }
 

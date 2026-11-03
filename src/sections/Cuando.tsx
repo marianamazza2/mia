@@ -1,6 +1,8 @@
 import { Reveal } from '@/components/motion/Reveal'
+import { Carrusel } from '@/components/ui/Carrusel'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { useMediaQuery } from '@/lib/useMediaQuery'
 
 type Situacion = {
   titulo: string
@@ -38,8 +40,11 @@ const situaciones: Situacion[] = [
 
 // Antes de los servicios: cuándo es el momento de trabajar con Mía. Arriba, la frase que nombra la soledad de
 // dirigir; debajo, en desktop, la introducción queda fija a la izquierda terminando en «En Mía te acompañamos
-// cuando…» mientras a la derecha pasan las situaciones, así cada una completa esa frase al leerla
+// cuando…» mientras a la derecha pasan las situaciones, así cada una completa esa frase al leerla.
+// En mobile, las situaciones van en un carrusel de tarjetas (sin la lista con filetes, que dejaba una doble línea)
 export function Cuando() {
+  const esDesktop = useMediaQuery('(min-width: 1024px)')
+
   return (
     <section id="cuando" className="relative border-b border-dorado/30">
       <Container className="py-seccion">
@@ -52,7 +57,7 @@ export function Cuando() {
           </h2>
         </Reveal>
 
-        <div className="mt-bloque grid gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="mt-bloque grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:sticky lg:top-32 lg:col-span-5 lg:self-start">
             <Reveal delay={0.15}>
               <p className="text-cuerpo text-negro/70">
@@ -64,25 +69,46 @@ export function Cuando() {
             </Reveal>
           </div>
 
-          <ul className="border-b border-dorado/30 lg:col-span-6 lg:col-start-7">
-            {situaciones.map((situacion) => (
-              <li key={situacion.titulo} className="border-t border-dorado/30">
-                <Reveal y={20} className="group grid grid-cols-[auto_1fr] gap-x-5 py-8 lg:gap-x-6 lg:py-10">
-                  {/* Filete que se alarga al pasar el mouse: marca la situación que se está leyendo */}
-                  <span
-                    aria-hidden
-                    className="mt-[0.7em] h-px w-5 bg-dorado transition-[width] duration-700 ease-suave group-hover:w-9"
-                  />
-                  <div>
-                    <h3 className="text-tarjeta transition-colors duration-700 ease-suave group-hover:text-burdeos">
-                      {situacion.titulo}
-                    </h3>
-                    <p className="mt-3 max-w-lg text-detalle text-negro/65">{situacion.texto}</p>
+          {esDesktop ? (
+            <ul className="border-b border-dorado/30 lg:col-span-6 lg:col-start-7">
+              {situaciones.map((situacion) => (
+                <li key={situacion.titulo} className="border-t border-dorado/30">
+                  <Reveal y={20} className="group grid grid-cols-[auto_1fr] gap-x-6 py-10">
+                    {/* Filete que se alarga al pasar el mouse: marca la situación que se está leyendo */}
+                    <span
+                      aria-hidden
+                      className="mt-[0.7em] h-px w-5 bg-dorado transition-[width] duration-700 ease-suave group-hover:w-9"
+                    />
+                    <div>
+                      <h3 className="text-tarjeta transition-colors duration-700 ease-suave group-hover:text-burdeos">
+                        {situacion.titulo}
+                      </h3>
+                      <p className="mt-3 max-w-lg text-detalle text-negro/65">{situacion.texto}</p>
+                    </div>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            // Mobile y tablet: una situación por tarjeta, en el mismo carrusel que Servicios
+            <Carrusel etiqueta="Situaciones" className="-mx-6 sm:-mx-8">
+              {situaciones.map((situacion, i) => (
+                <article
+                  key={situacion.titulo}
+                  className="flex w-full flex-col rounded-[10px] border border-dorado/30 bg-white/45 p-6"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="font-serif text-menor text-burdeos lining-nums tabular-nums">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span aria-hidden className="h-px w-8 bg-dorado" />
                   </div>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
+                  <h3 className="mt-5 text-tarjeta">{situacion.titulo}</h3>
+                  <p className="mt-3 text-detalle text-negro/65">{situacion.texto}</p>
+                </article>
+              ))}
+            </Carrusel>
+          )}
         </div>
       </Container>
     </section>

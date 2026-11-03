@@ -100,11 +100,11 @@ type ScrollOffset = NonNullable<Parameters<typeof useScroll>[0]>['offset']
 
 // A quién acompaña Mía, de dónde viene su mirada y quiénes están detrás.
 // Desktop: los dos retratos a la izquierda, lado a lado bajo su título; título y texto a la derecha.
-// Mobile: título, los retratos lado a lado y el texto con letra capitular.
+// Mobile: título, el texto con letra capitular y después el equipo, en un carrusel de a una persona.
 function Mirada() {
   return (
     <div className="py-seccion lg:py-24">
-      <Container className="grid lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-x-8">
+      <Container className="grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-x-8">
         {/* Encabezado */}
         <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end">
           <Reveal y={12}>
@@ -117,13 +117,13 @@ function Mirada() {
           </Reveal>
         </div>
 
-        {/* Quiénes están detrás de Mía */}
-        <Retratos className="mt-10 lg:col-span-6 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-center" />
+        {/* Quiénes están detrás de Mía: en mobile va al final, después del texto */}
+        <Retratos className="order-last mt-bloque lg:order-none lg:col-span-6 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-center" />
 
-        {/* Texto: en mobile, el primer párrafo abre con capitular y la historia queda tras «Leer más» */}
+        {/* Texto: en mobile, el primer párrafo abre con capitular y la historia queda tras «Ver más» */}
         <Reveal
           delay={0.2}
-          className="mt-12 space-y-5 text-cuerpo text-negro/70 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:mt-10 lg:self-start"
+          className="mt-8 text-cuerpo text-negro/70 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:mt-10 lg:self-start"
         >
           <p className="max-lg:first-letter:float-left max-lg:first-letter:mt-1 max-lg:first-letter:mr-2.5 max-lg:first-letter:font-serif max-lg:first-letter:text-[3.75rem] max-lg:first-letter:leading-[0.8] max-lg:first-letter:font-medium max-lg:first-letter:text-burdeos">
             Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
