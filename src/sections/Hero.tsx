@@ -1,12 +1,13 @@
 import { motion, useScroll, useTransform, type Transition } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
-import portada from '@/assets/images/bn-portada.webp'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Picture } from '@/components/ui/Picture'
+import { cn } from '@/lib/cn'
 import { useIntroLista } from '@/lib/intro'
 import { easeSuave } from '@/lib/motion'
+import { portada } from '@/lib/portada'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 
 export function Hero() {
@@ -16,8 +17,9 @@ export function Hero() {
   // La foto y el texto se mueven a distinta velocidad: un poco de profundidad
   const fotoY = useTransform(scrollYProgress, [0, 1], ['0%', '-8%'])
   const textoY = useTransform(scrollYProgress, [0, 1], ['0%', '14%'])
-  // En mobile ni el texto ni la foto se desplazan: la foto queda fija y la hoja con el texto sube por encima
+  // En mobile ni el texto ni la foto se desplazan
   const esDesktop = useMediaQuery('(min-width: 1024px)')
+  const oscuro = portada.oscuro
 
   return (
     // Todo queda «oculto» hasta que sube el telón de la intro; las piezas heredan el estado por variantes
@@ -28,34 +30,79 @@ export function Hero() {
       initial="oculto"
       animate={lista ? 'visible' : 'oculto'}
     >
-      {/* Mobile y tablet: foto a sangre arriba y el texto en una hoja crema que se apoya sobre ella.
-          Desktop: texto a la izquierda y foto a la derecha */}
-      {/* En pantallas bajas se achica el aire, nunca la letra: el título mide lo mismo en cualquier escritorio */}
-      <Container className="relative grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-36 lg:pb-20 lg:bajo:pt-30 lg:bajo:pb-6">
-        <motion.div
-          className="relative z-10 -mx-6 -mt-14 rounded-t-[20px] bg-crema px-6 pt-8 pb-10 sm:-mx-8 sm:px-8 lg:col-span-7 lg:mx-0 lg:mt-0 lg:rounded-none lg:bg-transparent lg:p-0"
-          style={{ y: esDesktop ? textoY : 0 }}
-        >
+      {/* Fondo a sangre (ver lib/portada). Se descubre desde abajo con el telón y, al hacer scroll,
+          sube un poco más lento que el texto */}
+      <motion.div
+        aria-hidden
+        className={cn('absolute inset-0 -z-10', portada.base)}
+        variants={{ oculto: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)' } }}
+        transition={{ duration: 1.6, ease: easeSuave, delay: 0.15 }}
+      >
+        <motion.div className="size-full" style={{ y: esDesktop ? fotoY : 0 }}>
+          <motion.div
+            className="size-full"
+            variants={{ oculto: { scale: 1.2 }, visible: { scale: 1.04 } }}
+            transition={{ duration: 2.4, ease: easeSuave, delay: 0.15 }}
+          >
+            {/* Si la portada tiene versión vertical, el celular descarga esa y desktop la apaisada */}
+            <picture className="block size-full">
+              {portada.srcMobile && <source media="(max-width: 1023px)" srcSet={portada.srcMobile} />}
+              <Picture
+                src={portada.src}
+                alt=""
+                fetchPriority="high"
+                className={cn('size-full object-cover', portada.encuadre)}
+              />
+            </picture>
+          </motion.div>
+        </motion.div>
+        {oscuro ? (
+          <>
+            {/* Velo parejo sobre toda la foto: la apaga un poco para que no compita con el texto */}
+            <span className="absolute inset-0 bg-burdeos-profundo/45" />
+            {/* Más denso del lado del texto (izquierda en desktop, arriba en mobile) */}
+            <span className="absolute inset-0 bg-gradient-to-b from-burdeos-profundo/90 via-burdeos-profundo/35 to-transparent lg:bg-gradient-to-r lg:from-burdeos-profundo/70 lg:via-burdeos-profundo/25 lg:to-transparent" />
+          </>
+        ) : (
+          <>
+            {/* Fondo claro: un velo crema parejo que suaviza la onda, para que acompañe y no se marque tanto */}
+            {portada.suavizado && <span className={cn('absolute inset-0', portada.suavizado)} />}
+            {/* Y otro más denso del lado del texto, para que la onda no le pase por debajo con fuerza */}
+            <span className="absolute inset-0 bg-gradient-to-b from-crema/80 via-crema/55 to-transparent to-80% lg:bg-gradient-to-r lg:from-crema/75 lg:via-crema/30 lg:to-transparent" />
+          </>
+        )}
+      </motion.div>
+
+      {/* Mobile: el hero mide lo que el contenido, más aire abajo para que se vean los objetos de la foto, y la página
+          ya asoma en la primera pantalla. Ojo: la foto cubre el hero por la altura, así que si el hero crece, la foto
+          se agranda con él. Desktop: alto de pantalla; en pantallas bajas se achica el aire, nunca la letra */}
+      <Container className={cn(oscuro && 'text-crema', 'relative flex flex-col justify-start pt-28 pb-40 lg:grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-36 lg:pb-20 lg:bajo:pt-30 lg:bajo:pb-6')}>
+        <motion.div className="lg:col-span-10" style={{ y: esDesktop ? textoY : 0 }}>
           <Entra y={12} delay={0.5}>
-            <Eyebrow>Consultora para empresarias</Eyebrow>
+            <Eyebrow tone={oscuro ? 'light' : 'dark'}>Consultora para empresarias</Eyebrow>
           </Entra>
 
-          <h1 className="mt-6 text-display lg:mt-8 lg:bajo:mt-6">
+          <h1 className="mt-6 text-display lg:mt-8 lg:whitespace-nowrap lg:bajo:mt-6">
+            {/* Desktop: dos líneas, con «tu empresa» junto a «de dirigir», para que el bloque respire.
+                Mobile: tres líneas, que es lo que entra en el ancho */}
             <Line delay={0.35}>Una forma sólida</Line>
-            <Line delay={0.47}>de dirigir</Line>
-            <Line delay={0.59}>tu empresa.</Line>
+            {esDesktop ? (
+              <Line delay={0.47}>de dirigir tu empresa.</Line>
+            ) : (
+              <>
+                <Line delay={0.47}>de dirigir</Line>
+                <Line delay={0.59}>tu empresa.</Line>
+              </>
+            )}
           </h1>
 
-          <div className="mt-6 grid gap-10 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8 lg:mt-10 lg:bajo:mt-5">
-            <motion.span
-              aria-hidden
-              className="mt-3 hidden h-px w-16 origin-left bg-dorado sm:block"
-              variants={{ oculto: { scaleX: 0 }, visible: { scaleX: 1 } }}
-              transition={{ duration: 1.4, ease: easeSuave, delay: 1.1 }}
-            />
+          {/* Todo alineado al mismo margen que el título: un solo filete, el del antetítulo */}
+          <div className="mt-6 lg:mt-10 lg:bajo:mt-5">
             {/* Dos niveles: la idea principal en cuerpo y el complemento más chico y suave, para que el bloque no pese */}
             <Entra delay={1}>
-              <p className="max-w-lg text-cuerpo text-negro/75">
+              {/* En mobile, más angosto: la foto va anclada a la izquierda, así la cinta queda siempre a la misma
+                  distancia del borde y el párrafo termina antes de pasarle por encima */}
+              <p className={cn('max-w-[16.5rem] text-cuerpo lg:max-w-lg', oscuro ? 'text-crema/85' : 'text-negro/75')}>
                 <span className="lg:hidden">
                   Acompañamos a empresarias a fortalecer su dirección, tomar decisiones y hacer crecer su negocio.
                 </span>
@@ -64,52 +111,23 @@ export function Hero() {
                   criterios para tomar decisiones y desarrollar nuevas posibilidades de acción.
                 </span>
               </p>
-              <p className="mt-4 hidden max-w-lg text-detalle text-negro/55 lg:block lg:bajo:mt-3">
+              <p className={cn('mt-4 hidden max-w-lg text-detalle lg:block lg:bajo:mt-3', oscuro ? 'text-crema/65' : 'text-negro/55')}>
                 Trabajamos junto a ellas sobre los desafíos de su empresa, sus equipos y su organización, para
                 construir formas de funcionamiento sostenibles.
               </p>
             </Entra>
           </div>
 
-          <Entra delay={1.15} className="mt-cta flex flex-wrap items-center gap-x-10 gap-y-6 sm:pl-24">
-            <Button href="#contacto" withArrow>
+          <Entra delay={1.15} className="mt-cta flex flex-wrap items-center gap-x-10 gap-y-6">
+            <Button href="#contacto" variant={oscuro ? 'light' : 'primary'} withArrow>
               <span className="lg:hidden">Hablemos</span>
               <span className="hidden lg:inline">Conversemos sobre tu empresa</span>
             </Button>
           </Entra>
         </motion.div>
-
-        {/* Foto principal en blanco y negro. En mobile queda fija arriba y la hoja de texto sube y la tapa */}
-        <div className="sticky top-0 order-first -mx-6 sm:-mx-8 lg:relative lg:order-none lg:col-span-5 lg:mx-0 lg:self-stretch">
-          <motion.div
-            className="relative h-[40svh] min-h-64 w-full lg:absolute lg:top-0 lg:right-0 lg:bottom-6 lg:h-auto lg:min-h-0 lg:w-[88%]"
-            style={{ y: esDesktop ? fotoY : 0 }}
-          >
-            {/* La foto sube desde abajo, en el mismo sentido que el telón */}
-            <motion.div
-              className="size-full overflow-hidden bg-negro/5 lg:rounded-[10px]"
-              variants={{ oculto: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)' } }}
-              transition={{ duration: 1.6, ease: easeSuave, delay: 0.15 }}
-            >
-              <motion.div
-                className="size-full"
-                variants={{ oculto: { scale: 1.25 }, visible: { scale: 1 } }}
-                transition={{ duration: 2.4, ease: easeSuave, delay: 0.15 }}
-              >
-                <Picture
-                  src={portada}
-                  alt="Mujer con la carpeta burdeos de Mía bajo el brazo"
-                  fetchPriority="high"
-                  className="size-full object-cover object-[50%_30%] lg:object-[45%_center]"
-                />
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
-        </div>
       </Container>
 
-      <ScrollCue />
+      <ScrollCue oscuro={oscuro} />
     </motion.section>
   )
 }
@@ -143,7 +161,7 @@ function Line({ children, delay }: { children: ReactNode; delay: number }) {
   )
 }
 
-function ScrollCue() {
+function ScrollCue({ oscuro }: { oscuro: boolean }) {
   return (
     <motion.a
       href="#sobre-mia"
@@ -152,9 +170,9 @@ function ScrollCue() {
       variants={{ oculto: { opacity: 0 }, visible: { opacity: 1 } }}
       transition={{ duration: 1, delay: 2 }}
     >
-      <span className="relative h-14 w-px overflow-hidden bg-negro/10">
+      <span className={cn('relative h-14 w-px overflow-hidden', oscuro ? 'bg-crema/20' : 'bg-negro/10')}>
         <motion.span
-          className="absolute inset-x-0 top-0 h-1/2 bg-burdeos"
+          className={cn('absolute inset-x-0 top-0 h-1/2', oscuro ? 'bg-crema' : 'bg-burdeos')}
           animate={{ y: ['-100%', '200%'] }}
           transition={{ duration: 2.4, ease: 'easeInOut', repeat: Infinity }}
         />

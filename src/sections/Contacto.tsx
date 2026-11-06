@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
+import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
 import { Button, ButtonAccion } from '@/components/ui/Button'
 import { Carrusel } from '@/components/ui/Carrusel'
 import { Container } from '@/components/ui/Container'
@@ -9,7 +10,6 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 import { contacto } from '@/lib/contacto'
 import { easeSereno, easeSuave } from '@/lib/motion'
-import { Destacado } from '@/components/marca/Destacado'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 
 // La reserva va por WhatsApp; aquí quedan los demás canales
@@ -70,11 +70,14 @@ export function Contacto() {
             <Reveal y={12}>
               <Eyebrow>Contacto</Eyebrow>
             </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="mt-5 text-titulo lg:mt-10">
-                Hablemos de <Destacado>tu empresa.</Destacado>
-              </h2>
-            </Reveal>
+            <ScrollRevealText
+              className="mt-5 text-titulo lg:mt-10"
+              segments={[
+                { text: 'Hablemos de' },
+                { text: 'tu', firma: true, className: 'mr-[0.12em]' },
+                { text: 'empresa.' },
+              ]}
+            />
           </div>
           <Reveal delay={0.2} className="self-end lg:col-span-6 lg:col-start-7">
             <p className="text-cuerpo text-negro/70">

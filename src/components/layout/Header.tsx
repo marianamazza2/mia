@@ -18,7 +18,8 @@ const links = [
   { href: '/#contacto', label: 'Contacto' },
 ]
 
-export function Header() {
+// «sobreFoto»: la página abre con una portada oscura; arriba del todo, el header va en negativo
+export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -35,8 +36,8 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  // La portada es clara: el header solo va en negativo con el menú móvil abierto
-  const onDark = open
+  // En negativo con el menú móvil abierto o, si la página abre con foto, mientras no se haya hecho scroll
+  const onDark = open || (sobreFoto && !scrolled)
 
   return (
     <>
@@ -49,12 +50,21 @@ export function Header() {
         animate={{ y: introLista ? '0%' : '-100%' }}
         transition={{ duration: 0.7, ease: easeSuave }}
       >
-        <Container className="flex h-18 items-center justify-between lg:h-20">
+        {/* En mobile, arriba del todo la barra tiene un poco más de aire; al hacer scroll se compacta */}
+        <Container
+          className={cn(
+            'relative flex items-center justify-between transition-[height,padding] duration-500 ease-suave',
+            // El alto suma el padding de arriba, así la barra no se achica por dentro
+            // En desktop, sin aire extra: con el padding la barra quedaba demasiado baja en notebooks (MacBook Air)
+            scrolled && !open ? 'h-18 pt-0 lg:h-20' : 'h-20 pt-2 lg:h-20 lg:pt-0',
+          )}
+        >
           <a href="/#inicio" aria-label="Mía, ir al inicio" onClick={() => setOpen(false)}>
-            <img src={onDark ? logoNegativo : logo} alt="" className="w-[88px] lg:w-[118px]" />
+            <img src={onDark ? logoNegativo : logo} alt="" className="w-[80px] lg:w-[96px]" />
           </a>
 
-          <nav aria-label="Principal" className="hidden lg:block">
+          {/* Desktop: los links quedan centrados en la página, sin importar el ancho del logo */}
+          <nav aria-label="Principal" className="absolute left-1/2 hidden -translate-x-1/2 lg:block">
             <ul className="flex items-center gap-10">
               {links.map(({ href, label }) => (
                 <li key={href}>
@@ -72,10 +82,6 @@ export function Header() {
               ))}
             </ul>
           </nav>
-
-          <Button href="/#contacto" size="sm" variant={onDark ? 'light' : 'outline'} className="hidden lg:inline-flex">
-            Hablemos
-          </Button>
 
           <button
             type="button"

@@ -114,7 +114,7 @@ function Mirada() {
           </Reveal>
           <Reveal delay={0.1}>
             <h3 className="mt-6 text-frase lg:mt-10">
-              Lleva esa mirada al lugar donde las decisiones suceden: <Destacado>la empresa.</Destacado>
+              Una manera de mirar, <Destacado>antes que una consultora.</Destacado>
             </h3>
           </Reveal>
         </div>
@@ -134,9 +134,10 @@ function Mirada() {
           </p>
           <LeerMas>
             <p>
-              Mía comenzó siendo una manera de mirar, mucho antes de ser una consultora. Desde la psicología y el
-              psicoanálisis, observó que muchas veces una persona sabe qué debería hacer y tiene las herramientas,
-              y aun así algo insiste, se repite y traba el movimiento.
+              Mía parte de reconocer que la forma en que una empresaria dirige, decide y se relaciona con su
+              negocio también participa de aquello que la empresa puede llegar a ser. Desde ahí, nos interesa
+              trabajar no solo sobre lo que necesita cambiar en la organización, sino también sobre la posición
+              desde la cual es posible conducir esos cambios.
             </p>
           </LeerMas>
         </Reveal>
@@ -177,11 +178,12 @@ function Sensible() {
         />
       </motion.div>
 
-      <Container className="py-10 lg:py-32 lg:text-center">
+      {/* En mobile, el mismo aire que las filas con foto de «¿Cuándo trabajar con Mía?»: así las franjas tienen la misma altura */}
+      <Container className="py-16 lg:py-32 lg:text-center">
         <Reveal y={12}>
           <p className="etiqueta hidden items-center gap-4 text-dorado-suave lg:block">
             <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
-            Una idea resume su forma de trabajar
+            El rigor metodológico que nos orienta
           </p>
         </Reveal>
         <blockquote className="max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">

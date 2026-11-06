@@ -1,7 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { createContext, useContext, useId, useRef, useState, type ReactNode } from 'react'
-import direccion from '@/assets/images/bn-servicio-direccion.webp'
-import lectura from '@/assets/images/bn-servicio-lectura.webp'
+import fotoCaminata from '@/assets/images/servicio-punto-partida.webp'
+import fotoMirada from '@/assets/images/servicio-mentoria.webp'
 import { Destacado } from '@/components/marca/Destacado'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
@@ -29,7 +29,9 @@ type Servicio = {
   ampliable?: boolean
   /** Adónde lleva «Consultar este servicio»: la reserva por WhatsApp o el formulario, en Contacto */
   consulta: '#reservar' | '#escribenos'
-  imagen: { src: string; alt: string }
+  /** «encuadre»: object-position, para que en los recortes se vea lo importante de la foto.
+      «ajuste»: filtros para emparejar el tono de una foto con las demás */
+  imagen: { src: string; alt: string; encuadre?: string; ajuste?: string }
   tono: 'claro' | 'burdeos'
 }
 
@@ -45,7 +47,15 @@ const servicios: Servicio[] = [
     nota: 'Una primera experiencia de trabajo con Mía, sin necesidad de comprometerte con un proceso continuado.',
     formato: 'Sesión de trabajo individual de 60 a 90 minutos',
     consulta: '#reservar',
-    imagen: { src: direccion, alt: 'Manos sacando la tarjeta burdeos de Mía de un tarjetero' },
+    imagen: {
+      src: fotoMirada,
+      alt: 'Mujer de blanco que mira de frente, con un pañuelo burdeos al viento, entre siluetas en movimiento',
+      // En desktop el panel es vertical y recorta los costados: un poco a la izquierda, para que entre el pañuelo.
+      // En el recorte apaisado de mobile, la cara y el moño del pañuelo
+      encuadre: 'object-[40%_19%]',
+      // El fondo es casi blanco: se apaga un poco para que la foto tenga el peso de la de Mentoría
+      ajuste: 'brightness-[0.86] contrast-[1.06]',
+    },
     tono: 'claro',
   },
   {
@@ -58,7 +68,12 @@ const servicios: Servicio[] = [
     ],
     ampliable: true,
     consulta: '#escribenos',
-    imagen: { src: lectura, alt: 'Empresaria revisando la carpeta y la papelería de Mía' },
+    imagen: {
+      src: fotoCaminata,
+      alt: 'Mujer de blanco que camina con un pañuelo burdeos al viento',
+      // Foto vertical: en el recorte apaisado de mobile se queda con la cabeza y el pañuelo
+      encuadre: 'object-[50%_14%]',
+    },
     tono: 'burdeos',
   },
 ]
@@ -193,7 +208,9 @@ function Apilados() {
   return (
     <div ref={ref} className="relative">
       {servicios.map((servicio, i) => (
-        <div key={servicio.titulo} className="sticky top-0 h-svh">
+        // Se fija justo debajo de la navbar (80 px) y ocupa el resto de la pantalla: así el número y el título
+        // nunca quedan tapados por la barra mientras el panel siguiente sube
+        <div key={servicio.titulo} className="sticky top-20 h-[calc(100svh-5rem)]">
           <PanelApilado servicio={servicio} index={i} progreso={scrollYProgress} />
         </div>
       ))}
@@ -283,7 +300,12 @@ function Panel({ servicio }: { servicio: Servicio }) {
       </div>
 
       <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto">
-        <Picture {...servicio.imagen} loading="lazy" className="size-full object-cover" />
+        <Picture
+          src={servicio.imagen.src}
+          alt={servicio.imagen.alt}
+          loading="lazy"
+          className={cn('size-full object-cover', servicio.imagen.encuadre, servicio.imagen.ajuste)}
+        />
       </div>
     </div>
   )
@@ -423,7 +445,12 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
         oscuro ? 'bg-burdeos text-crema' : 'border border-dorado/30 bg-white/45 text-negro',
       )}
     >
-      <Picture {...servicio.imagen} loading="lazy" className="aspect-[2/1] w-full object-cover" />
+      <Picture
+        src={servicio.imagen.src}
+        alt={servicio.imagen.alt}
+        loading="lazy"
+        className={cn('aspect-[2/1] w-full object-cover', servicio.imagen.encuadre, servicio.imagen.ajuste)}
+      />
 
       <div className="flex flex-1 flex-col p-5 text-detalle sm:p-6">
         <h3 className="text-tarjeta">{servicio.titulo}</h3>

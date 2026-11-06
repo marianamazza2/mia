@@ -8,6 +8,8 @@ type Segment = {
   firma?: boolean
   /** Va pegado al segmento anterior, sin espacio (por ejemplo, el punto final) */
   pegado?: boolean
+  /** Clases extra para el segmento en caligrafía (por ejemplo, aire a la derecha de una palabra corta) */
+  className?: string
 }
 
 type ScrollRevealTextProps = {
@@ -28,7 +30,7 @@ export function ScrollRevealText({ segments, className }: ScrollRevealTextProps)
 
   return (
     <h2 ref={ref} className={className}>
-      {segments.map(({ text, firma, pegado }, s) => {
+      {segments.map(({ text, firma, pegado, className: clase }, s) => {
         const palabras = text.split(' ').map((palabra, p) => {
           const i = indice++
           return (
@@ -44,7 +46,14 @@ export function ScrollRevealText({ segments, className }: ScrollRevealTextProps)
         return (
           <Fragment key={s}>
             {s > 0 && !pegado && ' '}
-            {firma ? <Destacado firma>{palabras}</Destacado> : palabras}
+            {/* La caligrafía se enciende como el resto de las palabras: tenue desde el principio, sin hueco */}
+            {firma ? (
+              <Destacado firma trazo={false} className={clase}>
+                {palabras}
+              </Destacado>
+            ) : (
+              palabras
+            )}
           </Fragment>
         )
       })}

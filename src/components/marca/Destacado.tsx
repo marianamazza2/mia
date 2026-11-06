@@ -7,14 +7,23 @@ type DestacadoProps = {
   children: ReactNode
   /** En WindSong, la caligrafía: la palabra aparece como escrita a mano */
   firma?: boolean
+  /** Con «firma»: false la muestra sin el trazo de izquierda a derecha (cuando otra animación ya la enciende) */
+  trazo?: boolean
   className?: string
 }
 
 // Marca la parte de una frase que se dice con más voz. Sin «firma» no cambia el texto (se quitó el filete
 // dorado); queda marcada para poder probar otros tratamientos. Con «firma», va en WindSong, al mismo
 // tamaño que el texto que la rodea (su letra es chica, así no invade), y se descubre de izquierda a derecha, despacio, como un trazo
-export function Destacado({ children, firma = false, className }: DestacadoProps) {
+export function Destacado({ children, firma = false, trazo = true, className }: DestacadoProps) {
   if (!firma) return <em className={cn('not-italic', className)}>{children}</em>
+  if (!trazo) {
+    return (
+      <em className={cn('inline-block font-firma text-[1em] leading-none font-normal not-italic', className)}>
+        {children}
+      </em>
+    )
+  }
 
   return (
     // El observador va en el contenedor: con el recorte completo el navegador da al texto por invisible
