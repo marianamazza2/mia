@@ -1,7 +1,10 @@
-import { motion, useScroll, useTransform } from 'motion/react'
-import { useRef, type ReactNode, type RefObject } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { useRef, useState, type RefObject } from 'react'
 import textura from '@/assets/images/bn-textura.webp'
+import sensibleMp4 from '@/assets/video/sensible.mp4'
+import sensibleWebm from '@/assets/video/sensible.webm'
 import { Llave } from '@/components/marca/Llave'
+import { MaquinaDeEscribir } from '@/components/motion/MaquinaDeEscribir'
 import { Reveal } from '@/components/motion/Reveal'
 import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
 import { Container } from '@/components/ui/Container'
@@ -154,11 +157,18 @@ const encuadreTextura =
 // Franja a sangre con la textura de seda del manual: la frase que resume la forma de trabajar.
 // La textura teñida de burdeos, texto en crema y detalles en dorado suave.
 // Desktop: texto centrado. Mobile: franja compacta y texto alineado a la izquierda.
+// Se escribe letra a letra, como a máquina; el filete y la bajada llegan cuando termina
+const fraseSensible = [{ texto: 'Hacer operativo' }, { texto: 'lo sensible', destacado: true }]
+
 function Sensible() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const escala = useTransform(scrollYProgress, [0, 1], [1.08, 1])
   const fondoX = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
+  // La seda en movimiento, encima de la textura. Nunca si la persona pidió menos movimiento: ahí se queda
+  // la textura quieta, que es de donde salió esta franja
+  const reduceMotion = useReducedMotion()
+  const [sedaLista, setSedaLista] = useState(false)
 
   return (
     <div
@@ -178,6 +188,40 @@ function Sensible() {
         />
       </motion.div>
 
+      {/* El video ya viene en el burdeos de la marca, así que va tal cual, sin teñir. Su primer cuadro y el
+          último son casi el mismo, de modo que se repite en bucle sin que se vea el corte. Entra con un
+          fundido para que no aparezca de golpe mientras se descarga */}
+      {!reduceMotion && (
+        <motion.video
+          aria-hidden
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          onLoadedData={(evento) => {
+            evento.currentTarget.muted = true
+            setSedaLista(true)
+          }}
+          className="absolute inset-0 -z-10 size-full object-cover"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: sedaLista ? 1 : 0 }}
+          transition={{ duration: 1.4, ease: easeSuave }}
+        >
+          <source src={sensibleWebm} type="video/webm" />
+          <source src={sensibleMp4} type="video/mp4" />
+        </motion.video>
+      )}
+
+      {/* Velo oscuro sobre el fondo: baja el brillo de la seda para que la frase se lea con más fuerza */}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-negro/35" />
+      {/* Y más oscuro en las esquinas de la derecha, donde el video pierde definición: arriba y abajo,
+          se van aclarando hasta la mitad */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_100%_120%_at_100%_0%,rgb(20_20_20/0.8),rgb(20_20_20/0.48)_35%,rgb(20_20_20/0.15)_60%,transparent_80%),radial-gradient(ellipse_100%_120%_at_100%_100%,rgb(20_20_20/0.8),rgb(20_20_20/0.48)_35%,rgb(20_20_20/0.15)_60%,transparent_80%)]"
+      />
+
       {/* En mobile, el mismo aire que las filas con foto de «¿Cuándo trabajar con Mía?»: así las franjas tienen la misma altura */}
       {/* Franja centrada en los dos tamaños, con el mismo texto: es la frase que resume la forma de trabajar
           y pierde fuerza recortada o alineada a un costado */}
@@ -185,21 +229,19 @@ function Sensible() {
         <Reveal y={12}>
           <p className="etiqueta text-dorado-suave">El método que nos orienta</p>
         </Reveal>
-        <blockquote className="mx-auto mt-6 max-w-5xl font-serif text-titulo text-crema lg:mt-8">
-          <LineaQueSube delay={0.1}>Hacer operativo</LineaQueSube>
-          <LineaQueSube delay={0.22}>
-            <Destacado>lo sensible</Destacado>
-          </LineaQueSube>
-        </blockquote>
+        <MaquinaDeEscribir
+          lineas={fraseSensible}
+          className="mx-auto mt-6 max-w-5xl font-serif text-titulo text-crema lg:mt-8"
+        />
         <motion.span
           aria-hidden
           className="mx-auto mt-6 block h-px w-24 origin-center bg-dorado-suave lg:mt-10"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: easeSuave, delay: 0.5 }}
+          transition={{ duration: 1.4, ease: easeSuave, delay: 2.4 }}
         />
-        <Reveal delay={0.4}>
+        <Reveal delay={2.7}>
           <p className="mx-auto mt-6 max-w-xl text-cuerpo text-pretty text-crema/80 lg:mt-8">
             Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
             empresa y convertirlo en una posibilidad concreta de acción.
@@ -207,26 +249,5 @@ function Sensible() {
         </Reveal>
       </Container>
     </div>
-  )
-}
-
-// Línea que sube desde una máscara al entrar en pantalla, como el título de la portada
-// (el disparador va en la máscara: la línea escondida debajo no cuenta como visible para el navegador)
-function LineaQueSube({ children, delay }: { children: ReactNode; delay: number }) {
-  return (
-    <motion.span
-      className="-mb-[0.06em] block overflow-hidden pb-[0.2em]"
-      initial="oculta"
-      whileInView="visible"
-      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-    >
-      <motion.span
-        className="block"
-        variants={{ oculta: { y: '105%' }, visible: { y: 0 } }}
-        transition={{ duration: 1.3, ease: easeSuave, delay }}
-      >
-        {children}
-      </motion.span>
-    </motion.span>
   )
 }

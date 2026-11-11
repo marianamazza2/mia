@@ -42,7 +42,12 @@ export function Hero() {
     // toma el atributo que pone React
     cinta.muted = true
     try {
+      // Se reproduce para comprobar que el navegador deja, y enseguida se vuelve al primer cuadro: el
+      // fundido ocurre con la película quieta y recién corre cuando ya se ve entera, así no se pierden
+      // los primeros segundos por debajo de la foto
       await cinta.play()
+      cinta.pause()
+      cinta.currentTime = 0
       setEnMarcha(true)
     } catch {
       // Sin película: la foto se queda, que es el mismo cuadro en el que la película termina
@@ -56,7 +61,7 @@ export function Hero() {
   // nunca, así que si no llega se intenta igual un poco más tarde
   useEffect(() => {
     if (!conVideo || !lista) return
-    const t = setTimeout(arrancar, listoParaVer ? 1600 : 3500)
+    const t = setTimeout(arrancar, listoParaVer ? 1200 : 3500)
     return () => clearTimeout(t)
   }, [conVideo, lista, listoParaVer, arrancar])
 
@@ -66,12 +71,8 @@ export function Hero() {
   // de la primera vez. El ciclo se cose solo y no se ve dónde empieza
   const volverAEmpezar = () => {
     setEnMarcha(false)
-    reloj.current = setTimeout(() => {
-      const cinta = video.current
-      if (!cinta) return
-      cinta.currentTime = 0
-      void arrancar()
-    }, 3200)
+    // El fundido de salida dura 1,2 s; el resto es el descanso antes de volver a entrar
+    reloj.current = setTimeout(() => void arrancar(), 2400)
   }
 
   useEffect(() => () => clearTimeout(reloj.current), [])
@@ -127,7 +128,9 @@ export function Hero() {
                 className={cn('absolute inset-0 size-full object-cover', portada.encuadre)}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: enMarcha ? 1 : 0 }}
-                transition={{ duration: 2, ease: easeSuave }}
+                transition={{ duration: 1.2, ease: easeSuave }}
+                // Ya se ve entera: ahora sí corre, desde su primer cuadro
+                onAnimationComplete={() => enMarcha && video.current?.play().catch(() => {})}
               >
                 {pelicula.webm && <source src={pelicula.webm} type="video/webm" />}
                 <source src={pelicula.mp4} type="video/mp4" />
