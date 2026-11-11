@@ -241,7 +241,8 @@ function Sensible() {
           viewport={{ once: true }}
           transition={{ duration: 1.4, ease: easeSuave, delay: 2.4 }}
         />
-        <Reveal delay={2.7}>
+        {/* La bajada aparece despacio, sin apuro, cuando la frase ya terminó de escribirse */}
+        <Reveal delay={2.7} duracion={2.4} y={14} curva="serena">
           <p className="mx-auto mt-6 max-w-xl text-cuerpo text-pretty text-crema/80 lg:mt-8">
             Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
             empresa y convertirlo en una posibilidad concreta de acción.
