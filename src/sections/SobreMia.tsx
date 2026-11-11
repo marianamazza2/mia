@@ -179,14 +179,13 @@ function Sensible() {
       </motion.div>
 
       {/* En mobile, el mismo aire que las filas con foto de «¿Cuándo trabajar con Mía?»: así las franjas tienen la misma altura */}
-      <Container className="py-16 lg:py-32 lg:text-center">
+      {/* Franja centrada en los dos tamaños, con el mismo texto: es la frase que resume la forma de trabajar
+          y pierde fuerza recortada o alineada a un costado */}
+      <Container className="py-16 text-center lg:py-32">
         <Reveal y={12}>
-          <p className="etiqueta hidden items-center gap-4 text-dorado-suave lg:block">
-            <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
-            El método que nos orienta
-          </p>
+          <p className="etiqueta text-dorado-suave">El método que nos orienta</p>
         </Reveal>
-        <blockquote className="max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">
+        <blockquote className="mx-auto mt-6 max-w-5xl font-serif text-titulo text-crema lg:mt-8">
           <LineaQueSube delay={0.1}>Hacer operativo</LineaQueSube>
           <LineaQueSube delay={0.22}>
             <Destacado>lo sensible</Destacado>
@@ -194,19 +193,16 @@ function Sensible() {
         </blockquote>
         <motion.span
           aria-hidden
-          className="mt-4 block h-px w-24 origin-left bg-dorado-suave lg:mx-auto lg:mt-10 lg:origin-center"
+          className="mx-auto mt-6 block h-px w-24 origin-center bg-dorado-suave lg:mt-10"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.4, ease: easeSuave, delay: 0.5 }}
         />
         <Reveal delay={0.4}>
-          <p className="mt-4 max-w-sm text-cuerpo text-balance text-crema/80 lg:mx-auto lg:mt-8 lg:max-w-xl">
-            <span className="lg:hidden">Reconocer lo que ocurre en tu empresa y convertirlo en acción.</span>
-            <span className="hidden lg:inline">
-              Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
-              empresa y convertirlo en una posibilidad concreta de acción.
-            </span>
+          <p className="mx-auto mt-6 max-w-xl text-cuerpo text-pretty text-crema/80 lg:mt-8">
+            Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
+            empresa y convertirlo en una posibilidad concreta de acción.
           </p>
         </Reveal>
       </Container>

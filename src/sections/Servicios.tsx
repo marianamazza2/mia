@@ -454,14 +454,22 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
 
       <div className="flex flex-1 flex-col p-5 text-detalle sm:p-6">
         <h3 className="text-tarjeta">{servicio.titulo}</h3>
+        {/* En la Mentoría, lo de los complementos va en punto seguido: ahorra un renglón y la tarjeta no
+            se estira de más */}
         <p className={cn('mt-3', oscuro ? 'text-crema/85' : 'text-negro/75')}>
           {servicio.ampliable
-            ? 'Fortalece tu dirección y acompaña el desarrollo de tu empresa.'
-            : 'Ordena una dificultad o decisión y encuentra cómo avanzar.'}
+            ? 'Fortalece tu dirección y acompaña el desarrollo de tu empresa. Puede ampliarse con intervenciones específicas.'
+            : 'Ordena una dificultad o decisión y encuentra cómo avanzar. Una primera experiencia de trabajo con Mía, sin comprometerte con un proceso continuado.'}
         </p>
-        <p className={cn('mt-3', oscuro ? 'text-crema/65' : 'text-negro/55')}>
-          {servicio.ampliable ? 'Acompañamiento continuado' : 'Sesión individual · 60–90 min'}
-        </p>
+        {/* La Mentoría no lleva formato: ya se entiende por la bajada, y sin esa línea las dos tarjetas
+            quedan más parejas de alto (la más alta manda, y la otra se llena de aire) */}
+        {!servicio.ampliable && (
+          <p className={cn('mt-3', oscuro ? 'text-crema/65' : 'text-negro/55')}>Sesión individual · 60–90 min</p>
+        )}
+
+        {/* Los complementos van con la bajada, no al pie: son parte de lo que ofrece la Mentoría. El detalle
+            del servicio queda debajo, que es lo que se lee después de saber qué incluye */}
+        {servicio.ampliable && <ComplementosMovil />}
 
         <div className="mt-4">
           <Desplegable
@@ -470,32 +478,9 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
             abierto={abierto}
             onAlternar={() => setAbierto((v) => !v)}
           >
+            {/* Sin «nota»: en mobile ya va dicha en la bajada, y aquí quedaría repetida */}
             <div className="space-y-3">
               {servicio.descripcion.map((parrafo) => <p key={parrafo}>{parrafo}</p>)}
-              {servicio.nota && <p>{servicio.nota}</p>}
-              {servicio.ampliable && (
-                <div className="space-y-3 border-t border-crema/15 pt-4">
-                  <p>La mentoría puede ampliarse con intervenciones complementarias:</p>
-                  <ul className="space-y-3">
-                    {intervenciones.map((intervencion) => (
-                      <li key={intervencion.titulo}>
-                        <details className="group/complemento">
-                          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
-                            {intervencion.titulo}
-                            <svg aria-hidden viewBox="0 0 16 16" className="size-3 shrink-0 transition-transform group-open/complemento:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" strokeWidth="1.25">
-                              <path d="m3 6 5 5 5-5" />
-                            </svg>
-                          </summary>
-                          <div className="space-y-3 py-2">
-                            {intervencion.texto.map((parrafo) => <p key={parrafo}>{parrafo}</p>)}
-                          </div>
-                        </details>
-                      </li>
-                    ))}
-                  </ul>
-                  <p>Se suman a la mentoría cuando tu empresa lo necesita; no se contratan por separado.</p>
-                </div>
-              )}
             </div>
           </Desplegable>
         </div>
@@ -512,6 +497,77 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
         </a>
       </div>
     </article>
+  )
+}
+
+// En la tarjeta de la Mentoría (solo mobile): una línea que dice que el servicio puede ampliarse y, debajo,
+// el «+» dorado que abre los complementos ahí mismo. Va junto a la bajada, porque es parte de lo que la
+// Mentoría ofrece, y no al pie como un bloque aparte. Cada complemento abre después su propio texto
+function ComplementosMovil() {
+  const [abierto, setAbierto] = useState(false)
+  const id = useId()
+
+  return (
+    <div className="mt-2">
+      <button
+        type="button"
+        aria-expanded={abierto}
+        aria-controls={id}
+        onClick={() => setAbierto((v) => !v)}
+        className="group/complementos flex min-h-11 items-center gap-3 text-left"
+      >
+        <Mas girado={abierto} className="size-6" />
+        <span className="relative py-0.5 text-dorado-suave">
+          {abierto ? 'Ocultar los complementos' : `Complementos de ${mentoria.titulo}`}
+          <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado-suave/50 transition-transform duration-500 ease-suave group-hover/complementos:scale-x-50" />
+        </span>
+      </button>
+
+      {/* Se abre en el sitio, con la misma transición de alto que «Ver detalles» */}
+      <div
+        id={id}
+        inert={!abierto}
+        className={cn(
+          'grid transition-[grid-template-rows,opacity] duration-300 ease-suave motion-reduce:transition-none',
+          abierto ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+      >
+        <div className="overflow-hidden">
+          <ol className="mt-3">
+            {intervenciones.map((intervencion, i) => (
+              <li key={intervencion.titulo} className="border-t border-crema/10 first:border-t-0">
+                <details className="group/complemento">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 py-2 [&::-webkit-details-marker]:hidden">
+                    <span className="font-serif text-[0.8125rem] tabular-nums lining-nums text-dorado-suave">
+                      {mentoria.numero}.{i + 1}
+                    </span>
+                    <span className="flex-1 text-crema">{intervencion.titulo}</span>
+                    <svg
+                      aria-hidden
+                      viewBox="0 0 16 16"
+                      className="size-3 shrink-0 text-dorado-suave transition-transform duration-500 ease-suave group-open/complemento:rotate-180 motion-reduce:transition-none"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                    >
+                      <path d="m3 6 5 5 5-5" />
+                    </svg>
+                  </summary>
+                  {/* Sangrado hasta donde empieza el título, para que el número siga marcando la columna */}
+                  <div className="space-y-3 pb-3 pl-9 text-crema/70">
+                    {intervencion.texto.map((parrafo) => <p key={parrafo}>{parrafo}</p>)}
+                  </div>
+                </details>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-3 text-[0.8125rem] text-crema/55">
+            Se suman a la mentoría cuando tu empresa lo necesita; no se contratan por separado.
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }
 
