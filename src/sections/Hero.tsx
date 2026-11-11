@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform, type Transition } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Destacado } from '@/components/marca/Destacado'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
@@ -142,13 +143,20 @@ export function Hero() {
           <h1 className="mt-6 text-display lg:mt-8 lg:whitespace-nowrap lg:bajo:mt-6">
             {/* Desktop: dos líneas, con «tu empresa» junto a «de dirigir», para que el bloque respire.
                 Mobile: tres líneas, que es lo que entra en el ancho */}
-            <Line delay={0.35}>Una forma sólida</Line>
+            {/* «sólida» va en la caligrafía de la marca, como «fundamental» en Sobre Mía. Sin su propio trazo:
+                la línea ya la descubre al subir desde la máscara */}
+            <Line delay={0.35}>
+              Una forma{' '}
+              <Destacado firma trazo={false} className="mr-[0.06em]">
+                sólida
+              </Destacado>
+            </Line>
             {esDesktop ? (
-              <Line delay={0.47}>de dirigir tu empresa.</Line>
+              <Line delay={0.47}>de dirigir tu empresa</Line>
             ) : (
               <>
                 <Line delay={0.47}>de dirigir</Line>
-                <Line delay={0.59}>tu empresa.</Line>
+                <Line delay={0.59}>tu empresa</Line>
               </>
             )}
           </h1>

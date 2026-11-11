@@ -163,7 +163,7 @@ export function Servicios() {
               </Reveal>
               <Reveal delay={0.1}>
                 <h2 className="mt-8 text-titulo lg:mt-10">
-                  Una propuesta para <Destacado>cada momento</Destacado> de tu empresa.
+                  Una propuesta para <Destacado>cada momento</Destacado> de tu empresa
                 </h2>
               </Reveal>
             </div>

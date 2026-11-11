@@ -39,7 +39,7 @@ export function Footer() {
             {/* Sin descriptor: a este tamaño no se leería; el texto de abajo ya cumple ese papel */}
             <img src={logoNegativo} alt="Mía, consultora para empresarias" className="w-16 shrink-0 lg:w-28" />
             <p className="max-w-sm font-serif text-base text-crema/80 lg:mt-5 lg:text-menor">
-              Darle lugar a aquello que, sin ser percibido, organiza el funcionamiento de una empresa.
+              Trabajar sobre aquello que, sin ser evidente, limita nuestras posibilidades.
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export function Footer() {
             <GrupoFooter titulo="Barcelona" tituloMovil="Contacto y ubicación">
               <address className="space-y-2 text-detalle text-crema/70 not-italic lg:mt-4">
                 <a href={contacto.mapa} target="_blank" rel="noopener noreferrer" className="block transition-colors hover:text-crema">
-                  Av. Diagonal 534, entresuelo izquierda
+                  Av. Diagonal 534, entresuelo izquierda, despacho 27
                   <br />
                   08006 Barcelona
                 </a>

@@ -104,7 +104,7 @@ export function Cuando() {
           segments={[
             { text: 'Dirigir una empresa, algunas veces, puede sentirse como un camino' },
             { text: 'demasiado', firma: true },
-            { text: 'solitario.' },
+            { text: 'solitario' },
           ]}
         />
 

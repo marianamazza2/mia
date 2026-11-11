@@ -2,7 +2,7 @@
 const telefono = '+34610227804'
 const mensajeSesion = 'Hola, me gustaría reservar una sesión de Punto de Partida Mía.'
 const enlaceWhatsApp = (mensaje: string) => `https://wa.me/${telefono.replace('+', '')}?text=${encodeURIComponent(mensaje)}`
-const direccion = 'Avinguda Diagonal 534, entresuelo izquierda, 08006 Barcelona'
+const direccion = 'Avinguda Diagonal 534, entresuelo izquierda, despacho 27, 08006 Barcelona'
 
 // Titular del sitio para las páginas legales. Lo marcado entre corchetes falta confirmarlo con Marina.
 export const titular = {

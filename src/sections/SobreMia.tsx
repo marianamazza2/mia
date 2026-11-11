@@ -114,7 +114,7 @@ function Mirada() {
           </Reveal>
           <Reveal delay={0.1}>
             <h3 className="mt-6 text-frase lg:mt-10">
-              Una manera de mirar, <Destacado>antes que una consultora.</Destacado>
+              Una manera de mirar, <Destacado>antes que una consultora</Destacado>
             </h3>
           </Reveal>
         </div>
@@ -128,7 +128,7 @@ function Mirada() {
           className="mt-8 text-cuerpo text-negro/70 lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:mt-10 lg:self-start"
         >
           <p className="max-lg:first-letter:float-left max-lg:first-letter:mt-1 max-lg:first-letter:mr-2.5 max-lg:first-letter:font-serif max-lg:first-letter:text-[3.75rem] max-lg:first-letter:leading-[0.8] max-lg:first-letter:font-medium max-lg:first-letter:text-burdeos">
-            Trabaja con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
+            Trabajamos con mujeres que lideran empresas consolidadas y que atraviesan momentos de crecimiento,
             reorganización o expansión. Mujeres que han construido un negocio, pero que empiezan a percibir que
             la forma en que hoy lo conducen ya no alcanza para lo que la empresa necesita.
           </p>
@@ -183,13 +183,13 @@ function Sensible() {
         <Reveal y={12}>
           <p className="etiqueta hidden items-center gap-4 text-dorado-suave lg:block">
             <span aria-hidden className="h-px w-10 shrink-0 bg-dorado lg:hidden" />
-            El rigor metodológico que nos orienta
+            El método que nos orienta
           </p>
         </Reveal>
         <blockquote className="max-w-5xl font-serif text-titulo text-crema lg:mx-auto lg:mt-8">
           <LineaQueSube delay={0.1}>Hacer operativo</LineaQueSube>
           <LineaQueSube delay={0.22}>
-            <Destacado>lo sensible.</Destacado>
+            <Destacado>lo sensible</Destacado>
           </LineaQueSube>
         </blockquote>
         <motion.span

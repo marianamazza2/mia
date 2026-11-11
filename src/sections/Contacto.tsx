@@ -28,7 +28,7 @@ const canales = [
   },
   {
     etiqueta: 'Dónde estamos',
-    valor: 'Av. Diagonal 534, Barcelona',
+    valor: 'Av. Diagonal 534, despacho 27, Barcelona',
     href: contacto.mapa,
     externo: true,
     icono: <IconoUbicacion />,
@@ -75,7 +75,7 @@ export function Contacto() {
               segments={[
                 { text: 'Hablemos de' },
                 { text: 'tu', firma: true, className: 'mr-[0.12em]' },
-                { text: 'empresa.' },
+                { text: 'empresa' },
               ]}
             />
           </div>

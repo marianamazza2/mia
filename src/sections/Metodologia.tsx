@@ -20,11 +20,11 @@ import { Destacado } from '@/components/marca/Destacado'
 const pasos = [
   {
     titulo: 'Conocemos tu punto de partida',
-    texto: 'Hablamos del momento que atraviesa tu empresa y de aquello que se repite aunque ya hayas probado otras soluciones.',
+    texto: 'Hablamos del momento que atraviesa tu empresa y de aquello que se repite, aunque ya hayas probado otras soluciones.',
   },
   {
     titulo: 'Precisamos sobre qué trabajaremos y las alternativas posibles',
-    texto: 'Analizamos las dificultades y los elementos que intervienen en ellas para identificar posibilidades concretas de acción.',
+    texto: 'Analizamos las dificultades y los elementos que intervienen en ellas, para identificar posibilidades concretas de acción.',
   },
   {
     titulo: 'Diseñamos un camino y criterios para avanzar',
@@ -59,7 +59,7 @@ function Encabezado() {
       <div className="lg:col-span-7">
         <Eyebrow tone="light">Metodología</Eyebrow>
         <h2 className="mt-5 text-titulo lg:mt-6">
-          Cómo <Destacado>trabajamos.</Destacado>
+          Cómo <Destacado>trabajamos</Destacado>
         </h2>
       </div>
       <p className="hidden text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9 lg:block">
