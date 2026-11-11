@@ -1,5 +1,5 @@
 import { motion, useReducedMotion, useScroll, useTransform, type Transition } from 'motion/react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Destacado } from '@/components/marca/Destacado'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
@@ -32,17 +32,33 @@ export function Hero() {
   const [enMarcha, setEnMarcha] = useState(false)
   const [listoParaVer, setListoParaVer] = useState(false)
 
+  // Pone la película en marcha y solo entonces la descubre. Si el navegador no deja reproducir sola (en el
+  // celular, con el modo de bajo consumo, no deja), se queda la foto: antes se descubría igual y se veía
+  // el primer cuadro congelado
+  const arrancar = useCallback(async () => {
+    const cinta = video.current
+    if (!cinta) return
+    // El silencio es lo que permite que arranque sola; se repite aquí porque alguna versión de Safari no
+    // toma el atributo que pone React
+    cinta.muted = true
+    try {
+      await cinta.play()
+      setEnMarcha(true)
+    } catch {
+      // Sin película: la foto se queda, que es el mismo cuadro en el que la película termina
+    }
+  }, [])
+
   // Primero entra la foto con el telón de la intro y se queda quieta un momento; recién entonces arranca la
   // película, que se funde encima. Como termina en la misma composición que la foto, al acabar se queda fija
-  // y el relevo no se nota
+  // y el relevo no se nota.
+  // El aviso de «listo» no llega en todos lados: el celular recorta la precarga y muchas veces no avisa
+  // nunca, así que si no llega se intenta igual un poco más tarde
   useEffect(() => {
-    if (!conVideo || !lista || !listoParaVer) return
-    const t = setTimeout(() => {
-      video.current?.play().catch(() => {})
-      setEnMarcha(true)
-    }, 1600)
+    if (!conVideo || !lista) return
+    const t = setTimeout(arrancar, listoParaVer ? 1600 : 3500)
     return () => clearTimeout(t)
-  }, [conVideo, lista, listoParaVer])
+  }, [conVideo, lista, listoParaVer, arrancar])
 
   // Al terminar, la película vuelve a empezar, pero nunca de golpe: arranca en un macro de la tela y termina
   // en la composición de la foto, así que un loop directo sería un corte seco. En su lugar se funde de vuelta
@@ -51,11 +67,10 @@ export function Hero() {
   const volverAEmpezar = () => {
     setEnMarcha(false)
     reloj.current = setTimeout(() => {
-      const pelicula = video.current
-      if (!pelicula) return
-      pelicula.currentTime = 0
-      pelicula.play().catch(() => {})
-      setEnMarcha(true)
+      const cinta = video.current
+      if (!cinta) return
+      cinta.currentTime = 0
+      void arrancar()
     }, 3200)
   }
 
@@ -107,7 +122,7 @@ export function Hero() {
                 muted
                 playsInline
                 preload="auto"
-                onCanPlayThrough={() => setListoParaVer(true)}
+                onLoadedData={() => setListoParaVer(true)}
                 onEnded={volverAEmpezar}
                 className={cn('absolute inset-0 size-full object-cover', portada.encuadre)}
                 initial={{ opacity: 0 }}
