@@ -4,6 +4,7 @@ import llaveCinta from '@/assets/images/hero-llave-cinta.webp'
 import llaveCintaMobile from '@/assets/images/hero-llave-cinta-mobile.webp'
 import seda from '@/assets/images/hero-seda.webp'
 import velo from '@/assets/images/hero-velo.webp'
+import llaveCintaVideo from '@/assets/video/hero-llave-cinta.mp4'
 
 // Fondos probados para la portada. «oscuro» decide el resto: texto en crema y header en negativo
 // sobre la seda; texto oscuro y header normal sobre los fondos claros.
@@ -13,6 +14,9 @@ type Fondo = {
   src: string
   /** Versión vertical para mobile (hasta 1023 px): el celular descarga solo esta */
   srcMobile?: string
+  /** Película de la portada, solo en desktop: termina en la misma composición que la foto, así que al
+   *  final se funde con ella sin que se note el corte. Sin esto, el hero queda con la foto fija */
+  video?: string
   oscuro: boolean
   encuadre: string
   suavizado: string
@@ -53,6 +57,7 @@ const fondos = {
   llaveCinta: {
     src: llaveCinta,
     srcMobile: llaveCintaMobile,
+    video: llaveCintaVideo,
     oscuro: false,
     encuadre:
       'object-[0%_bottom] translate-y-[15%] [mask-image:linear-gradient(to_bottom,transparent,black_18%)] lg:translate-x-32 lg:translate-y-0 lg:object-right lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]',

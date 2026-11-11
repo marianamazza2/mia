@@ -1,5 +1,5 @@
-import { motion, useScroll, useTransform, type Transition } from 'motion/react'
-import { useRef, type ReactNode } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform, type Transition } from 'motion/react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
@@ -20,6 +20,44 @@ export function Hero() {
   // En mobile ni el texto ni la foto se desplazan
   const esDesktop = useMediaQuery('(min-width: 1024px)')
   const oscuro = portada.oscuro
+
+  // La película solo en desktop: es apaisada y en el celular habría que recortarla demasiado. Y nunca
+  // si la persona pidió menos movimiento: ahí se queda la foto, quieta
+  const reduceMotion = useReducedMotion()
+  const conVideo = !!portada.video && esDesktop && !reduceMotion
+  const video = useRef<HTMLVideoElement>(null)
+  const reloj = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const [enMarcha, setEnMarcha] = useState(false)
+  const [listoParaVer, setListoParaVer] = useState(false)
+
+  // Primero entra la foto con el telón de la intro y se queda quieta un momento; recién entonces arranca la
+  // película, que se funde encima. Como termina en la misma composición que la foto, al acabar se queda fija
+  // y el relevo no se nota
+  useEffect(() => {
+    if (!conVideo || !lista || !listoParaVer) return
+    const t = setTimeout(() => {
+      video.current?.play().catch(() => {})
+      setEnMarcha(true)
+    }, 1600)
+    return () => clearTimeout(t)
+  }, [conVideo, lista, listoParaVer])
+
+  // Al terminar, la película vuelve a empezar, pero nunca de golpe: arranca en un macro de la tela y termina
+  // en la composición de la foto, así que un loop directo sería un corte seco. En su lugar se funde de vuelta
+  // a la foto, que es el mismo cuadro en el que acaba, descansa un momento y vuelve a entrar con el fundido
+  // de la primera vez. El ciclo se cose solo y no se ve dónde empieza
+  const volverAEmpezar = () => {
+    setEnMarcha(false)
+    reloj.current = setTimeout(() => {
+      const pelicula = video.current
+      if (!pelicula) return
+      pelicula.currentTime = 0
+      pelicula.play().catch(() => {})
+      setEnMarcha(true)
+    }, 3200)
+  }
+
+  useEffect(() => () => clearTimeout(reloj.current), [])
 
   return (
     // Todo queda «oculto» hasta que sube el telón de la intro; las piezas heredan el estado por variantes
@@ -54,6 +92,25 @@ export function Hero() {
                 className={cn('size-full object-cover', portada.encuadre)}
               />
             </picture>
+
+            {/* La película, encima de la foto y con su mismo encuadre: aparece con un fundido largo y suave,
+                recorre los objetos y vuelve a esta misma composición, donde se queda */}
+            {conVideo && (
+              <motion.video
+                ref={video}
+                aria-hidden
+                src={portada.video}
+                muted
+                playsInline
+                preload="auto"
+                onCanPlayThrough={() => setListoParaVer(true)}
+                onEnded={volverAEmpezar}
+                className={cn('absolute inset-0 size-full object-cover', portada.encuadre)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: enMarcha ? 1 : 0 }}
+                transition={{ duration: 2, ease: easeSuave }}
+              />
+            )}
           </motion.div>
         </motion.div>
         {oscuro ? (
