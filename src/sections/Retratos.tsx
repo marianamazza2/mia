@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import aBurdeos from '@/assets/brand/a_mia_burdeos.svg'
+import lucia from '@/assets/images/equipo-lucia.webp'
 import marina from '@/assets/images/equipo-marina.webp'
 import { Reveal } from '@/components/motion/Reveal'
 import { Carrusel } from '@/components/ui/Carrusel'
@@ -35,6 +36,7 @@ const equipo: Persona[] = [
   {
     nombre: 'Lucia Carolina Nicolai',
     rol: 'Procesos e implementación',
+    foto: lucia,
     bio: [
       'Con sólida formación en Ingeniería Industrial y experiencia en el trabajo con equipos empresariales, aporta una perspectiva orientada al análisis de procesos, la organización del trabajo y el funcionamiento operativo de las empresas.',
       'En Mía trabaja dentro de las organizaciones, realizando el mapeo y análisis de sus procesos, observando las dinámicas de trabajo y examinando cómo se llevan adelante las decisiones en la práctica.',

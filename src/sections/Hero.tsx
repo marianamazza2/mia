@@ -22,10 +22,11 @@ export function Hero() {
   const esDesktop = useMediaQuery('(min-width: 1024px)')
   const oscuro = portada.oscuro
 
-  // La película solo en desktop: es apaisada y en el celular habría que recortarla demasiado. Y nunca
-  // si la persona pidió menos movimiento: ahí se queda la foto, quieta
+  // Cada tamaño con su película: la apaisada en desktop y la vertical en el celular, que de la apaisada
+  // solo vería la pared. Nunca si la persona pidió menos movimiento: ahí se queda la foto, quieta
   const reduceMotion = useReducedMotion()
-  const conVideo = !!portada.video && esDesktop && !reduceMotion
+  const pelicula = esDesktop ? portada.video : portada.videoMovil
+  const conVideo = !!pelicula && !reduceMotion
   const video = useRef<HTMLVideoElement>(null)
   const reloj = useRef<ReturnType<typeof setTimeout>>(undefined)
   const [enMarcha, setEnMarcha] = useState(false)
@@ -97,10 +98,12 @@ export function Hero() {
             {/* La película, encima de la foto y con su mismo encuadre: aparece con un fundido largo y suave,
                 recorre los objetos y vuelve a esta misma composición, donde se queda */}
             {conVideo && (
+              // La «key» obliga a volver a cargarla si se pasa de un tamaño al otro: cambiar las fuentes
+              // de un <video> ya montado no basta para que el navegador las vuelva a mirar
               <motion.video
+                key={esDesktop ? 'apaisada' : 'vertical'}
                 ref={video}
                 aria-hidden
-                src={portada.video}
                 muted
                 playsInline
                 preload="auto"
@@ -110,7 +113,10 @@ export function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: enMarcha ? 1 : 0 }}
                 transition={{ duration: 2, ease: easeSuave }}
-              />
+              >
+                {pelicula.webm && <source src={pelicula.webm} type="video/webm" />}
+                <source src={pelicula.mp4} type="video/mp4" />
+              </motion.video>
             )}
           </motion.div>
         </motion.div>
