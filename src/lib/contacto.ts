@@ -17,6 +17,8 @@ export const contacto = {
   email: 'contacto@miaconsultora.es',
   telefono,
   telefonoVisible: '+34 610 227 804',
+  instagram: 'https://www.instagram.com/miaconsultora.es',
+  instagramVisible: '@miaconsultora.es',
   /** Reserva de Punto de Partida Mía: abre WhatsApp con el pedido ya escrito */
   whatsappSesion: enlaceWhatsApp(mensajeSesion),
   direccion,

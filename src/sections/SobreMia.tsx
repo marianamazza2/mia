@@ -169,6 +169,8 @@ function Sensible() {
   // la textura quieta, que es de donde salió esta franja
   const reduceMotion = useReducedMotion()
   const [sedaLista, setSedaLista] = useState(false)
+  // La bajada entra cuando la máquina empieza a escribir «lo sensible»
+  const [conBajada, setConBajada] = useState(false)
 
   return (
     <div
@@ -231,18 +233,18 @@ function Sensible() {
         </Reveal>
         <MaquinaDeEscribir
           lineas={fraseSensible}
+          alEmpezarLinea={(linea) => linea === 1 && setConBajada(true)}
           className="mx-auto mt-6 max-w-5xl font-serif text-titulo text-crema lg:mt-8"
         />
         <motion.span
           aria-hidden
           className="mx-auto mt-6 block h-px w-24 origin-center bg-dorado-suave lg:mt-10"
           initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: easeSuave, delay: 2.4 }}
+          animate={{ scaleX: conBajada ? 1 : 0 }}
+          transition={{ duration: 1.4, ease: easeSuave }}
         />
-        {/* La bajada aparece despacio, sin apuro, cuando la frase ya terminó de escribirse */}
-        <Reveal delay={2.7} duracion={2.4} y={14} curva="serena">
+        {/* La bajada aparece despacio, sin apuro, mientras se escribe «lo sensible»: no queda un hueco vacío */}
+        <Reveal mostrar={conBajada} duracion={2.4} y={14} curva="serena">
           <p className="mx-auto mt-6 max-w-xl text-cuerpo text-pretty text-crema/80 lg:mt-8">
             Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
             empresa y convertirlo en una posibilidad concreta de acción.

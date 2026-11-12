@@ -34,8 +34,10 @@ export function Footer() {
       />
 
       <Container className="relative pt-8 pb-6 lg:pt-16 lg:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-16">
-          <div className="mb-6 flex items-center gap-5 lg:col-span-5 lg:mb-0 lg:block">
+        {/* En escritorio, la pantalla en cuartos: la marca en la mitad izquierda; «Mía» arranca justo en el
+            centro y «Barcelona» en el último cuarto */}
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="mb-6 flex items-center gap-5 lg:mb-0 lg:block lg:pr-16">
             {/* Sin descriptor: a este tamaño no se leería; el texto de abajo ya cumple ese papel */}
             <img src={logoNegativo} alt="Mía, consultora para empresarias" className="w-16 shrink-0 lg:w-28" />
             <p className="max-w-sm font-serif text-base text-crema/80 lg:mt-5 lg:text-menor">
@@ -43,36 +45,38 @@ export function Footer() {
             </p>
           </div>
 
-          <nav aria-label="Pie de página" className="lg:col-span-3 lg:col-start-7">
-            <GrupoFooter titulo="Mía">
-              <ul className="grid grid-cols-2 gap-x-6 lg:mt-4 lg:block lg:space-y-2">
-                {links.map(({ href, label }) => (
-                  <li key={href}>
-                    <a href={href} className="inline-flex min-h-11 items-center text-detalle text-crema/70 transition-colors duration-300 hover:text-crema lg:min-h-0">
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </GrupoFooter>
-          </nav>
+          <div className="lg:grid lg:grid-cols-2">
+            <nav aria-label="Pie de página" className="lg:pr-12">
+              <GrupoFooter titulo="Mía">
+                <ul className="grid grid-cols-2 gap-x-6 lg:mt-4 lg:block lg:space-y-2">
+                  {links.map(({ href, label }) => (
+                    <li key={href}>
+                      <a href={href} className="inline-flex min-h-11 items-center text-detalle text-crema/70 transition-colors duration-300 hover:text-crema lg:min-h-0">
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </GrupoFooter>
+            </nav>
 
-          <div className="lg:col-span-3">
-            <GrupoFooter titulo="Barcelona" tituloMovil="Contacto y ubicación">
-              <address className="space-y-2 text-detalle text-crema/70 not-italic lg:mt-4">
-                <a href={contacto.mapa} target="_blank" rel="noopener noreferrer" className="block transition-colors hover:text-crema">
-                  Av. Diagonal 534, entresuelo izquierda, despacho 27
-                  <br />
-                  08006 Barcelona
-                </a>
-                <a href={`mailto:${contacto.email}`} className="block transition-colors hover:text-crema">
-                  {contacto.email}
-                </a>
-                <a href={`tel:${contacto.telefono}`} className="block transition-colors hover:text-crema">
-                  {contacto.telefonoVisible}
-                </a>
-              </address>
-            </GrupoFooter>
+            <div>
+              <GrupoFooter titulo="Barcelona" tituloMovil="Contacto y ubicación">
+                <address className="space-y-2 text-detalle text-crema/70 not-italic lg:mt-4">
+                  <a href={contacto.mapa} target="_blank" rel="noopener noreferrer" className="block transition-colors hover:text-crema">
+                    Av. Diagonal 534, entresuelo izquierda, despacho 27
+                    <br />
+                    08006 Barcelona
+                  </a>
+                  <a href={`mailto:${contacto.email}`} className="block transition-colors hover:text-crema">
+                    {contacto.email}
+                  </a>
+                  <a href={`tel:${contacto.telefono}`} className="block transition-colors hover:text-crema">
+                    {contacto.telefonoVisible}
+                  </a>
+                </address>
+              </GrupoFooter>
+            </div>
           </div>
         </div>
 

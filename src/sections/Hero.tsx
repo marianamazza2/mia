@@ -42,28 +42,36 @@ export function Hero() {
     // toma el atributo que pone React
     cinta.muted = true
     try {
-      // Se reproduce para comprobar que el navegador deja, y enseguida se vuelve al primer cuadro: el
-      // fundido ocurre con la película quieta y recién corre cuando ya se ve entera, así no se pierden
-      // los primeros segundos por debajo de la foto
-      await cinta.play()
-      cinta.pause()
       cinta.currentTime = 0
+      await cinta.play()
+      // En desktop se vuelve al primer cuadro: el fundido ocurre con la película quieta y recién corre
+      // cuando ya se ve entera, así no se pierden los primeros segundos por debajo de la foto.
+      // En el celular no: pausarla y volver a reproducirla lo traba, y se veía un buen rato quieta.
+      // Ahí entra ya en movimiento
+      if (esDesktop) {
+        cinta.pause()
+        cinta.currentTime = 0
+      }
       setEnMarcha(true)
     } catch {
       // Sin película: la foto se queda, que es el mismo cuadro en el que la película termina
     }
-  }, [])
+  }, [esDesktop])
 
   // Primero entra la foto con el telón de la intro y se queda quieta un momento; recién entonces arranca la
   // película, que se funde encima. Como termina en la misma composición que la foto, al acabar se queda fija
   // y el relevo no se nota.
-  // El aviso de «listo» no llega en todos lados: el celular recorta la precarga y muchas veces no avisa
-  // nunca, así que si no llega se intenta igual un poco más tarde
+  // El aviso de «listo» no llega en todos lados: el celular no precarga y casi nunca avisa, así que ahí no se
+  // lo espera. Se le pide que arranque apenas sube el telón: el mismo pedido de reproducir la hace cargar
   useEffect(() => {
     if (!conVideo || !lista) return
+    if (!esDesktop) {
+      const t = setTimeout(arrancar, 300)
+      return () => clearTimeout(t)
+    }
     const t = setTimeout(arrancar, listoParaVer ? 1200 : 3500)
     return () => clearTimeout(t)
-  }, [conVideo, lista, listoParaVer, arrancar])
+  }, [conVideo, lista, listoParaVer, arrancar, esDesktop])
 
   // Al terminar, la película vuelve a empezar, pero nunca de golpe: arranca en un macro de la tela y termina
   // en la composición de la foto, así que un loop directo sería un corte seco. En su lugar se funde de vuelta

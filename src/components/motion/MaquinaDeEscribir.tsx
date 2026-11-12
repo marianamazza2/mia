@@ -15,6 +15,8 @@ type MaquinaDeEscribirProps = {
   ritmo?: number
   /** Pausa antes de empezar, en milisegundos */
   espera?: number
+  /** Avisa cuando empieza a escribirse cada línea (0, 1…): para que otras piezas entren a tiempo */
+  alEmpezarLinea?: (linea: number) => void
 }
 
 // Pausa en el salto de línea, como el carro de la máquina que vuelve
@@ -24,7 +26,13 @@ const PAUSA_LINEA = 380
 // Las que faltan ya ocupan su lugar (transparentes): el texto no se reacomoda mientras se escribe.
 // Al terminar, el cursor parpadea un momento y se apaga. «lineas» tiene que ser estable (una constante):
 // si cambia, la escritura vuelve a empezar.
-export function MaquinaDeEscribir({ lineas, className, ritmo = 75, espera = 300 }: MaquinaDeEscribirProps) {
+export function MaquinaDeEscribir({
+  lineas,
+  className,
+  ritmo = 75,
+  espera = 300,
+  alEmpezarLinea,
+}: MaquinaDeEscribirProps) {
   const ref = useRef<HTMLQuoteElement>(null)
   const enPantalla = useInView(ref, { once: true, margin: '0px 0px -20% 0px' })
   const reduceMotion = useReducedMotion()
@@ -33,14 +41,25 @@ export function MaquinaDeEscribir({ lineas, className, ritmo = 75, espera = 300 
   const [cursorVisible, setCursorVisible] = useState(true)
   const visibles = reduceMotion ? total : escritas
   const conCursor = !reduceMotion && cursorVisible
+  // El aviso se guarda aparte: si quien lo pasa lo crea de nuevo en cada render, la escritura no se reinicia
+  const aviso = useRef(alEmpezarLinea)
+  useEffect(() => {
+    aviso.current = alEmpezarLinea
+  })
 
   useEffect(() => {
-    if (!enPantalla || reduceMotion) return
+    if (!enPantalla) return
+    if (reduceMotion) {
+      // Todo a la vista de entrada: las demás piezas también
+      lineas.forEach((_, l) => aviso.current?.(l))
+      return
+    }
     const tiempos: number[] = []
     let momento = espera
     let indice = 0
     lineas.forEach((linea, l) => {
       if (l > 0) momento += PAUSA_LINEA
+      tiempos.push(window.setTimeout(() => aviso.current?.(l), momento))
       for (let c = 0; c < linea.texto.length; c++) {
         indice++
         const hasta = indice

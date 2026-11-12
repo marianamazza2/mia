@@ -452,7 +452,8 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
         className={cn('aspect-[2/1] w-full object-cover', servicio.imagen.encuadre, servicio.imagen.ajuste)}
       />
 
-      <div className="flex flex-1 flex-col p-5 text-detalle sm:p-6">
+      {/* Abajo, el mismo aire que las tarjetas de Contacto */}
+      <div className="flex flex-1 flex-col px-5 pt-5 pb-8 text-detalle sm:px-6 sm:pt-6">
         <h3 className="text-tarjeta">{servicio.titulo}</h3>
         {/* En la Mentoría, lo de los complementos va en punto seguido: ahorra un renglón y la tarjeta no
             se estira de más */}

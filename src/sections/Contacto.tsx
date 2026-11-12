@@ -21,17 +21,17 @@ const canales = [
     icono: <IconoEmail />,
   },
   {
+    etiqueta: 'Instagram',
+    valor: contacto.instagramVisible,
+    href: contacto.instagram,
+    externo: true,
+    icono: <IconoInstagram />,
+  },
+  {
     etiqueta: 'Teléfono',
     valor: contacto.telefonoVisible,
     href: `tel:${contacto.telefono}`,
     icono: <IconoTelefono />,
-  },
-  {
-    etiqueta: 'Dónde estamos',
-    valor: 'Av. Diagonal 534, despacho 27, Barcelona',
-    href: contacto.mapa,
-    externo: true,
-    icono: <IconoUbicacion />,
   },
 ]
 
@@ -94,7 +94,7 @@ export function Contacto() {
 
       {/* En móvil, una opción por slide; en escritorio, las dos mitades del pliego. */}
       <OpcionesContacto>
-        <Mitad id="reservar" lado="izquierdo" canal="Por WhatsApp" icono={<IconoWhatsApp className="size-4" />}>
+        <Mitad id="reservar" lado="izquierdo">
           <Camino titulo={esDesktop ? '¿Quieres comenzar por una situación concreta?' : 'Trabajemos una situación concreta'}>
             Reserva <span className="text-negro">Punto de Partida Mía</span>,{' '}
             {esDesktop
@@ -117,8 +117,6 @@ export function Contacto() {
         <Mitad
           id="escribenos"
           lado="derecho"
-          canal="Por formulario"
-          icono={<IconoFormulario />}
           activa={formularioAbierto}
           delay={0.15}
           // La flecha va sobre el lomo, solo en escritorio.
@@ -250,9 +248,6 @@ function Rotulo({ oscuro = false, children }: { oscuro?: boolean; children: Reac
 type MitadProps = {
   id: string
   lado: 'izquierdo' | 'derecho'
-  /** Por dónde sigue la conversación: se lee antes que la pregunta */
-  canal: string
-  icono: ReactNode
   /** Con el formulario abierto, la mitad se tiñe apenas, como el formulario que continúa debajo */
   activa?: boolean
   delay?: number
@@ -262,7 +257,7 @@ type MitadProps = {
 
 // Cada mitad del pliego; en móvil se convierte en una tarjeta dentro del carrusel.
 // Al pasar el mouse, la mitad se aclara apenas: invita a elegirla
-function Mitad({ id, lado, canal, icono, activa = false, delay = 0, sobreElLomo, children }: MitadProps) {
+function Mitad({ id, lado, activa = false, delay = 0, sobreElLomo, children }: MitadProps) {
   return (
     <article
       id={id}
@@ -275,11 +270,7 @@ function Mitad({ id, lado, canal, icono, activa = false, delay = 0, sobreElLomo,
     >
       {sobreElLomo}
       <Reveal y={24} delay={delay} className="flex flex-1 flex-col">
-        <p className="etiqueta flex items-center gap-3 text-burdeos">
-          {icono}
-          {canal}
-        </p>
-        <div className="mt-6 mb-7 h-px w-10 bg-dorado/60" />
+        <div className="mb-7 h-px w-10 bg-dorado/60" />
         {children}
       </Reveal>
     </article>
@@ -352,7 +343,7 @@ function Canales({ disposicion, className }: { disposicion: 'franja' | 'lista'; 
         )}
       >
         {canales.map((canal) => (
-          <li key={canal.etiqueta} className={cn('border-b border-crema/15', franja && 'lg:border-b-0')}>
+          <li key={canal.etiqueta} className={cn('border-b border-crema/15', franja && 'lg:min-w-0 lg:border-b-0')}>
             <a
               href={canal.href}
               {...(canal.externo && {
@@ -835,43 +826,13 @@ function IconoTelefono() {
   )
 }
 
-function IconoWhatsApp({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 24 24"
-      className={cn('size-5 shrink-0', className)}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.25"
-    >
-      <path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.2Z" />
-      <path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z" />
-    </svg>
-  )
-}
-
-function IconoFormulario() {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 24 24"
-      className="size-4 shrink-0"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.25"
-    >
-      <rect x="4.5" y="3.5" width="15" height="17" rx="1.5" />
-      <path d="M8 8.5h8M8 12h8M8 15.5h5" />
-    </svg>
-  )
-}
-
-function IconoUbicacion() {
+function IconoInstagram() {
   return (
     <svg aria-hidden viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11Z" />
-      <circle cx="12" cy="10" r="2.25" />
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17" cy="7" r="0.6" fill="currentColor" stroke="none" />
     </svg>
   )
 }
+
