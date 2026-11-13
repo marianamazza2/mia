@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import type { ReactNode } from 'react'
 import { easeSereno, easeSuave } from '@/lib/motion'
 
@@ -24,13 +24,13 @@ export function Reveal({ children, delay = 0, y = 24, duracion = 1.1, curva = 's
       ? { whileInView: visible, viewport: { once: true, margin: '0px 0px -10% 0px' } }
       : { animate: mostrar ? visible : oculto }
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={oculto}
       {...disparo}
       transition={{ duration: duracion, ease: curva === 'serena' ? easeSereno : easeSuave, delay }}
     >
       {children}
-    </motion.div>
+    </m.div>
   )
 }

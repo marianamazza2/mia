@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { AnimatePresence, m, useMotionValueEvent, useScroll } from 'motion/react'
 import { useEffect, useState } from 'react'
 import logoNegativo from '@/assets/brand/logo_mia_negativo.svg'
 import logo from '@/assets/brand/logo_mia_principal.svg'
@@ -41,7 +41,7 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
 
   return (
     <>
-      <motion.header
+      <m.header
         className={cn(
           'fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color] duration-500',
           scrolled && !open ? 'border-dorado/25 bg-crema/85 backdrop-blur-md' : 'border-transparent',
@@ -60,7 +60,7 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
           )}
         >
           <a href="/#inicio" aria-label="Mía, ir al inicio" onClick={() => setOpen(false)}>
-            <img src={onDark ? logoNegativo : logo} alt="" className="w-[80px] lg:w-[96px]" />
+            <img src={onDark ? logoNegativo : logo} alt="" width={96} height={42} className="h-auto w-[80px] lg:w-[96px]" />
           </a>
 
           {/* Desktop: los links quedan centrados en la página, sin importar el ancho del logo */}
@@ -107,11 +107,11 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
             />
           </button>
         </Container>
-      </motion.header>
+      </m.header>
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id="menu-movil"
             className="fixed inset-0 z-40 flex flex-col bg-burdeos pt-24 pb-10 lg:hidden"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
@@ -124,7 +124,7 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
                 <ul className="space-y-2">
                   {links.map(({ href, label }, i) => (
                     <li key={href} className="overflow-hidden">
-                      <motion.a
+                      <m.a
                         href={href}
                         onClick={() => setOpen(false)}
                         className="block py-1 font-serif text-[2.5rem] leading-tight font-medium text-crema"
@@ -133,13 +133,13 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
                         transition={{ duration: 0.8, ease: easeSuave, delay: 0.25 + i * 0.06 }}
                       >
                         {label}
-                      </motion.a>
+                      </m.a>
                     </li>
                   ))}
                 </ul>
               </nav>
 
-              <motion.div
+              <m.div
                 className="space-y-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -149,9 +149,9 @@ export function Header({ sobreFoto = false }: { sobreFoto?: boolean }) {
                 <Button href="/#contacto" variant="light" withArrow onClick={() => setOpen(false)}>
                   Conversemos sobre tu empresa
                 </Button>
-              </motion.div>
+              </m.div>
             </Container>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

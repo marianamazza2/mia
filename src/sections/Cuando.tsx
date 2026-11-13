@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import abrazoChica from '@/assets/images/cuando-abrazo-900.webp'
 import abrazo from '@/assets/images/cuando-abrazo.webp'
+import cuadernoChica from '@/assets/images/cuando-cuaderno-900.webp'
 import cuaderno from '@/assets/images/cuando-cuaderno.webp'
+import librosChica from '@/assets/images/cuando-libros-900.webp'
 import libros from '@/assets/images/cuando-libros.webp'
+import llavesChica from '@/assets/images/cuando-llaves-900.webp'
 import llaves from '@/assets/images/cuando-llaves.webp'
+import reunionChica from '@/assets/images/cuando-reunion-900.webp'
 import reunion from '@/assets/images/cuando-reunion.webp'
 import { Reveal } from '@/components/motion/Reveal'
 import { ScrollRevealText } from '@/components/motion/ScrollRevealText'
@@ -14,8 +19,8 @@ import { cn } from '@/lib/cn'
 type Situacion = {
   titulo: string
   texto: string
-  /** Foto de fondo: se tiñe de burdeos cuando la fila está activa */
-  foto: string
+  /** Foto de fondo: se tiñe de burdeos cuando la fila está activa. Con su versión chica y su ancho real */
+  foto: { src: string; chica: string; ancho: number }
   /** Encuadre de la foto en la tira (object-position): dónde está lo que importa de la imagen */
   encuadre: string
 }
@@ -26,7 +31,7 @@ const situaciones: Situacion[] = [
     titulo: 'La empresa depende demasiado de ti y necesitas que tu equipo asuma mayores responsabilidades',
     texto:
       'Has construido un negocio que funciona, pero muchas cuestiones siguen necesitando tu presencia, decisiones o supervisión constante.',
-    foto: llaves,
+    foto: { src: llaves, chica: llavesChica, ancho: 1774 },
     // Tener todas las llaves en la mano: el encuadre baja hasta el manojo de llaves
     encuadre: 'object-[50%_78%]',
   },
@@ -34,7 +39,7 @@ const situaciones: Situacion[] = [
     titulo: 'No sabes cómo gestionar las situaciones diarias con tu equipo',
     texto:
       'Cuentas con personas que trabajan contigo, pero todavía resulta difícil distribuir funciones o consolidar una organización con mayor autonomía.',
-    foto: reunion,
+    foto: { src: reunion, chica: reunionChica, ancho: 1774 },
     // Una reunión: la persona sentada con los papeles, de la cintura para arriba
     encuadre: 'object-[55%_0%]',
   },
@@ -42,7 +47,7 @@ const situaciones: Situacion[] = [
     titulo: 'Hay situaciones y conflictos que no consigues resolver',
     texto:
       'Has intentado introducir cambios, conversar con tu equipo o modificar ciertas formas de trabajo, pero las dificultades continúan apareciendo.',
-    foto: abrazo,
+    foto: { src: abrazo, chica: abrazoChica, ancho: 1774 },
     // Abrazarse a sí misma: la tensión de lo que no se resuelve
     encuadre: 'object-[45%_55%]',
   },
@@ -50,7 +55,7 @@ const situaciones: Situacion[] = [
     titulo: 'Tienes decisiones importantes por delante',
     texto:
       'Necesitas valorar alternativas, considerar sus consecuencias y encontrar una orientación que te permita avanzar.',
-    foto: cuaderno,
+    foto: { src: cuaderno, chica: cuadernoChica, ancho: 1774 },
     // Escribir antes de decidir: la mano y el cuaderno
     encuadre: 'object-[50%_72%]',
   },
@@ -58,7 +63,7 @@ const situaciones: Situacion[] = [
     titulo: 'Sientes necesario volver a definir el rumbo y el horizonte de tu marca',
     texto:
       'Tu empresa está cambiando y estás considerando nuevas posibilidades o necesitas reorganizar aspectos de su funcionamiento para la etapa que quieres construir.',
-    foto: libros,
+    foto: { src: libros, chica: librosChica, ancho: 1672 },
     // Avanzar con lo necesario bajo el brazo: libros, anteojos y la mano
     encuadre: 'object-[50%_55%]',
   },
@@ -153,7 +158,9 @@ function Fila({ situacion, indice, activa }: { situacion: Situacion; indice: num
         )}
       >
         <Picture
-          src={situacion.foto}
+          src={situacion.foto.src}
+          chica={situacion.foto.chica}
+          ancho={situacion.foto.ancho}
           alt=""
           loading="lazy"
           className={cn(

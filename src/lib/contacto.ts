@@ -21,6 +21,8 @@ export const contacto = {
   instagramVisible: '@miaconsultora.es',
   /** Reserva de Punto de Partida Mía: abre WhatsApp con el pedido ya escrito */
   whatsappSesion: enlaceWhatsApp(mensajeSesion),
+  /** WhatsApp sin mensaje: el número de «Otros canales» abre el chat, no la llamada (en Mac, FaceTime) */
+  whatsapp: `https://wa.me/${telefono.replace('+', '')}`,
   direccion,
   mapa: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`,
 }

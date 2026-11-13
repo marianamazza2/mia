@@ -1,5 +1,5 @@
-import { motion, useInView, useReducedMotion } from 'motion/react'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { m, useInView, useReducedMotion } from 'motion/react'
+import { Fragment, useEffect, useRef, useState, type RefObject } from 'react'
 import { Destacado } from '@/components/marca/Destacado'
 import { cn } from '@/lib/cn'
 
@@ -15,6 +15,8 @@ type MaquinaDeEscribirProps = {
   ritmo?: number
   /** Pausa antes de empezar, en milisegundos */
   espera?: number
+  /** Etiqueta del contenedor: una cita (por defecto) o un título, si la frase encabeza su bloque */
+  como?: 'blockquote' | 'h3'
   /** Avisa cuando empieza a escribirse cada línea (0, 1…): para que otras piezas entren a tiempo */
   alEmpezarLinea?: (linea: number) => void
 }
@@ -31,9 +33,10 @@ export function MaquinaDeEscribir({
   className,
   ritmo = 75,
   espera = 300,
+  como: Etiqueta = 'blockquote',
   alEmpezarLinea,
 }: MaquinaDeEscribirProps) {
-  const ref = useRef<HTMLQuoteElement>(null)
+  const ref = useRef<HTMLElement>(null)
   const enPantalla = useInView(ref, { once: true, margin: '0px 0px -20% 0px' })
   const reduceMotion = useReducedMotion()
   const total = lineas.reduce((suma, linea) => suma + linea.texto.length, 0)
@@ -76,7 +79,9 @@ export function MaquinaDeEscribir({
   const inicios = lineas.map((_, l) => lineas.slice(0, l).reduce((suma, linea) => suma + linea.texto.length, 0))
 
   return (
-    <blockquote ref={ref} className={className} aria-label={lineas.map((l) => l.texto).join(' ')}>
+    // Las letras que faltan ya están en el HTML (transparentes): Google lee la frase entera
+    // (El ref sirve igual para la cita o el título; TypeScript no acepta uno solo para los dos tipos)
+    <Etiqueta ref={ref as RefObject<never>} className={className} aria-label={lineas.map((l) => l.texto).join(' ')}>
       {lineas.map((linea, l) => {
         const desde = inicios[l]
         const letras = (
@@ -96,19 +101,21 @@ export function MaquinaDeEscribir({
           </span>
         )
         return (
-          <span key={l} className="block">
-            {linea.destacado ? <Destacado>{letras}</Destacado> : letras}
-          </span>
+          <Fragment key={l}>
+            {/* Cada línea es un bloque: el espacio no se ve, pero separa las palabras en el texto */}
+            {l > 0 && ' '}
+            <span className="block">{linea.destacado ? <Destacado>{letras}</Destacado> : letras}</span>
+          </Fragment>
         )
       })}
-    </blockquote>
+    </Etiqueta>
   )
 }
 
 function Cursor() {
   return (
     <span className="relative inline-block w-0 align-baseline">
-      <motion.span
+      <m.span
         className="absolute bottom-[-0.08em] left-[0.06em] h-[0.9em] w-px bg-dorado-suave"
         animate={{ opacity: [1, 1, 0, 0] }}
         transition={{ duration: 1, times: [0, 0.5, 0.55, 1], repeat: Infinity }}

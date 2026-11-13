@@ -18,5 +18,7 @@ export function useIntroLista() {
       return () => oyentes.delete(oyente)
     },
     () => lista,
+    // Al prerenderizar (y al hidratar), la intro todavía no terminó
+    () => false,
   )
 }

@@ -1,5 +1,6 @@
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { m, useInView, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef, useState, type RefObject } from 'react'
+import texturaChica from '@/assets/images/bn-textura-900.webp'
 import textura from '@/assets/images/bn-textura.webp'
 import sensibleMp4 from '@/assets/video/sensible.mp4'
 import sensibleWebm from '@/assets/video/sensible.webm'
@@ -42,13 +43,13 @@ function Pregunta() {
 
   return (
     <div ref={ref} className="relative overflow-hidden bg-burdeos text-crema">
-      <motion.div
+      <m.div
         ref={llaveMobile}
         className="absolute top-1/2 right-[3%] w-28 -translate-y-1/2 rotate-[14deg] text-crema/20 sm:w-36 lg:hidden"
         style={{ y: llaveY }}
       >
         <Llave progreso={trazoMobile} className="w-full" />
-      </motion.div>
+      </m.div>
 
       <Container className="relative py-seccion">
         <Reveal y={12}>
@@ -66,7 +67,7 @@ function Pregunta() {
 
         <div className="mt-bloque grid lg:grid-cols-12 lg:items-center">
           {/* La caja tiene la proporción de la llave acostada; adentro va parada y se gira un cuarto de vuelta */}
-          <motion.div
+          <m.div
             ref={llaveDesktop}
             aria-hidden
             className="relative hidden aspect-[32/10] w-[calc(100%-4rem)] text-dorado-suave/55 lg:col-span-6 lg:block"
@@ -75,7 +76,7 @@ function Pregunta() {
             <div className="absolute top-1/2 left-1/2 h-[320%] w-[31.25%] -translate-x-1/2 -translate-y-1/2 -rotate-90">
               <Llave progreso={trazoDesktop} className="size-full" />
             </div>
-          </motion.div>
+          </m.div>
           <Reveal className="text-cuerpo text-crema/75 lg:col-span-5 lg:col-start-7">
             <p>
               Mía es una consultora que trabaja con la relación entre la posición de quien dirige, las decisiones
@@ -117,7 +118,10 @@ function Mirada() {
           </Reveal>
           <Reveal delay={0.1}>
             <h3 className="mt-6 text-frase lg:mt-10">
-              Una manera de mirar, <Destacado>antes que una consultora</Destacado>
+              {/* «antes» en la caligrafía de la marca, como «sólida» en el hero. Sin su propio trazo: con él
+                  se dibujaba sola después de que el resto del título ya estaba, y quedaba rezagada. Así entra
+                  con la frase entera, que es lo que anima el Reveal de arriba */}
+              Una manera de mirar, <Destacado firma trazo={false} className="mr-[0.06em]">antes</Destacado> que una consultora
             </h3>
           </Reveal>
         </div>
@@ -139,7 +143,7 @@ function Mirada() {
             <p>
               Mía parte de reconocer que la forma en que una empresaria dirige, decide y se relaciona con su
               negocio también participa de aquello que la empresa puede llegar a ser. Desde ahí, nos interesa
-              trabajar no solo sobre lo que necesita cambiar en la organización, sino también sobre la posición
+              trabajar no sólo sobre lo que necesita cambiar en la organización, sino también sobre la posición
               desde la cual es posible conducir esos cambios.
             </p>
           </LeerMas>
@@ -169,6 +173,9 @@ function Sensible() {
   // la textura quieta, que es de donde salió esta franja
   const reduceMotion = useReducedMotion()
   const [sedaLista, setSedaLista] = useState(false)
+  // El video pesa casi 2 MB: se descarga recién cuando la franja está a una pantalla de distancia, para no
+  // competir con lo primero que se ve al entrar
+  const cerca = useInView(ref, { once: true, margin: '100% 0px' })
   // La bajada entra cuando la máquina empieza a escribir «lo sensible»
   const [conBajada, setConBajada] = useState(false)
 
@@ -178,23 +185,25 @@ function Sensible() {
       className="relative isolate flex items-center overflow-hidden bg-burdeos-medio text-crema"
     >
       {/* La textura se tiñe de burdeos al multiplicarse con el fondo */}
-      <motion.div
+      <m.div
         className="absolute inset-0 -z-10 mix-blend-multiply"
         style={{ scale: escala, x: fondoX }}
       >
         <Picture
           src={textura}
+          chica={texturaChica}
+          ancho={1536}
           alt=""
           loading="lazy"
           className={encuadreTextura}
         />
-      </motion.div>
+      </m.div>
 
       {/* El video ya viene en el burdeos de la marca, así que va tal cual, sin teñir. Su primer cuadro y el
           último son casi el mismo, de modo que se repite en bucle sin que se vea el corte. Entra con un
           fundido para que no aparezca de golpe mientras se descarga */}
-      {!reduceMotion && (
-        <motion.video
+      {!reduceMotion && cerca && (
+        <m.video
           aria-hidden
           autoPlay
           loop
@@ -212,7 +221,7 @@ function Sensible() {
         >
           <source src={sensibleWebm} type="video/webm" />
           <source src={sensibleMp4} type="video/mp4" />
-        </motion.video>
+        </m.video>
       )}
 
       {/* Velo oscuro sobre el fondo: baja el brillo de la seda para que la frase se lea con más fuerza */}
@@ -233,10 +242,12 @@ function Sensible() {
         </Reveal>
         <MaquinaDeEscribir
           lineas={fraseSensible}
+          // Es la idea que encabeza la franja: va como título (H3, dentro de Sobre Mía)
+          como="h3"
           alEmpezarLinea={(linea) => linea === 1 && setConBajada(true)}
           className="mx-auto mt-6 max-w-5xl font-serif text-titulo text-crema lg:mt-8"
         />
-        <motion.span
+        <m.span
           aria-hidden
           className="mx-auto mt-6 block h-px w-24 origin-center bg-dorado-suave lg:mt-10"
           initial={{ scaleX: 0 }}
@@ -246,7 +257,7 @@ function Sensible() {
         {/* La bajada aparece despacio, sin apuro, mientras se escribe «lo sensible»: no queda un hueco vacío */}
         <Reveal mostrar={conBajada} duracion={2.4} y={14} curva="serena">
           <p className="mx-auto mt-6 max-w-xl text-cuerpo text-pretty text-crema/80 lg:mt-8">
-            Reconocer aquello que, aunque no siempre resulte evidente, interviene en el funcionamiento de una
+            Reconocer aquello que, aunque no siempre resulta evidente, condiciona el funcionamiento de una
             empresa y convertirlo en una posibilidad concreta de acción.
           </p>
         </Reveal>

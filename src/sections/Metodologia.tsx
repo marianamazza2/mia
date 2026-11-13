@@ -1,12 +1,4 @@
-import {
-  motion,
-  useInView,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from 'motion/react'
+import { m, useInView, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import aCrema from '@/assets/brand/a_mia_crema.svg'
 import { Reveal } from '@/components/motion/Reveal'
@@ -63,7 +55,7 @@ function Encabezado() {
         </h2>
       </div>
       <p className="hidden text-cuerpo text-crema/70 lg:col-span-4 lg:col-start-9 lg:block">
-        Un recorrido con etapas claras, que se adapta al ritmo y al momento de cada empresa.
+        Un recorrido con etapas claras, que se adapta al ritmo y momento de cada empresa.
       </p>
     </div>
   )
@@ -125,10 +117,10 @@ function LineaHorizontal() {
         </Container>
 
         <div className="relative flex flex-1 items-center">
-          <motion.div ref={trackRef} className="relative flex w-max" style={{ x }}>
+          <m.div ref={trackRef} className="relative flex w-max" style={{ x }}>
             {/* Riel y relleno dorado */}
             <span aria-hidden className="absolute inset-x-0 top-1/2 h-px bg-crema/15" />
-            <motion.span
+            <m.span
               aria-hidden
               className="absolute inset-x-0 top-1/2 h-px origin-left bg-dorado-suave"
               style={{ scaleX: rellenoEscala }}
@@ -148,7 +140,7 @@ function LineaHorizontal() {
                 />
               ))}
             </ol>
-          </motion.div>
+          </m.div>
         </div>
 
         <Container className="relative flex items-center justify-end pb-8 text-crema/50 bajo:pb-5">
@@ -165,7 +157,7 @@ function LineaHorizontal() {
 
 function ContadorPaso({ valor }: { valor: MotionValue<number> }) {
   const texto = useTransform(valor, (v) => numero(Math.max(v, 1) - 1))
-  return <motion.span className="text-dorado-suave">{texto}</motion.span>
+  return <m.span className="text-dorado-suave">{texto}</m.span>
 }
 
 type PasoHorizontalProps = {
@@ -192,10 +184,10 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
         aria-hidden
         className="absolute top-1/2 left-1/2 grid size-5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
       >
-        <motion.span className="size-2.5 rounded-full bg-dorado-suave" style={{ scale: escalaNodo, opacity: encendido }} />
+        <m.span className="size-2.5 rounded-full bg-dorado-suave" style={{ scale: escalaNodo, opacity: encendido }} />
       </span>
       {/* Tallo que une el nodo con el contenido */}
-      <motion.span
+      <m.span
         aria-hidden
         className={cn(
           'absolute left-1/2 h-8 w-px bg-dorado-suave/60 bajo:h-5',
@@ -204,7 +196,7 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
         style={{ scaleY: encendido }}
       />
 
-      <motion.div
+      <m.div
         className={cn(
           'absolute inset-x-4 flex flex-col items-center text-center',
           arriba ? 'bottom-1/2 mb-13 bajo:mb-9' : 'top-1/2 mt-13 bajo:mt-9',
@@ -213,13 +205,13 @@ function PasoHorizontal({ index, paso, relleno, nodoX, pasoRef }: PasoHorizontal
       >
         <span aria-hidden className="relative font-serif text-[3.75rem] leading-none font-medium tabular-nums lining-nums bajo:text-[2.75rem]">
           <span className="text-transparent [-webkit-text-stroke:1px_rgb(247_245_241/0.35)]">{numero(index)}</span>
-          <motion.span className="absolute inset-0 text-dorado-suave" style={{ clipPath: rellenoNumero }}>
+          <m.span className="absolute inset-0 text-dorado-suave" style={{ clipPath: rellenoNumero }}>
             {numero(index)}
-          </motion.span>
+          </m.span>
         </span>
         <h3 className="mt-3 text-tarjeta text-crema bajo:mt-2">{paso.titulo}</h3>
         <p className="mt-2 max-w-[23rem] text-[0.9375rem] leading-relaxed text-crema/70 bajo:text-sm">{paso.texto}</p>
-      </motion.div>
+      </m.div>
     </li>
   )
 }
@@ -288,7 +280,7 @@ function PasoFila({ paso, index, pintada, instantaneo }: PasoFilaProps) {
       {/* Tramo de línea hasta el círculo del paso siguiente */}
       {!ultimo && (
         <span aria-hidden className="absolute top-[9.5px] right-0 left-5 h-px bg-crema/15">
-          <motion.span
+          <m.span
             className="absolute inset-0 origin-left bg-dorado-suave"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: pintada ? 1 : 0 }}
@@ -301,7 +293,7 @@ function PasoFila({ paso, index, pintada, instantaneo }: PasoFilaProps) {
         aria-hidden
         className="relative grid size-5 place-items-center rounded-full border border-crema/30 bg-burdeos-profundo"
       >
-        <motion.span
+        <m.span
           className="size-2.5 rounded-full bg-dorado-suave"
           initial={{ scale: 0 }}
           animate={{ scale: pintada ? 1 : 0 }}

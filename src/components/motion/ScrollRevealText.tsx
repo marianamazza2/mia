@@ -1,4 +1,4 @@
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
+import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { Fragment, useRef } from 'react'
 import { Destacado } from '@/components/marca/Destacado'
 
@@ -71,5 +71,5 @@ type WordProps = {
 function Word({ children, progress, range, static: isStatic }: WordProps) {
   const opacity = useTransform(progress, range, [0.16, 1])
 
-  return <motion.span style={isStatic ? undefined : { opacity }}>{children}</motion.span>
+  return <m.span style={isStatic ? undefined : { opacity }}>{children}</m.span>
 }

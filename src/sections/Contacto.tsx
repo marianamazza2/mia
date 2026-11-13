@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, m, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
 import { PatronA } from '@/components/marca/PatronA'
 import { Reveal } from '@/components/motion/Reveal'
@@ -28,9 +28,10 @@ const canales = [
     icono: <IconoInstagram />,
   },
   {
-    etiqueta: 'Teléfono',
+    etiqueta: 'WhatsApp',
     valor: contacto.telefonoVisible,
-    href: `tel:${contacto.telefono}`,
+    href: contacto.whatsapp,
+    externo: true,
     icono: <IconoTelefono />,
   },
 ]
@@ -154,11 +155,11 @@ export function Contacto() {
         </Mitad>
       </OpcionesContacto>
 
-      {/* Cerrado: los demás canales en una franja burdeos con la «a», pegada al pliego */}
+      {/* Cerrado: los demás canales en una franja burdeos con la «a», pegada al pliego. En mobile, en lista */}
       <div
         inert={formularioAbierto}
         className={cn(
-          'hidden transition-[grid-template-rows,opacity] duration-700 ease-suave lg:grid',
+          'grid transition-[grid-template-rows,opacity] duration-700 ease-suave',
           formularioAbierto ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100',
         )}
       >
@@ -317,12 +318,12 @@ function IdaYVuelta() {
     <div aria-hidden className="absolute top-0 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:top-1/2 lg:left-0 lg:block">
       <span className="grid size-14 place-items-center rounded-full border border-dorado/50 bg-crema text-burdeos">
         <svg viewBox="0 0 24 24" className="size-6 overflow-visible" fill="none" stroke="currentColor" strokeWidth="1">
-          <motion.g {...vaiven(1)}>
+          <m.g {...vaiven(1)}>
             <path d="M4 8.5h15M15.5 5l3.5 3.5-3.5 3.5" />
-          </motion.g>
-          <motion.g {...vaiven(-1)}>
+          </m.g>
+          <m.g {...vaiven(-1)}>
             <path d="M20 15.5H5M8.5 12 5 15.5 8.5 19" />
-          </motion.g>
+          </m.g>
         </svg>
       </span>
     </div>
@@ -454,7 +455,7 @@ function Formulario() {
         {estado === 'enviado' || estado === 'correo' ? (
           <Gracias key="gracias" porCorreo={estado === 'correo'} onVolver={() => setEstado('inicial')} />
         ) : (
-          <motion.form
+          <m.form
             key="formulario"
             noValidate
             onSubmit={enviar}
@@ -531,7 +532,7 @@ function Formulario() {
                 </p>
               )}
             </div>
-          </motion.form>
+          </m.form>
         )}
       </AnimatePresence>
     </div>
@@ -713,7 +714,7 @@ function CampoOpciones({ nombre, etiqueta, opciones, error, className }: CampoOp
 
       <AnimatePresence>
         {abierto && (
-          <motion.ul
+          <m.ul
             id={listaId}
             role="listbox"
             aria-labelledby={`${id}-etiqueta`}
@@ -754,7 +755,7 @@ function CampoOpciones({ nombre, etiqueta, opciones, error, className }: CampoOp
                 </li>
               )
             })}
-          </motion.ul>
+          </m.ul>
         )}
       </AnimatePresence>
       {error && <MensajeError>{error}</MensajeError>}
@@ -768,7 +769,7 @@ function MensajeError({ children }: { children: ReactNode }) {
 
 function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => void }) {
   return (
-    <motion.div
+    <m.div
       role="status"
       className="flex min-h-[26rem] flex-col items-center justify-center text-center"
       initial={{ opacity: 0, y: 12 }}
@@ -776,7 +777,7 @@ function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => 
       transition={{ duration: 0.8, ease: easeSuave }}
     >
       <svg viewBox="0 0 64 64" className="size-16 text-burdeos" fill="none" stroke="currentColor" strokeWidth="1.25">
-        <motion.circle
+        <m.circle
           cx="32"
           cy="32"
           r="30"
@@ -784,7 +785,7 @@ function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => 
           animate={{ pathLength: 1 }}
           transition={{ duration: 1.2, ease: easeSuave }}
         />
-        <motion.path
+        <m.path
           d="m21 33 7 7 15-16"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
@@ -806,7 +807,7 @@ function Gracias({ porCorreo, onVolver }: { porCorreo: boolean; onVolver: () => 
       >
         Volver al formulario
       </button>
-    </motion.div>
+    </m.div>
   )
 }
 

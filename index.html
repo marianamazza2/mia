@@ -2,14 +2,117 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#4F0B12" />
-    <title>Mía · Consultora para empresarias</title>
+    <title>Mía · Consultora para empresarias en Barcelona</title>
     <meta
       name="description"
-      content="Acompañamos a empresarias a consolidar su posición en la dirección de sus negocios, encontrar criterios para tomar decisiones y desarrollar nuevas posibilidades de acción."
+      content="Acompañamos a empresarias a consolidar la dirección de su negocio, tomar decisiones con criterio y abrir nuevas posibilidades. Barcelona y online."
     />
+    <link rel="canonical" href="https://miaconsultora.es/" />
+
+    <!-- Íconos: SVG para navegadores actuales; ICO y PNG para Google, Safari y la pantalla de inicio -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#4F0B12" />
+
+    <!-- La intro se ve una vez por visita. Si ya se vio, si se entra a una sección (#contacto) o con «reducir
+         movimiento», se marca antes de pintar nada, para que el telón del HTML prerenderizado no aparezca -->
+    <script>
+      try {
+        if (
+          sessionStorage.getItem('mia-intro') ||
+          location.hash ||
+          matchMedia('(prefers-reduced-motion: reduce)').matches
+        )
+          document.documentElement.classList.add('sin-intro')
+      } catch {}
+    </script>
+
+    <!-- Vista previa al compartir (WhatsApp, LinkedIn, redes) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Mía" />
+    <meta property="og:title" content="Mía · Consultora para empresarias en Barcelona" />
+    <meta property="og:description" content="Acompañamos a empresarias a consolidar la dirección de su negocio, tomar decisiones con criterio y abrir nuevas posibilidades. Barcelona y online." />
+    <meta property="og:url" content="https://miaconsultora.es/" />
+    <meta property="og:image" content="https://miaconsultora.es/og-mia.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Mía, consultora para empresarias" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Datos estructurados: quién es Mía, dónde está y qué ofrece -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "@id": "https://miaconsultora.es/#mia",
+        "name": "Mía",
+        "alternateName": "Mía · Consultora para empresarias",
+        "description": "Consultora para empresarias: mentoría y acompañamiento a la dirección de empresas.",
+        "url": "https://miaconsultora.es/",
+        "logo": "https://miaconsultora.es/logo-mia.png",
+        "image": "https://miaconsultora.es/og-mia.jpg",
+        "email": "contacto@miaconsultora.es",
+        "telephone": "+34610227804",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Avinguda Diagonal 534, entresuelo izquierda, despacho 27",
+          "postalCode": "08006",
+          "addressLocality": "Barcelona",
+          "addressRegion": "Cataluña",
+          "addressCountry": "ES"
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": "España"
+        },
+        "founder": {
+          "@type": "Person",
+          "name": "Marina Elena Nicolai",
+          "jobTitle": "Fundadora y directora",
+          "sameAs": [
+            "https://www.linkedin.com/in/marinanicolai"
+          ]
+        },
+        "employee": [
+          {
+            "@type": "Person",
+            "name": "Lucia Carolina Nicolai",
+            "sameAs": [
+              "https://www.linkedin.com/in/luc%C3%ADa-nicolai-2209a018b"
+            ]
+          }
+        ],
+        "sameAs": [
+          "https://www.instagram.com/miaconsultora.es"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Punto de Partida Mía",
+                "description": "Sesión individual para ordenar una dificultad o decisión y encontrar cómo avanzar."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Mentoría Mía",
+                "description": "Acompañamiento para fortalecer la dirección y el desarrollo de la empresa."
+              }
+            }
+          ]
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

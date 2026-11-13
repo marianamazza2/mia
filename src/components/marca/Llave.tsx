@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useReducedMotion, type MotionValue } from 'motion/react'
+import { m, useMotionValue, useReducedMotion, type MotionValue } from 'motion/react'
 import { cn } from '@/lib/cn'
 
 type LlaveProps = {
@@ -45,5 +45,5 @@ export function Llave({ progreso, className }: LlaveProps) {
 }
 
 function Trazo({ d, progreso }: { d: string; progreso: MotionValue<number> }) {
-  return <motion.path d={d} vectorEffect="non-scaling-stroke" style={{ pathLength: progreso }} />
+  return <m.path d={d} vectorEffect="non-scaling-stroke" style={{ pathLength: progreso }} />
 }

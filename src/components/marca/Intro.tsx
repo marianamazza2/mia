@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from 'motion/react'
+import { m, useReducedMotion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import logoNegativo from '@/assets/brand/logo_mia_negativo.svg'
 import { cn } from '@/lib/cn'
@@ -20,14 +20,21 @@ const TERMINA = SUBE_TELON + 2400
 // y detrás pasa uno dorado, que deja ver la portada.
 export function Intro() {
   const reduceMotion = useReducedMotion()
-  // Con un enlace a una sección (#contacto) o con «reducir movimiento», se va directo a la página
-  const [saltar] = useState(() => Boolean(reduceMotion || window.location.hash))
-  const [fase, setFase] = useState<Fase>(saltar ? 'fin' : 'logo')
+  // Siempre arranca con el telón puesto: así sale en el HTML prerenderizado y tapa la página mientras carga
+  const [fase, setFase] = useState<Fase>('logo')
 
   useEffect(() => {
-    if (saltar) {
+    // Se ve una vez por visita. Con un enlace a una sección (#contacto) o con «reducir movimiento», tampoco:
+    // va directo a la página. El script del <head> de index.html ya lo decidió antes de pintar (clase sin-intro)
+    if (reduceMotion || window.location.hash || document.documentElement.classList.contains('sin-intro')) {
+      setFase('fin')
       marcarIntroLista()
       return
+    }
+    try {
+      sessionStorage.setItem('mia-intro', 'vista')
+    } catch {
+      // Sin almacenamiento (navegación privada estricta): la intro se vuelve a ver, nada más
     }
     const html = document.documentElement
     html.style.overflow = 'hidden'
@@ -49,16 +56,18 @@ export function Intro() {
       window.clearTimeout(fin)
       html.style.overflow = ''
     }
-  }, [saltar])
+    // Solo al entrar: si después cambia la preferencia de movimiento, la intro ya pasó
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (fase === 'fin') return null
   const sube = fase === 'telon'
   const despidiendo = fase !== 'logo'
 
   return (
-    <div aria-hidden className={cn('fixed inset-0 z-[80] overflow-hidden', sube && 'pointer-events-none')}>
+    <div aria-hidden className={cn('intro fixed inset-0 z-[80] overflow-hidden', sube && 'pointer-events-none')}>
       {/* Telón dorado: pasa justo detrás del burdeos, como un filete de luz */}
-      <motion.div
+      <m.div
         className="absolute inset-0 bg-linear-to-b from-dorado via-dorado-suave to-dorado"
         initial={false}
         animate={{ y: sube ? '-100%' : '0%' }}
@@ -66,50 +75,28 @@ export function Intro() {
       />
 
       {/* Telón burdeos con el logotipo */}
-      <motion.div
+      <m.div
         className="absolute inset-0 flex items-center justify-center bg-burdeos-profundo"
         initial={false}
         animate={{ y: sube ? '-100%' : '0%' }}
         transition={{ duration: DURACION_TELON, ease: easeTelon }}
       >
-        {/* Brillo dorado muy tenue que respira detrás del logo */}
-        <motion.div
-          className="absolute size-[80vmax] rounded-full bg-[radial-gradient(circle,rgb(201_168_107/0.18),transparent_60%)]"
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.8, ease: easeSereno }}
-        />
+        {/* La entrada (brillo, logo, filete y descriptor) va en CSS (index.css): arranca apenas se pinta el HTML,
+            sin esperar al JavaScript, y no le pesa al celular. La salida sí la maneja motion */}
+        {/* Brillo dorado muy tenue que aparece detrás del logo */}
+        <div className="intro-brillo absolute size-[80vmax] rounded-full bg-[radial-gradient(circle,rgb(201_168_107/0.18),transparent_60%)]" />
 
-        <motion.div
+        <m.div
           className="relative flex flex-col items-center"
           animate={despidiendo ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: easeSereno }}
         >
           {/* El logotipo se escribe de izquierda a derecha */}
-          <motion.img
-            src={logoNegativo}
-            alt=""
-            className="w-[min(58vw,19rem)]"
-            initial={{ clipPath: 'inset(0 100% 0 0)', scale: 1.06 }}
-            animate={{ clipPath: 'inset(0 0% 0 0)', scale: 1 }}
-            transition={{ duration: 1.1, ease: easeSereno, delay: 0.1 }}
-          />
-          <motion.span
-            className="mt-8 block h-px w-24 bg-dorado-suave"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.9, ease: easeSereno, delay: 0.6 }}
-          />
-          <motion.span
-            className="etiqueta mt-6 text-crema/80"
-            initial={{ opacity: 0, letterSpacing: '0.48em' }}
-            animate={{ opacity: 1, letterSpacing: '0.38em' }}
-            transition={{ duration: 1.1, ease: easeSereno, delay: 0.55 }}
-          >
-            Consultora para empresarias
-          </motion.span>
-        </motion.div>
-      </motion.div>
+          <img src={logoNegativo} alt="" width={304} height={134} className="intro-logo h-auto w-[min(58vw,19rem)]" />
+          <span className="intro-filete mt-8 block h-px w-24 bg-dorado-suave" />
+          <span className="intro-descriptor etiqueta mt-6 tracking-[0.38em] text-crema/80">Consultora para empresarias</span>
+        </m.div>
+      </m.div>
     </div>
   )
 }

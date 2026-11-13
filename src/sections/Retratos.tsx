@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import aBurdeos from '@/assets/brand/a_mia_burdeos.svg'
 import lucia from '@/assets/images/equipo-lucia.webp'
@@ -17,7 +17,7 @@ type Persona = {
   foto?: string
   /** Presentación completa, por párrafos: se lee en el panel de perfil */
   bio: string[]
-  /** Perfil de LinkedIn. Pendiente: pasar las direcciones */
+  /** Perfil de LinkedIn */
   linkedin: string
 }
 
@@ -31,7 +31,7 @@ const equipo: Persona[] = [
       'Su trabajo parte de la singularidad de cada situación, buscando reconocer aquello que realmente está en juego y construir, desde allí, posibilidades concretas de intervención.',
       'Como fundadora y directora de Mía, es responsable de la orientación metodológica y estratégica de la consultora.',
     ],
-    linkedin: '#',
+    linkedin: 'https://www.linkedin.com/in/marinanicolai',
   },
   {
     nombre: 'Lucia Carolina Nicolai',
@@ -41,7 +41,7 @@ const equipo: Persona[] = [
       'Con sólida formación en Ingeniería Industrial y experiencia en el trabajo con equipos empresariales, aporta una perspectiva orientada al análisis de procesos, la organización del trabajo y el funcionamiento operativo de las empresas.',
       'En Mía trabaja dentro de las organizaciones, realizando el mapeo y análisis de sus procesos, observando las dinámicas de trabajo y examinando cómo se llevan adelante las decisiones en la práctica.',
     ],
-    linkedin: '#',
+    linkedin: 'https://www.linkedin.com/in/luc%C3%ADa-nicolai-2209a018b',
   },
 ]
 
@@ -144,18 +144,18 @@ function Tarjeta({ persona, indice, onAbrir, compacta = false }: TarjetaProps) {
 function Retrato({ persona, delay }: { persona: Persona; delay: number }) {
   return (
     // El observador va en el contenedor: con el recorte al 100 % el navegador lo da por invisible
-    <motion.div
+    <m.div
       className="relative aspect-[4/5]"
       initial="oculto"
       whileInView="visible"
       viewport={{ once: true, margin: '0px 0px -15% 0px' }}
     >
-      <motion.div
+      <m.div
         className="absolute inset-0 overflow-hidden rounded-[10px] bg-[#ebe6de]"
         variants={{ oculto: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)' } }}
         transition={{ duration: 1.6, ease: easeSuave, delay }}
       >
-        <motion.div
+        <m.div
           className="size-full"
           variants={{ oculto: { scale: 1.15 }, visible: { scale: 1 } }}
           transition={{ duration: 2.2, ease: easeSuave, delay }}
@@ -164,9 +164,9 @@ function Retrato({ persona, delay }: { persona: Persona; delay: number }) {
           <div className="size-full transition-transform duration-700 ease-suave group-hover:scale-[1.03]">
             <Foto persona={persona} />
           </div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </m.div>
+      </m.div>
+    </m.div>
   )
 }
 
@@ -212,8 +212,8 @@ function PanelPerfil({ persona, onCerrar }: { persona: Persona; onCerrar: () => 
   const fuera = esDesktop ? { x: '100%' } : { y: '100%' }
 
   return (
-    <motion.div className="fixed inset-0 z-[85]" role="dialog" aria-modal="true" aria-labelledby={tituloId}>
-      <motion.div
+    <m.div className="fixed inset-0 z-[85]" role="dialog" aria-modal="true" aria-labelledby={tituloId}>
+      <m.div
         className="absolute inset-0 bg-negro/45 backdrop-blur-[2px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -221,7 +221,7 @@ function PanelPerfil({ persona, onCerrar }: { persona: Persona; onCerrar: () => 
         transition={{ duration: 0.5 }}
         onClick={onCerrar}
       />
-      <motion.aside
+      <m.aside
         className={cn(
           'absolute overflow-y-auto bg-crema text-negro shadow-[0_0_80px_-20px_rgb(20_20_20/0.4)]',
           esDesktop ? 'inset-y-0 right-0 w-[min(36rem,100%)]' : 'inset-x-0 bottom-0 max-h-[88svh] rounded-t-[20px]',
@@ -259,9 +259,10 @@ function PanelPerfil({ persona, onCerrar }: { persona: Persona; onCerrar: () => 
               <Foto persona={persona} />
             </div>
             <div>
-              <h4 id={tituloId} className="text-tarjeta">
+              {/* El perfil se abre como diálogo, fuera del orden de la página: su título empieza en H2 */}
+              <h2 id={tituloId} className="text-tarjeta">
                 {persona.nombre}
-              </h4>
+              </h2>
               <p className="etiqueta mt-3 text-[0.625rem] leading-snug text-burdeos lg:text-[0.6875rem]">
                 {persona.rol}
               </p>
@@ -284,8 +285,8 @@ function PanelPerfil({ persona, onCerrar }: { persona: Persona; onCerrar: () => 
             Ver en LinkedIn
           </a>
         </div>
-      </motion.aside>
-    </motion.div>
+      </m.aside>
+    </m.div>
   )
 }
 

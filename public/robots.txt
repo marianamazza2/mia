@@ -1,0 +1,5 @@
+# Todo el sitio se puede rastrear
+User-agent: *
+Allow: /
+
+Sitemap: https://miaconsultora.es/sitemap.xml

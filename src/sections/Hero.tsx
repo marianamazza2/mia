@@ -1,4 +1,4 @@
-import { motion, useReducedMotion, useScroll, useTransform, type Transition } from 'motion/react'
+import { m, useReducedMotion, useScroll, useTransform, type Transition } from 'motion/react'
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Destacado } from '@/components/marca/Destacado'
 import { Button } from '@/components/ui/Button'
@@ -26,7 +26,9 @@ export function Hero() {
   // solo vería la pared. Nunca si la persona pidió menos movimiento: ahí se queda la foto, quieta
   const reduceMotion = useReducedMotion()
   const pelicula = esDesktop ? portada.video : portada.videoMovil
-  const conVideo = !!pelicula && !reduceMotion
+  // Se monta (y se descarga) recién cuando termina la intro: así no le quita conexión a la foto y al texto,
+  // que es lo primero que se ve. Antes de eso no se usa
+  const conVideo = !!pelicula && !reduceMotion && lista
   const video = useRef<HTMLVideoElement>(null)
   const reloj = useRef<ReturnType<typeof setTimeout>>(undefined)
   const [enMarcha, setEnMarcha] = useState(false)
@@ -87,23 +89,19 @@ export function Hero() {
 
   return (
     // Todo queda «oculto» hasta que sube el telón de la intro; las piezas heredan el estado por variantes
-    <motion.section
+    <m.section
       ref={ref}
       id="inicio"
       className="relative isolate overflow-clip"
       initial="oculto"
       animate={lista ? 'visible' : 'oculto'}
     >
-      {/* Fondo a sangre (ver lib/portada). Se descubre desde abajo con el telón y, al hacer scroll,
-          sube un poco más lento que el texto */}
-      <motion.div
-        aria-hidden
-        className={cn('absolute inset-0 -z-10', portada.base)}
-        variants={{ oculto: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)' } }}
-        transition={{ duration: 1.6, ease: easeSuave, delay: 0.15 }}
-      >
-        <motion.div className="size-full" style={{ y: esDesktop ? fotoY : 0 }}>
-          <motion.div
+      {/* Fondo a sangre (ver lib/portada). Está pintado desde el principio, debajo del telón de la intro, que lo
+          descubre al subir: así es lo primero grande que se ve (de eso depende la velocidad que mide Google).
+          Al hacer scroll, sube un poco más lento que el texto */}
+      <div aria-hidden className={cn('absolute inset-0 -z-10', portada.base)}>
+        <m.div className="size-full" style={{ y: esDesktop ? fotoY : 0 }}>
+          <m.div
             className="size-full"
             variants={{ oculto: { scale: 1.2 }, visible: { scale: 1.04 } }}
             transition={{ duration: 2.4, ease: easeSuave, delay: 0.15 }}
@@ -124,7 +122,7 @@ export function Hero() {
             {conVideo && (
               // La «key» obliga a volver a cargarla si se pasa de un tamaño al otro: cambiar las fuentes
               // de un <video> ya montado no basta para que el navegador las vuelva a mirar
-              <motion.video
+              <m.video
                 key={esDesktop ? 'apaisada' : 'vertical'}
                 ref={video}
                 aria-hidden
@@ -142,10 +140,10 @@ export function Hero() {
               >
                 {pelicula.webm && <source src={pelicula.webm} type="video/webm" />}
                 <source src={pelicula.mp4} type="video/mp4" />
-              </motion.video>
+              </m.video>
             )}
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
         {oscuro ? (
           <>
             {/* Velo parejo sobre toda la foto: la apaga un poco para que no compita con el texto */}
@@ -161,13 +159,13 @@ export function Hero() {
             <span className="absolute inset-0 bg-gradient-to-b from-crema/80 via-crema/55 to-transparent to-80% lg:bg-gradient-to-r lg:from-crema/75 lg:via-crema/30 lg:to-transparent" />
           </>
         )}
-      </motion.div>
+      </div>
 
       {/* Mobile: el hero mide lo que el contenido, más aire abajo para que se vean los objetos de la foto, y la página
           ya asoma en la primera pantalla. Ojo: la foto cubre el hero por la altura, así que si el hero crece, la foto
           se agranda con él. Desktop: alto de pantalla; en pantallas bajas se achica el aire, nunca la letra */}
       <Container className={cn(oscuro && 'text-crema', 'relative flex flex-col justify-start pt-28 pb-40 lg:grid lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-36 lg:pb-20 lg:bajo:pt-30 lg:bajo:pb-6')}>
-        <motion.div className="lg:col-span-10" style={{ y: esDesktop ? textoY : 0 }}>
+        <m.div className="lg:col-span-10" style={{ y: esDesktop ? textoY : 0 }}>
           <Entra y={12} delay={0.5}>
             <Eyebrow tone={oscuro ? 'light' : 'dark'}>Consultora para empresarias</Eyebrow>
           </Entra>
@@ -183,11 +181,13 @@ export function Hero() {
                 sólida
               </Destacado>
             </Line>
+            {/* Los espacios entre líneas no se ven (cada una es un bloque), pero sin ellos el título se lee
+                «sólidade dirigirtu» para Google y los lectores de pantalla */}{' '}
             {esDesktop ? (
               <Line delay={0.47}>de dirigir tu empresa</Line>
             ) : (
               <>
-                <Line delay={0.47}>de dirigir</Line>
+                <Line delay={0.47}>de dirigir</Line>{' '}
                 <Line delay={0.59}>tu empresa</Line>
               </>
             )}
@@ -203,6 +203,7 @@ export function Hero() {
                 <span className="lg:hidden">
                   Acompañamos a empresarias a fortalecer su dirección, tomar decisiones y hacer crecer su negocio.
                 </span>
+                {/* Las dos versiones están en el HTML (una se oculta por CSS): el espacio evita que Google las lea pegadas */}{' '}
                 <span className="hidden lg:inline">
                   Acompañamos a empresarias a consolidar su posición en la dirección de sus negocios, encontrar
                   criterios para tomar decisiones y desarrollar nuevas posibilidades de acción.
@@ -217,15 +218,15 @@ export function Hero() {
 
           <Entra delay={1.15} className="mt-cta flex flex-wrap items-center gap-x-10 gap-y-6">
             <Button href="#contacto" variant={oscuro ? 'light' : 'primary'} withArrow>
-              <span className="lg:hidden">Hablemos</span>
+              <span className="lg:hidden">Hablemos</span>{' '}
               <span className="hidden lg:inline">Conversemos sobre tu empresa</span>
             </Button>
           </Entra>
-        </motion.div>
+        </m.div>
       </Container>
 
       <ScrollCue oscuro={oscuro} />
-    </motion.section>
+    </m.section>
   )
 }
 
@@ -233,13 +234,13 @@ export function Hero() {
 function Entra({ children, delay = 0, y = 24, className }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
   const transition: Transition = { duration: 1.1, ease: easeSuave, delay }
   return (
-    <motion.div
+    <m.div
       className={className}
       variants={{ oculto: { opacity: 0, y }, visible: { opacity: 1, y: 0 } }}
       transition={transition}
     >
       {children}
-    </motion.div>
+    </m.div>
   )
 }
 
@@ -247,20 +248,20 @@ function Entra({ children, delay = 0, y = 24, className }: { children: ReactNode
 function Line({ children, delay }: { children: ReactNode; delay: number }) {
   return (
     <span className="-mb-[0.06em] block overflow-hidden pb-[0.2em]">
-      <motion.span
+      <m.span
         className="block"
         variants={{ oculto: { y: '105%' }, visible: { y: 0 } }}
         transition={{ duration: 1.3, ease: easeSuave, delay }}
       >
         {children}
-      </motion.span>
+      </m.span>
     </span>
   )
 }
 
 function ScrollCue({ oscuro }: { oscuro: boolean }) {
   return (
-    <motion.a
+    <m.a
       href="#sobre-mia"
       aria-label="Ir a Sobre Mía"
       className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 lg:flex"
@@ -268,12 +269,12 @@ function ScrollCue({ oscuro }: { oscuro: boolean }) {
       transition={{ duration: 1, delay: 2 }}
     >
       <span className={cn('relative h-14 w-px overflow-hidden', oscuro ? 'bg-crema/20' : 'bg-negro/10')}>
-        <motion.span
+        <m.span
           className={cn('absolute inset-x-0 top-0 h-1/2', oscuro ? 'bg-crema' : 'bg-burdeos')}
           animate={{ y: ['-100%', '200%'] }}
           transition={{ duration: 2.4, ease: 'easeInOut', repeat: Infinity }}
         />
       </span>
-    </motion.a>
+    </m.a>
   )
 }

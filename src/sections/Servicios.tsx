@@ -1,6 +1,8 @@
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
+import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { createContext, useContext, useId, useRef, useState, type ReactNode } from 'react'
+import fotoCaminataChica from '@/assets/images/servicio-punto-partida-900.webp'
 import fotoCaminata from '@/assets/images/servicio-punto-partida.webp'
+import fotoMiradaChica from '@/assets/images/servicio-mentoria-900.webp'
 import fotoMirada from '@/assets/images/servicio-mentoria.webp'
 import { Destacado } from '@/components/marca/Destacado'
 import { PatronA } from '@/components/marca/PatronA'
@@ -31,7 +33,8 @@ type Servicio = {
   consulta: '#reservar' | '#escribenos'
   /** «encuadre»: object-position, para que en los recortes se vea lo importante de la foto.
       «ajuste»: filtros para emparejar el tono de una foto con las demás */
-  imagen: { src: string; alt: string; encuadre?: string; ajuste?: string }
+  /** Con su versión chica (900 px) y el ancho real de la grande */
+  imagen: { src: string; chica: string; ancho: number; alt: string; encuadre?: string; ajuste?: string }
   tono: 'claro' | 'burdeos'
 }
 
@@ -49,6 +52,8 @@ const servicios: Servicio[] = [
     consulta: '#reservar',
     imagen: {
       src: fotoMirada,
+      chica: fotoMiradaChica,
+      ancho: 1345,
       alt: 'Mujer de blanco que mira de frente, con un pañuelo burdeos al viento, entre siluetas en movimiento',
       // En desktop el panel es vertical y recorta los costados: un poco a la izquierda, para que entre el pañuelo.
       // En el recorte apaisado de mobile, la cara y el moño del pañuelo
@@ -70,6 +75,8 @@ const servicios: Servicio[] = [
     consulta: '#escribenos',
     imagen: {
       src: fotoCaminata,
+      chica: fotoCaminataChica,
+      ancho: 1117,
       alt: 'Mujer de blanco que camina con un pañuelo burdeos al viento',
       // Foto vertical: en el recorte apaisado de mobile se queda con la cabeza y el pañuelo
       encuadre: 'object-[50%_14%]',
@@ -148,13 +155,13 @@ export function Servicios() {
     <section id="servicios" className="relative">
       {/* Encabezado con la «a» como marca de agua, casi invisible detrás */}
       <div ref={encabezadoRef} className="relative overflow-hidden">
-        <motion.div
+        <m.div
           aria-hidden
           className="absolute inset-0"
           style={{ opacity: opacidadPatron, y: desplazamientoPatron }}
         >
           <PatronA paso={84} difuminado className="text-burdeos" />
-        </motion.div>
+        </m.div>
         <Container className="relative pt-seccion pb-bloque">
           <div className="grid gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
@@ -234,10 +241,10 @@ function PanelApilado({
   const velo = useTransform(progreso, [inicio, inicio + 1 / total], [0, index === total - 1 ? 0 : 0.35])
 
   return (
-    <motion.article className="relative size-full origin-top overflow-hidden" style={{ scale: escala }}>
+    <m.article className="relative size-full origin-top overflow-hidden" style={{ scale: escala }}>
       <Panel servicio={servicio} />
-      <motion.div aria-hidden className="pointer-events-none absolute inset-0 bg-negro" style={{ opacity: velo }} />
-    </motion.article>
+      <m.div aria-hidden className="pointer-events-none absolute inset-0 bg-negro" style={{ opacity: velo }} />
+    </m.article>
   )
 }
 
@@ -304,6 +311,10 @@ function Panel({ servicio }: { servicio: Servicio }) {
           src={servicio.imagen.src}
           alt={servicio.imagen.alt}
           loading="lazy"
+          chica={servicio.imagen.chica}
+          ancho={servicio.imagen.ancho}
+          // Desktop: la mitad de la pantalla; tablet: todo el ancho
+          tamanos="(min-width: 1024px) 50vw, 100vw"
           className={cn('size-full object-cover', servicio.imagen.encuadre, servicio.imagen.ajuste)}
         />
       </div>
@@ -375,7 +386,7 @@ function Ampliable({ compacto = false, className }: { compacto?: boolean; classN
         )}
       />
       <span className="relative py-0.5">
-        {abierta ? 'Ocultar las intervenciones complementarias' : 'Se puede ampliar con intervenciones complementarias'}
+        {abierta ? 'Ocultar los complementos' : `Complementos de ${mentoria.titulo}`}
         {!compacto && (
           <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-dorado-suave/50 transition-transform duration-500 ease-suave group-hover/ampliar:scale-x-50" />
         )}
@@ -449,6 +460,10 @@ function TarjetaServicio({ servicio }: { servicio: Servicio }) {
         src={servicio.imagen.src}
         alt={servicio.imagen.alt}
         loading="lazy"
+        chica={servicio.imagen.chica}
+        ancho={servicio.imagen.ancho}
+        // La tarjeta del carrusel ocupa casi todo el ancho del celular
+        tamanos="90vw"
         className={cn('aspect-[2/1] w-full object-cover', servicio.imagen.encuadre, servicio.imagen.ajuste)}
       />
 
@@ -610,14 +625,14 @@ function Intervenciones({ plegables }: { plegables: boolean }) {
     <section id="intervenciones" aria-labelledby={tituloId} className="relative bg-burdeos text-crema">
       <Container className="pb-seccion">
         {/* El observador va en el contenedor: el filete arranca en escala cero y el navegador no lo ve */}
-        <motion.div initial="oculto" whileInView="visible" viewport={{ once: true, margin: '0px 0px -15% 0px' }}>
-          <motion.span
+        <m.div initial="oculto" whileInView="visible" viewport={{ once: true, margin: '0px 0px -15% 0px' }}>
+          <m.span
             aria-hidden
             className="ml-[0.875rem] block h-14 w-px origin-top bg-dorado-suave/50 lg:h-24"
             variants={{ oculto: { scaleY: 0 }, visible: { scaleY: 1 } }}
             transition={{ duration: 1.4, ease: easeSereno }}
           />
-          <motion.div
+          <m.div
             className="flex items-center gap-4"
             variants={{ oculto: { opacity: 0 }, visible: { opacity: 1 } }}
             transition={{ duration: 1.2, ease: easeSereno, delay: 1 }}
@@ -646,13 +661,13 @@ function Intervenciones({ plegables }: { plegables: boolean }) {
                 <path d="M2 2l12 12M14 2 2 14" />
               </svg>
             </button>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
 
         <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-12 lg:gap-10">
           <Reveal delay={0.2} className="lg:col-span-6">
             <h3 id={tituloId} className="text-subtitulo">
-              Intervenciones complementarias
+              Complementos de {mentoria.titulo}
             </h3>
           </Reveal>
           <Reveal delay={0.3} className="self-end lg:col-span-5 lg:col-start-8">
@@ -664,13 +679,13 @@ function Intervenciones({ plegables }: { plegables: boolean }) {
         </div>
 
         {/* La rama: un filete dorado corrido con un punto donde arranca cada intervención */}
-        <motion.ol
+        <m.ol
           className="relative mt-12 lg:mt-16 lg:grid lg:grid-cols-3 lg:gap-12"
           initial="oculto"
           whileInView="visible"
           viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         >
-          <motion.span
+          <m.span
             aria-hidden
             className="absolute inset-x-0 top-0 h-px origin-left bg-dorado-suave/40"
             variants={{ oculto: { scaleX: 0 }, visible: { scaleX: 1 } }}
@@ -685,7 +700,7 @@ function Intervenciones({ plegables }: { plegables: boolean }) {
               plegable={plegables}
             />
           ))}
-        </motion.ol>
+        </m.ol>
 
         {/* Cierre: la condición dicha con todas las letras, y la consulta va por la Mentoría */}
         <Reveal className="mt-12 flex flex-col gap-7 lg:mt-16 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
@@ -741,7 +756,8 @@ function ItemIntervencion({ intervencion, numero, indice, plegable }: ItemInterv
             onClick={() => setAbierto((v) => !v)}
             className="flex w-full items-baseline gap-4 py-5 text-left"
           >
-            {numeral}
+            {/* El espacio no se ve (es flex), pero separa el número del título en el texto: «02.1 Construcción…» */}
+            {numeral}{' '}
             <span className="flex-1 font-serif text-tarjeta">{intervencion.titulo}</span>
             <svg
               aria-hidden
@@ -774,7 +790,7 @@ function ItemIntervencion({ intervencion, numero, indice, plegable }: ItemInterv
   }
 
   return (
-    <motion.li
+    <m.li
       className="relative pt-9"
       variants={{ oculto: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
       transition={{ duration: 1.2, ease: easeSereno, delay: 0.5 + indice * 0.35 }}
@@ -784,7 +800,7 @@ function ItemIntervencion({ intervencion, numero, indice, plegable }: ItemInterv
       {numeral}
       <h4 className="mt-3 text-tarjeta">{intervencion.titulo}</h4>
       <div className="mt-5">{texto}</div>
-    </motion.li>
+    </m.li>
   )
 }
 

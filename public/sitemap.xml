@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Páginas del sitio, con la dirección sin «.html» (Vercel las sirve así por cleanUrls).
+     Al sumar o quitar una página, actualizar esta lista y la fecha. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://miaconsultora.es/</loc>
+    <lastmod>2026-11-13</lastmod>
+  </url>
+  <url>
+    <loc>https://miaconsultora.es/aviso-legal</loc>
+    <lastmod>2026-10-25</lastmod>
+  </url>
+  <url>
+    <loc>https://miaconsultora.es/privacidad</loc>
+    <lastmod>2026-10-25</lastmod>
+  </url>
+  <url>
+    <loc>https://miaconsultora.es/cookies</loc>
+    <lastmod>2026-10-25</lastmod>
+  </url>
+</urlset>

@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 import { easeSereno } from '@/lib/motion'
@@ -27,13 +27,13 @@ export function Destacado({ children, firma = false, trazo = true, className }: 
 
   return (
     // El observador va en el contenedor: con el recorte completo el navegador da al texto por invisible
-    <motion.em
+    <m.em
       className={cn('inline-block font-firma text-[1em] leading-none font-normal not-italic', className)}
       initial="oculto"
       whileInView="visible"
       viewport={{ once: true, margin: '0px 0px -15% 0px' }}
     >
-      <motion.span
+      <m.span
         className="inline-block"
         // Márgenes negativos en el recorte: los trazos de la caligrafía salen de la caja de la letra
         variants={{
@@ -43,7 +43,7 @@ export function Destacado({ children, firma = false, trazo = true, className }: 
         transition={{ duration: 2.6, ease: easeSereno, delay: 0.3 }}
       >
         {children}
-      </motion.span>
-    </motion.em>
+      </m.span>
+    </m.em>
   )
 }

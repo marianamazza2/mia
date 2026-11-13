@@ -62,6 +62,7 @@ export function PaginaLegal({ id }: { id: IdDocumento }) {
                     <span className="font-serif text-menor text-burdeos/40 lining-nums tabular-nums">
                       {String(i + 1).padStart(2, '0')}
                     </span>
+                    {/* Invisible en flex; separa el número del título en el texto («01 Responsable…») */}{' '}
                     {apartado.titulo}
                   </h2>
                   <div className="mt-5 space-y-4 text-cuerpo text-negro/75 lg:pl-11">{apartado.contenido}</div>

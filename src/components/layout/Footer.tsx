@@ -39,7 +39,13 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="mb-6 flex items-center gap-5 lg:mb-0 lg:block lg:pr-16">
             {/* Sin descriptor: a este tamaño no se leería; el texto de abajo ya cumple ese papel */}
-            <img src={logoNegativo} alt="Mía, consultora para empresarias" className="w-16 shrink-0 lg:w-28" />
+            <img
+              src={logoNegativo}
+              alt="Mía, consultora para empresarias"
+              width={112}
+              height={49}
+              className="h-auto w-16 shrink-0 lg:w-28"
+            />
             <p className="max-w-sm font-serif text-base text-crema/80 lg:mt-5 lg:text-menor">
               Trabajar sobre aquello que, sin ser evidente, limita nuestras posibilidades.
             </p>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Página de error: no tiene que aparecer en los buscadores -->
+    <meta name="robots" content="noindex" />
+    <title>Página no encontrada · Mía</title>
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#4F0B12" />
+    <!-- Página suelta, sin el JavaScript del sitio: Vercel la muestra cuando una dirección no existe -->
+    <style>
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        background: #3f070f;
+        color: #f7f5f1;
+        font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+        text-align: center;
+      }
+      main { max-width: 32rem; }
+      img { width: 4.5rem; height: 4.5rem; }
+      .rotulo {
+        margin: 2.5rem 0 0;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 0.6875rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #c9a86b;
+      }
+      h1 { margin: 1.25rem 0 0; font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 500; line-height: 1.1; }
+      p.texto { margin: 1.25rem 0 0; font-size: 1.25rem; line-height: 1.5; color: rgb(247 245 241 / 0.75); }
+      .filete { width: 6rem; height: 1px; margin: 2rem auto 0; background: #c9a86b; }
+      a {
+        display: inline-flex;
+        align-items: center;
+        height: 3.5rem;
+        margin-top: 2.5rem;
+        padding: 0 2.5rem;
+        border: 1px solid rgb(247 245 241 / 0.4);
+        border-radius: 40px;
+        color: #f7f5f1;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background-color 0.5s, color 0.5s;
+      }
+      a:hover, a:focus-visible { background: #f7f5f1; color: #4f0b12; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/favicon.svg" alt="Mía" />
+      <p class="rotulo">Error 404</p>
+      <h1>Esta página no existe</h1>
+      <p class="texto">Puede que la dirección haya cambiado o tenga un error. Desde el inicio encuentras todo sobre Mía.</p>
+      <div class="filete"></div>
+      <a href="/">Volver al inicio</a>
+    </main>
+  </body>
+</html>

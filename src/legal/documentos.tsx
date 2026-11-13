@@ -221,7 +221,8 @@ export const documentos: Documento[] = [
             </p>
             <ul>
               <li>El proveedor de alojamiento del sitio web (Vercel Inc.).</li>
-              <li>El proveedor del servicio que recibe los mensajes del formulario y el del correo electrónico.</li>
+              <li>El servicio que recibe los mensajes del formulario (Formspree, Inc.).</li>
+              <li>El proveedor del correo electrónico.</li>
             </ul>
             <p>
               Algunos de estos proveedores están en Estados Unidos. Las transferencias se amparan en el Marco de
