@@ -398,7 +398,18 @@ function Formulario() {
     if (!datos.mensaje?.trim()) nuevosErrores.mensaje = 'Cuéntanos brevemente qué necesitas.'
     if (!datos.privacidad) nuevosErrores.privacidad = 'Necesitamos tu consentimiento para responderte.'
     setErrores(nuevosErrores)
-    if (Object.keys(nuevosErrores).length > 0) return
+    const conError = (['consulta', 'nombre', 'email', 'mensaje', 'privacidad'] as const).filter((campo) => nuevosErrores[campo])
+    if (conError.length > 0) {
+      // Si falta algo, se lleva a la persona al primer campo a revisar: el aviso puede quedar fuera de la
+      // pantalla (el tema está arriba de todo) y parecería que el botón no hace nada
+      const primero = form.querySelector<HTMLElement>(
+        conError[0] === 'privacidad' ? '[name="privacidad"]' : `#contacto-${conError[0]}`,
+      )
+      const destino = primero?.closest('label') ?? primero
+      destino?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      primero?.focus({ preventScroll: true })
+      return
+    }
 
     const endpoint = import.meta.env.VITE_FORM_ENDPOINT
     // Sin servicio configurado, se abre el correo con el mensaje ya escrito
@@ -505,6 +516,11 @@ function Formulario() {
                 {estado === 'enviando' ? 'Enviando…' : 'Enviar mensaje'}
                 <Flecha className="transition-transform duration-500 ease-suave group-hover:translate-x-1" />
               </button>
+              {Object.keys(errores).length > 0 && (
+                <p role="alert" className="text-sm text-burdeos">
+                  Revisa los campos marcados para poder enviarlo.
+                </p>
+              )}
               {estado === 'error' && (
                 <p role="alert" className="text-sm text-burdeos">
                   No pudimos enviarlo. Escríbenos a{' '}
