@@ -17,7 +17,7 @@ type Documento = {
   apartados: Apartado[]
 }
 
-export const ultimaActualizacion = '25 de octubre de 2026'
+export const ultimaActualizacion = '16 de noviembre de 2026'
 
 const correo = <a href={`mailto:${contacto.email}`}>{contacto.email}</a>
 

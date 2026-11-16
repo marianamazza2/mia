@@ -8,7 +8,8 @@ const direccion = 'Avinguda Diagonal 534, entresuelo izquierda, despacho 27, 080
 export const titular = {
   nombre: 'Marina Elena Nicolai',
   nombreComercial: 'Mía',
-  nif: '[NIF pendiente]',
+  // Es un NIE, que para una persona extranjera hace de NIF: por eso en las legales se rotula «NIF»
+  nif: 'Z1673271A',
   dominio: 'miaconsultora.es',
   actividad: 'consultoría organizacional y acompañamiento a la dirección de empresas',
 }

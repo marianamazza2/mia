@@ -36,7 +36,6 @@ Se hizo todo lo que depende del código. **Nada está publicado**: se sube junto
 4. Probar la vista previa al compartir con <https://www.opengraph.xyz/> y los datos estructurados con <https://search.google.com/test/rich-results>.
 
 **Pendiente de Marina**
-- NIF para el aviso legal y la política de privacidad.
 - Lucía con o sin tilde (en la web va sin; en LinkedIn, con).
 - Validar las palabras clave del título y la descripción.
 
@@ -64,7 +63,7 @@ Se hizo todo lo que depende del código. **Nada está publicado**: se sube junto
 | 12 | Favicon solo en SVG; falta ícono para Apple y manifest — **✅ Resuelto** | 🟡 |
 | 13 | Sin página 404 propia — **✅ Resuelto** | 🟡 |
 | 14 | Paquete de JavaScript grande y fuentes sin precargar — **✅ Resuelto** | 🟡 |
-| 15 | Páginas legales: NIF pendiente y números pegados a los títulos — **🟡 Falta el NIF** | 🟡 |
+| 15 | Páginas legales: NIF pendiente y números pegados a los títulos — **✅ Resuelto** | 🟡 |
 | 16 | Search Console, perfil de Google y medición — **⏳ Después del lunes** | 🟡 |
 | 17 | Enlaces: todo bien, con dos detalles — **⏳ Decidir el teléfono del footer** | ⚪ |
 | 18 | Archivos sin uso y videos — **✅ Resuelto (falta decidir el `preload` del video del hero)** | ⚪ |
@@ -410,12 +409,13 @@ H1  Una forma sólida de dirigir tu empresa
 
 ## 🟡 15. Páginas legales: NIF pendiente y números pegados a los títulos
 
-> 🟡 **En parte.** Números separados de los títulos y Formspree nombrado en la privacidad. Falta el **NIF**.
+> ✅ **Resuelto.** Números separados de los títulos, Formspree nombrado en la privacidad y el NIF completado
+> (Z1673271A, un NIE, que para una persona extranjera hace de NIF). Se actualizó la fecha de los documentos.
 
 **Qué está bien.** Cada página tiene su propio `title` y `description`, un H1 y H2 en orden.
 
 **Qué falta.**
-- **«[NIF pendiente]»** se ve publicado en la política de privacidad y en el aviso legal. Hay que completarlo con Marina, porque es obligatorio por la LSSI.
+- **El NIF** salía publicado como «[NIF pendiente]» en la política de privacidad y en el aviso legal. Ya está completado con el NIE de Marina, que es obligatorio por la LSSI.
 - Números pegados a los títulos en el texto que lee Google («01Responsable del tratamiento»). Ver punto 9.
 - Agregar el canonical (punto 3). Estas páginas no aportan posicionamiento; si se prefiere, se les puede poner `noindex`, pero siempre accesibles desde el footer.
 - La política de privacidad menciona «el proveedor del servicio que recibe los mensajes del formulario» sin nombrarlo. Conviene nombrar a **Formspree** (Formspree Inc., EE. UU.), igual que se nombra a Vercel.
@@ -467,7 +467,7 @@ Todos están en el historial de git, así que se recuperan si alguna vez hacen f
 
 ## Orden sugerido de trabajo
 
-1. **Antes de publicar en el dominio:** puntos 2, 3, 4, 6 y 15 (NIF). Son rápidos y evitan indexar mal desde el primer día.
+1. **Antes de publicar en el dominio:** puntos 2, 3, 4, 6 y 15. Son rápidos y evitan indexar mal desde el primer día.
 2. **Primera mejora técnica:** puntos 1 (prerender) y 7 (intro). Son los que más mueven la visibilidad y la velocidad.
 3. **Después:** puntos 5, 8, 9, 11, 12 y 13.
 4. **Con la web ya en el dominio:** punto 16, y medir con PageSpeed Insights y Search Console.
