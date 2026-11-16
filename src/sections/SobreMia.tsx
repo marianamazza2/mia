@@ -53,7 +53,8 @@ function Pregunta() {
 
       <Container className="relative py-seccion">
         <Reveal y={12}>
-          <Eyebrow tone="light">Sobre Mía</Eyebrow>
+          {/* El antetítulo es lo que Google lee como título de la sección: lleva las palabras clave */}
+          <Eyebrow tone="light">Sobre Mía · Consultora para empresarias</Eyebrow>
         </Reveal>
 
         <ScrollRevealText

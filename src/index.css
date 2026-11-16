@@ -91,6 +91,16 @@
     @apply bg-crema font-sans text-negro antialiased;
   }
 
+  /* Tailwind v4 dejó los botones con el cursor de flecha, como manda la especificación. En la web se espera
+     la manito en todo lo que se pulsa, así que se devuelve aquí, de una vez para todos: los <button> del
+     sitio, lo que haga de botón sin serlo y los <summary> que despliegan. Los enlaces ya la traen del
+     navegador, y lo deshabilitado se queda sin ella */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    cursor: pointer;
+  }
+
   /* Grano de papel muy leve sobre toda la página: da textura a los planos de color */
   body::after {
     content: '';

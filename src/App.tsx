@@ -1,3 +1,4 @@
+import { AvisoCookies } from '@/components/layout/AvisoCookies'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { Intro } from '@/components/marca/Intro'
@@ -23,6 +24,8 @@ function App() {
         <Contacto />
       </main>
       <Footer />
+      {/* Después de la intro, para no competir con el telón */}
+      <AvisoCookies conIntro />
     </>
   )
 }

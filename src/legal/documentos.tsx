@@ -297,7 +297,12 @@ export const documentos: Documento[] = [
               seguimiento. Tampoco carga contenidos de terceros que las instalen: las tipografías se sirven desde el
               propio sitio y los mapas o la mensajería solo se abren si haces clic en sus enlaces.
             </p>
-            <p>Por eso no te mostramos un aviso para aceptarlas.</p>
+            <p>
+              Lo único que guardamos en tu navegador es <strong>almacenamiento técnico</strong>, necesario para que la
+              web funcione: si ya viste la animación de entrada, para no repetírtela, y la decisión que tomes en el
+              aviso de cookies, para no volver a preguntártela. No identifican a nadie, no se envían a ningún
+              servidor y puedes borrarlos cuando quieras desde los ajustes de tu navegador.
+            </p>
           </>
         ),
       },

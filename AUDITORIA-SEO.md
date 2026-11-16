@@ -26,6 +26,8 @@ Se hizo todo lo que depende del código. **Nada está publicado**: se sube junto
 - Animaciones en su versión liviana y cargadas aparte (14).
 - Formspree nombrado en la política de privacidad (15).
 - Borrados los doce archivos sin uso; el build bajó 306 KB (18).
+- Aviso de cookies con el estilo de la marca, en la landing y en las tres legales. La decisión queda guardada
+  en el navegador y se puede consultar desde [lib/cookies.ts](src/lib/cookies.ts), por si se suma medición (16).
 
 **Para el lunes, con el DNS** (en el panel de Vercel, no en el código)
 1. Agregar `miaconsultora.es` y `www.miaconsultora.es` al proyecto; dejar `miaconsultora.es` como principal y `www` redirigiendo (308) a ella.

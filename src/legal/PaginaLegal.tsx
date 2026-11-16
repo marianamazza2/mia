@@ -1,3 +1,4 @@
+import { AvisoCookies } from '@/components/layout/AvisoCookies'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { Reveal } from '@/components/motion/Reveal'
@@ -73,6 +74,7 @@ export function PaginaLegal({ id }: { id: IdDocumento }) {
         </Container>
       </main>
       <Footer />
+      <AvisoCookies />
     </>
   )
 }

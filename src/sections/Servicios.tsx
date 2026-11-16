@@ -166,7 +166,7 @@ export function Servicios() {
           <div className="grid gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <Reveal y={12}>
-                <Eyebrow>Servicios</Eyebrow>
+                <Eyebrow>Servicios de consultoría</Eyebrow>
               </Reveal>
               <Reveal delay={0.1}>
                 <h2 className="mt-8 text-titulo lg:mt-10">

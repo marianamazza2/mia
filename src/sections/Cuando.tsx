@@ -102,7 +102,7 @@ export function Cuando() {
     <section id="cuando" className="relative pt-seccion">
       <Container>
         <Reveal y={12}>
-          <Eyebrow>¿Cuándo trabajar con Mía?</Eyebrow>
+          <Eyebrow>¿Cuándo trabajar con consultora Mía?</Eyebrow>
         </Reveal>
         <ScrollRevealText
           className="mt-8 max-w-5xl text-titulo lg:mt-10"
